@@ -1,0 +1,213 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { feedService } from "../services/feedService";
+import type { Post } from "../types/feed.types";
+import { Button } from "@/components/ui";
+import { Tag } from "@/components/ui";
+import Card from "@/components/ui/Card";
+import { ChevronDown, X } from "lucide-react";
+
+const TAG_VARIANTS: Record<
+  string,
+  "primary" | "success" | "info" | "warning" | "danger" | "neutral"
+> = {
+  "Mi experiencia": "success",
+  Orientación: "primary",
+  Recursos: "info",
+  Pregunta: "warning",
+};
+
+interface AvailableTag {
+  id: string;
+  name: string;
+  category: { name: string; color: string };
+}
+
+interface CreatePostFormProps {
+  onPostCreated: (post: Post) => void;
+}
+
+const MAX_TAGS = 3;
+
+export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
+  const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
+  const [selectedTags, setSelectedTags] = useState<AvailableTag[]>([]);
+  const [availableTags, setAvailableTags] = useState<AvailableTag[]>([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    feedService.getTags().then((res) => {
+      if (res.ok) setAvailableTags(res.response as AvailableTag[]);
+    });
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const toggleTag = (tag: AvailableTag) => {
+    setSelectedTags((prev) => {
+      const exists = prev.find((t) => t.id === tag.id);
+      if (exists) return prev.filter((t) => t.id !== tag.id);
+      if (prev.length >= MAX_TAGS) return prev;
+      return [...prev, tag];
+    });
+  };
+
+  const handleSubmit = async () => {
+    if (!content.trim()) return;
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await feedService.createPost({
+        title: title.trim() || undefined,
+        content,
+        tags: selectedTags.map((t) => t.id),
+      });
+      if (res.ok) {
+        onPostCreated(res.response);
+        setContent("");
+        setTitle("");
+        setSelectedTags([]);
+      } else {
+        setError(res.message);
+      }
+    } catch {
+      setError("No se pudo crear el post");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const tagsByCategory = availableTags.reduce<Record<string, AvailableTag[]>>(
+    (acc, tag) => {
+      const cat = tag.category.name;
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(tag);
+      return acc;
+    },
+    {},
+  );
+
+  return (
+    <Card
+      border="light"
+      shadow="none"
+      rounded="xl"
+      padding="md"
+      className="flex flex-col gap-3"
+    >
+      <input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Título (opcional)"
+        className="w-full text-base font-medium bg-transparent border-none outline-none text-neutral-900 dark:text-white placeholder:text-neutral-400"
+      />
+
+      <textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="¿Qué quieres compartir?"
+        rows={3}
+        className="w-full text-sm bg-transparent border-none outline-none resize-none text-neutral-700 dark:text-neutral-300 placeholder:text-neutral-400"
+      />
+
+      <div className="flex items-center gap-2 flex-wrap">
+        {selectedTags.map((tag) => (
+          <button
+            key={tag.id}
+            onClick={() => toggleTag(tag)}
+            className="flex items-center gap-1 group"
+          >
+            <Tag
+              label={tag.name}
+              variant={TAG_VARIANTS[tag.name] ?? "neutral"}
+            />
+            <X
+              size={12}
+              className="text-neutral-400 group-hover:text-danger transition-colors"
+            />
+          </button>
+        ))}
+
+        {selectedTags.length < MAX_TAGS && (
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setDropdownOpen((prev) => !prev)}
+              className="flex items-center gap-1 text-xs text-neutral-400 hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            >
+              + Etiqueta
+              <ChevronDown
+                size={12}
+                className={
+                  dropdownOpen
+                    ? "rotate-180 transition-transform"
+                    : "transition-transform"
+                }
+              />
+            </button>
+
+            {dropdownOpen && (
+              <div className="absolute top-full left-0 mt-1 z-50 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-lg p-2 min-w-48">
+                {Object.entries(tagsByCategory).map(([category, tags]) => (
+                  <div key={category} className="mb-2 last:mb-0">
+                    <p className="text-xs text-neutral-400 px-2 mb-1">
+                      {category}
+                    </p>
+                    <div className="flex flex-col gap-0.5">
+                      {tags.map((tag) => {
+                        const isSelected = selectedTags.find(
+                          (t) => t.id === tag.id,
+                        );
+                        return (
+                          <button
+                            key={tag.id}
+                            onClick={() => toggleTag(tag)}
+                            className={`flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors text-left ${
+                              isSelected
+                                ? "bg-primary/10 text-primary"
+                                : "hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300"
+                            }`}
+                          >
+                            {tag.name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {error && <p className="text-xs text-danger">{error}</p>}
+
+      <div className="flex justify-end">
+        <Button
+          size="sm"
+          onClick={handleSubmit}
+          loading={isLoading}
+          disabled={!content.trim()}
+        >
+          Publicar
+        </Button>
+      </div>
+    </Card>
+  );
+}

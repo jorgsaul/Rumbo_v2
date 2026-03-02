@@ -1,0 +1,59 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #5a1236;
+  --color-danger: #f64c4c;
+  --color-warning: #ffad0d;
+  --color-success: #47b881;
+  --color-info: #3b82f6;
+  --color-neutral: #4b4b4b;
+
+  /*DEFAULT BLACK MODE COLOR*/
+  --color-black-mode: #1f1f1f;
+
+  /*PRIMARY COLORS*/
+  --color-primary-100: #fadee8;
+  --color-primary-200: #e997bc;
+  --color-primary-300: #ee68a4;
+  --color-primary-400: #cb3580;
+  --color-primary-500: #91235a;
+  --color-primary-700: #270415;
+
+  /* WARNING */
+  --color-warning-700: #fe9b0e;
+
+  /* INFO */
+  --color-info-700: #3a70e2;
+
+  /* SUCCESS */
+  --color-success-700: #0c9d61;
+
+  /* DANGER */
+  --color-danger-700: #ec2d30;
+
+  --animate-FadeIn: fadeIn 2s;
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0%);
+    }
+  }
+}
+
+@layer base {
+  body {
+    background: white;
+    color: var(--color-neutral);
+  }
+  .dark body {
+    background: var(--color-black-mode);
+    color: #ededed;
+  }
+}

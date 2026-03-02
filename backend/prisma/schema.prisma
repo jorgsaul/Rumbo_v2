@@ -1,0 +1,260 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  AUTHOR
+  ADMIN
+}
+
+enum EducationLevel {
+  MIDDLE_SCHOOL
+  HIGH_SCHOOL
+  UNIVERSITY
+}
+
+enum ModerationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  FLAGGED
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+}
+
+enum IkigaiZone {
+  PROPOSITO_FUERTE
+  PROFESION_IDEAL
+  EXPLORAR_MAS
+}
+
+enum TestType {
+  VOCATIONAL
+  KNOWLEDGE
+}
+
+enum TestStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+}
+
+enum IkigaiPilar {
+  PASION
+  VOCACION
+  PROFESION
+  MISION
+}
+
+model User {
+  id             String          @id @default(cuid())
+  username       String          @unique
+  fullName       String
+  email          String          @unique
+  password       String
+  role           Role            @default(STUDENT)
+  educationLevel EducationLevel?
+  bio            String?
+  avatarUrl      String?
+  bannerUrl      String?
+  isPrivate      Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  avatarPublicId String?
+  bannerPublicId String?
+
+  posts           Post[]
+  comments        Comment[]
+  likes           Like[]
+  favorites       Favorite[]
+  reports         Report[]
+  followers       Follow[]          @relation("following")
+  following       Follow[]          @relation("follower")
+  vocalTestResults VocalTestResult[]
+  knowledgeResults KnowledgeTestResult[]
+}
+
+model Post {
+  id         String           @id @default(cuid())
+  author     User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId   String
+  title      String?
+  content    String
+  mediaUrl   String?
+  moderation ModerationStatus @default(PENDING)
+  isHidden   Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  tags      PostTag[]
+  comments  Comment[]
+  likes     Like[]
+  favorites Favorite[]
+  reports   Report[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  content   String
+  isHidden  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Like {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  createdAt DateTime @default(now())
+
+  @@id([userId, postId])
+}
+
+model Favorite {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  createdAt DateTime @default(now())
+
+  @@id([userId, postId])
+}
+
+model Report {
+  id         String       @id @default(cuid())
+  reporter   User         @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reporterId String
+  post       Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId     String
+  status     ReportStatus @default(PENDING)
+  createdAt  DateTime     @default(now())
+
+  @@unique([reporterId, postId])
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  follower    User     @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId  String
+  following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+}
+
+model TagCategory {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String?
+  color       String
+  tags        Tag[]
+}
+
+model Tag {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  category   TagCategory @relation(fields: [categoryId], references: [id])
+  categoryId String
+  posts      PostTag[]
+}
+
+model PostTag {
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
+  tag    Tag    @relation(fields: [tagId], references: [id])
+  tagId  String
+
+  @@id([postId, tagId])
+}
+
+model Test {
+  id                String     @id @default(cuid())
+  title             String
+  description       String?
+  type              TestType
+  status            TestStatus @default(DRAFT)
+  estimatedMinutes  Int        @default(15)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  questions        Question[]
+  vocalResults     VocalTestResult[]
+  knowledgeResults KnowledgeTestResult[]
+}
+
+model Question {
+  id     String      @id @default(cuid())
+  test   Test        @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId String
+  text   String
+  order  Int
+  pilar  IkigaiPilar?
+  weights Json?
+  imageUrl   String?
+  statements Json
+
+  options Option[]
+}
+
+model Option {
+  id         String   @id @default(cuid())
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+  label      String
+  text       String
+  imageUrl   String?
+  isCorrect  Boolean  @default(false)
+  order      Int
+}
+
+// ─── Resultados ───────────────────────────────────────────────────────────────
+
+model VocalTestResult {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  test   Test   @relation(fields: [testId], references: [id])
+  testId String
+
+  perfilTecnologico    Float      @default(0)
+  perfilCientifico     Float      @default(0)
+  perfilSalud          Float      @default(0)
+  perfilAdministrativo Float      @default(0)
+  perfilSocial         Float      @default(0)
+  topCarreras          Json
+  resultadosCompletos  Json
+  scoreGlobal          Float      @default(0)
+  zonaIkigai           IkigaiZone
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model KnowledgeTestResult {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  test   Test   @relation(fields: [testId], references: [id])
+  testId String
+
+  score          Float
+  correctAnswers Int
+  totalQuestions Int
+
+  createdAt DateTime @default(now())
+}
