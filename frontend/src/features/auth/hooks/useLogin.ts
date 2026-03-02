@@ -28,5 +28,23 @@ export default function useLogin() {
     }
   };
 
-  return { login, isLoading, error };
+  const googleLogin = async (idToken: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await authService.googleLogin(idToken);
+      if (res.ok) {
+        setUser(res.response);
+        router.push("/feed");
+      } else {
+        setError(res.message);
+      }
+    } catch {
+      setError("Error al iniciar sesión con Google");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { login, googleLogin, isLoading, error };
 }

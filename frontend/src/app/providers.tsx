@@ -1,7 +1,12 @@
 "use client";
 
 import ToastProvider from "@/context/ToastContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return <ToastProvider>{children}</ToastProvider>;
+  return (
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+      <ToastProvider>{children}</ToastProvider>
+    </GoogleOAuthProvider>
+  );
 }

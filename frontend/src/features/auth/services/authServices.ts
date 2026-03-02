@@ -7,4 +7,6 @@ export const authService = {
     post<Response<User>>("/auth/login", credentials),
   signup: async (userData: RegisterData) =>
     post<Response<User>>("/auth/register", userData),
+  googleLogin: async (idToken: string) =>
+    post<Response<User>>("/auth/google", { idToken }),
 };

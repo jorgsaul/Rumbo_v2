@@ -9,6 +9,7 @@ import Image from "next/image";
 import { Button, Input } from "@/components/ui";
 import Card from "@/components/ui/Card";
 import useLogin from "../hooks/useLogin";
+import { useGoogleLogin, GoogleLogin } from "@react-oauth/google";
 
 const loginSchema = z.object({
   email: z.string().email("Correo inválido"),
@@ -18,7 +19,7 @@ const loginSchema = z.object({
 type LoginData = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
-  const { login, isLoading, error } = useLogin();
+  const { login, googleLogin, isLoading, error } = useLogin();
 
   const {
     register,
@@ -32,9 +33,19 @@ export default function LoginForm() {
     await login(data);
   };
 
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      const res = await fetch(
+        "https://oauth2.googleapis.com/tokeninfo?access_token=" +
+          tokenResponse.access_token,
+      );
+      const data = await res.json();
+      await googleLogin(tokenResponse.access_token);
+    },
+  });
+
   return (
     <div className="w-full max-w-sm flex flex-col gap-6">
-      {/* Logo solo en móvil */}
       <div className="flex lg:hidden justify-center">
         <Image
           src="/Logo-blanco.png"
@@ -90,6 +101,25 @@ export default function LoginForm() {
           {error && (
             <p className="text-sm text-danger text-center mt-1">{error}</p>
           )}
+
+          <div className="relative flex items-center gap-3 my-1">
+            <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-700" />
+            <span className="text-xs text-neutral-400">o</span>
+            <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-700" />
+          </div>
+
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              if (credentialResponse.credential) {
+                googleLogin(credentialResponse.credential);
+              }
+            }}
+            onError={() => console.error(error)}
+            width="100%"
+            text="signin_with"
+            shape="rectangular"
+            theme="outline"
+          />
 
           <Button
             type="submit"
