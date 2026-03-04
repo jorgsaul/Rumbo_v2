@@ -27,7 +27,6 @@ export const useKnowledgeTest = () => {
       setIsLoading(true);
       try {
         const data = await getTestById(testId);
-        console.log(data);
         setTest(data);
       } catch (error) {
         console.error("Error cargando test de conocimientos:", error);

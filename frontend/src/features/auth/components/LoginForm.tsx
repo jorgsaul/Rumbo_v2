@@ -9,7 +9,8 @@ import Image from "next/image";
 import { Button, Input } from "@/components/ui";
 import Card from "@/components/ui/Card";
 import useLogin from "../hooks/useLogin";
-import { useGoogleLogin, GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
+import logo from "../../../../public/Logo-blanco.png";
 
 const loginSchema = z.object({
   email: z.string().email("Correo inválido"),
@@ -33,25 +34,14 @@ export default function LoginForm() {
     await login(data);
   };
 
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      const res = await fetch(
-        "https://oauth2.googleapis.com/tokeninfo?access_token=" +
-          tokenResponse.access_token,
-      );
-      const data = await res.json();
-      await googleLogin(tokenResponse.access_token);
-    },
-  });
-
   return (
     <div className="w-full max-w-sm flex flex-col gap-6">
       <div className="flex lg:hidden justify-center">
         <Image
-          src="/Logo-blanco.png"
+          src={logo}
           alt="Rumbo"
-          width={60}
-          height={60}
+          width={50}
+          height={50}
           className="invert dark:invert-0"
         />
       </div>

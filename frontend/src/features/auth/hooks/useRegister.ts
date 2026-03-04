@@ -32,8 +32,12 @@ export default function useRegister() {
   const sendData = async (extraData?: Partial<typeof data>) => {
     setIsLoading(true);
     const finalData = { ...data, ...extraData };
+    console.log(finalData);
     try {
+      if (!finalData.username)
+        return new Error("No se puede registar sin usuario");
       await authService.signup(finalData);
+      console.log("termando");
       reset();
     } catch (error) {
       console.log(error);

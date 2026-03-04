@@ -6,7 +6,7 @@ import { PostActions } from "./Postactions";
 import { CommentSection } from "./CommentSection";
 import type { Post } from "../types/feed.types";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { useAuthStore } from "@/features/auth/hooks/useAuthStore";
 import { feedService } from "../services/feedService";

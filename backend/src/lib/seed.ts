@@ -1264,10 +1264,10 @@ async function main() {
     },
   ];
 
-  const buildStatements = (p: any): { type: string; data: any } => {
+  const buildStatements = (p: any): { type: string; data: any } | {} => {
     if (p.enunciados) return { type: "enunciados", data: p.enunciados };
     if (p.tabla) return { type: "tabla", data: p.tabla };
-    return { type: "none", data: "" };
+    return {};
   };
 
   const buildOptions = (

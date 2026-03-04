@@ -40,7 +40,6 @@ export default function TestVocacional({ testId }: TestVocacionalProps) {
 
   useEffect(() => {
     loadTest(testId);
-    return () => resetAll();
   }, [testId]);
 
   if (isLoading || !test) {

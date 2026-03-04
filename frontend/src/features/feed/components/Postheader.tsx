@@ -1,6 +1,7 @@
 import { Tag } from "@/components/ui";
 import type { Post } from "../types/feed.types";
 import { formatDate } from "@/utils/FormatDate";
+import Link from "next/link";
 
 const TAG_VARIANTS: Record<
   string,
@@ -27,8 +28,10 @@ export function PostHeader({ post }: PostHeaderProps) {
         </div>
 
         <div className="flex flex-col">
-          <span className="text-sm font-semibold text-neutral-900 dark:text-white leading-tight">
-            {post.author.username}
+          <span className="text-sm font-semibold text-neutral-900 dark:text-white leading-tight cursor-pointer hover:text-primary">
+            <Link href={`/profile/${post.author.username}`}>
+              {post.author.username}
+            </Link>
           </span>
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-neutral-400 capitalize">

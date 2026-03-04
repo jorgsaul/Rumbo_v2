@@ -6,6 +6,7 @@ import type {
   CareerResult,
   IkigaiZone,
 } from "@/features/tests/types/tests.types";
+import { useRouter } from "next/navigation";
 
 const ZONA_CONFIG: Record<
   IkigaiZone,
@@ -35,9 +36,13 @@ export default function TopCareersCard({
   const rankColor =
     RANK_COLORS[ranking - 1] ??
     "text-neutral-400 bg-neutral-100 dark:bg-neutral-800";
+  const router = useRouter();
 
   return (
-    <div className="flex items-start gap-4 p-4 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-primary/30 transition-colors">
+    <div
+      onClick={() => router.push(`/carreras/${career.id}`)}
+      className="flex items-start gap-4 p-4 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-primary/30 transition-colors"
+    >
       <div
         className={cn(
           "w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold shrink-0",

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import logo from "../../../public/Logo-blanco.png";
 
 export default function AuthLayout({
   children,
@@ -12,7 +13,7 @@ export default function AuthLayout({
         <div className="absolute -bottom-32 -right-20 w-[500px] h-[500px] rounded-full bg-white/5" />
 
         <div className="relative z-10 flex flex-col items-center gap-8 text-white text-center">
-          <img src="/Logo-blanco.png" alt="Rumbo" width={150} height={150} />
+          <Image src={logo} alt="Rumbo" width={150} height={150} />
           <div className="flex flex-col gap-3">
             <h1 className="text-4xl font-bold tracking-tight">Rumbo</h1>
             <p className="text-lg text-white/70 max-w-sm leading-relaxed">

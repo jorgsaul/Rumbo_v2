@@ -55,3 +55,12 @@ export const getLatestVocationalResult =
     );
     return data.response;
   };
+
+export const getVocalResultById = async (
+  resultId: string,
+): Promise<VocalTestResult> => {
+  const { data } = await api.get<ApiResponse<VocalTestResult>>(
+    `/tests/vocational/result/${resultId}`,
+  );
+  return data.response;
+};

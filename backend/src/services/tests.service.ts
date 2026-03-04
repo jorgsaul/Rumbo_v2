@@ -155,3 +155,215 @@ export const getLatestVocationalResultService = async (userId: string) => {
 
   return result ?? null;
 };
+
+export const getVocalResultByIdService = async (
+  resultId: string,
+  userId: string,
+) => {
+  const result = await prisma.vocalTestResult.findUnique({
+    where: { id: resultId },
+  });
+  if (!result) throw new Error("Resultado no encontrado");
+  if (result.userId !== userId) throw new Error("No autorizado");
+  return result;
+};
+
+//ADMIN
+
+export const adminGetTestsService = async () => {
+  return prisma.test.findMany({
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      type: true,
+      status: true,
+      estimatedMinutes: true,
+      createdAt: true,
+      updatedAt: true,
+      _count: {
+        select: { questions: true, vocalResults: true, knowledgeResults: true },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+};
+
+export const adminCreateTestService = async (data: {
+  title: string;
+  description?: string;
+  type: "VOCATIONAL" | "KNOWLEDGE";
+  estimatedMinutes?: number;
+}) => {
+  return prisma.test.create({
+    data: {
+      title: data.title,
+      description: data.description,
+      type: data.type,
+      estimatedMinutes: data.estimatedMinutes ?? 15,
+      status: "DRAFT",
+    },
+  });
+};
+
+export const adminUpdateTestService = async (
+  testId: string,
+  data: {
+    title?: string;
+    description?: string;
+    status?: "DRAFT" | "ACTIVE" | "INACTIVE";
+    estimatedMinutes?: number;
+  },
+) => {
+  return prisma.test.update({
+    where: { id: testId },
+    data,
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      type: true,
+      status: true,
+      estimatedMinutes: true,
+      createdAt: true,
+      updatedAt: true,
+      _count: {
+        select: { questions: true, vocalResults: true, knowledgeResults: true },
+      },
+    },
+  });
+};
+
+export const adminDeleteTestService = async (testId: string) => {
+  return prisma.test.delete({ where: { id: testId } });
+};
+
+export const adminGetStatsService = async () => {
+  const [totalUsers, totalTests, totalVocational, totalKnowledge] =
+    await Promise.all([
+      prisma.user.count(),
+      prisma.test.count(),
+      prisma.vocalTestResult.count(),
+      prisma.knowledgeTestResult.count(),
+    ]);
+
+  const testStats = await prisma.test.findMany({
+    select: {
+      id: true,
+      title: true,
+      type: true,
+      _count: { select: { vocalResults: true, knowledgeResults: true } },
+    },
+  });
+
+  return { totalUsers, totalTests, totalVocational, totalKnowledge, testStats };
+};
+
+export const adminGetTestByIdService = async (testId: string) => {
+  const test = await prisma.test.findUnique({
+    where: { id: testId },
+    include: {
+      questions: {
+        orderBy: { order: "asc" },
+        include: {
+          options: { orderBy: { order: "asc" } },
+        },
+      },
+    },
+  });
+  if (!test) throw new Error("Test no encontrado");
+  return test;
+};
+
+export const adminUpsertQuestionsService = async (
+  testId: string,
+  questions: {
+    id?: string;
+    text: string;
+    order: number;
+    pilar?: string;
+    imageUrl?: string;
+    statements?: any;
+    options: {
+      id?: string;
+      label: string;
+      text: string;
+      isCorrect: boolean;
+      order: number;
+      imageUrl?: string;
+    }[];
+  }[],
+) => {
+  const incomingIds = questions.filter((q) => q.id).map((q) => q.id!);
+  await prisma.question.deleteMany({
+    where: { testId, id: { notIn: incomingIds } },
+  });
+
+  for (const q of questions) {
+    if (q.id) {
+      await prisma.question.update({
+        where: { id: q.id },
+        data: {
+          text: q.text,
+          order: q.order,
+          pilar: (q.pilar as any) ?? null,
+          imageUrl: q.imageUrl ?? null,
+          statements: q.statements ?? {},
+        },
+      });
+
+      const incomingOptionIds = q.options.filter((o) => o.id).map((o) => o.id!);
+      await prisma.option.deleteMany({
+        where: { questionId: q.id, id: { notIn: incomingOptionIds } },
+      });
+
+      for (const opt of q.options) {
+        if (opt.id) {
+          await prisma.option.update({
+            where: { id: opt.id },
+            data: {
+              label: opt.label,
+              text: opt.text,
+              isCorrect: opt.isCorrect,
+              order: opt.order,
+              imageUrl: opt.imageUrl ?? null,
+            },
+          });
+        } else {
+          await prisma.option.create({
+            data: {
+              questionId: q.id,
+              label: opt.label,
+              text: opt.text,
+              isCorrect: opt.isCorrect,
+              order: opt.order,
+              imageUrl: opt.imageUrl ?? null,
+            },
+          });
+        }
+      }
+    } else {
+      await prisma.question.create({
+        data: {
+          testId,
+          text: q.text,
+          order: q.order,
+          pilar: (q.pilar as any) ?? null,
+          imageUrl: q.imageUrl ?? null,
+          statements: q.statements ?? {},
+          options: {
+            create: q.options.map((opt) => ({
+              label: opt.label,
+              text: opt.text,
+              isCorrect: opt.isCorrect,
+              order: opt.order,
+              imageUrl: opt.imageUrl ?? null,
+            })),
+          },
+        },
+      });
+    }
+  }
+
+  return adminGetTestByIdService(testId);
+};

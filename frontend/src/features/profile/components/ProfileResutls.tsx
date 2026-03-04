@@ -8,6 +8,7 @@ import { Tag } from "@/components/ui/Tag";
 import RadarChart from "@/features/tests/components/vocational/results/RadarChart";
 import { getUserResults } from "@/features/tests/services/testService";
 import { formatDate } from "@/utils/FormatDate";
+import { useRouter } from "next/navigation";
 import type {
   TestResult,
   VocalTestResult,
@@ -44,6 +45,7 @@ function VocalResultCard({ result }: { result: VocalTestResult }) {
     administrativo: result.perfilAdministrativo,
     social: result.perfilSocial,
   };
+  const router = useRouter();
 
   return (
     <Card
@@ -51,7 +53,9 @@ function VocalResultCard({ result }: { result: VocalTestResult }) {
       rounded="xl"
       border="light"
       shadow="sm"
-      className="space-y-4"
+      className="space-y-4 cursor-pointer"
+      onClick={() => router.push(`/resultados/${result.id}`)}
+      clickable="lift"
     >
       <div className="flex items-start justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2">

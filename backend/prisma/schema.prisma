@@ -208,7 +208,7 @@ model Question {
   pilar  IkigaiPilar?
   weights Json?
   imageUrl   String?
-  statements Json
+  statements Json?
 
   options Option[]
 }
