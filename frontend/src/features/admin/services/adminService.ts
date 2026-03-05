@@ -4,7 +4,6 @@ import {
   AdminStats,
   AdminFlaggedPost,
   AdminQuestion,
-  AdminReport,
   AdminTestFull,
   AdminTestSummary,
   AdminUser,
@@ -12,6 +11,7 @@ import {
   ModerationStats,
 } from "../types/admin.types";
 import { Ticket } from "@/features/support/types/support.types";
+export type { AdminTestSummary, CreateTestData } from "../types/admin.types";
 
 export const adminService = {
   getStats: async (): Promise<AdminStats> => {

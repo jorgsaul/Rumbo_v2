@@ -1,4 +1,5 @@
-import { UserRole } from "@/types/user.types";
+import { User, UserRole } from "@/types/user.types";
+export type { User, UserRole };
 
 export interface RegisterData {
   role: UserRole;

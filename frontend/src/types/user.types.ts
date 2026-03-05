@@ -5,5 +5,6 @@ export interface User {
   username: string;
   email: string;
   role: UserRole;
-  avatarUrl?: string;
+  avatarUrl?: string | null;
+  fullName?: string;
 }

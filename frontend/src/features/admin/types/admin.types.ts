@@ -1,3 +1,5 @@
+import type { User } from "@/types/user.types";
+
 export interface AdminTestSummary {
   id: string;
   title: string;
@@ -50,23 +52,6 @@ export interface AdminQuestion {
 
 export interface AdminTestFull extends AdminTestSummary {
   questions: AdminQuestion[];
-}
-
-export interface AdminReport {
-  id: string;
-  createdAt: string;
-  status: string;
-  reporter: { id: string; username: string; avatarUrl?: string };
-  post: {
-    id: string;
-    title?: string;
-    content: string;
-    mediaUrl?: string;
-    moderation: string;
-    isHidden: boolean;
-    author: { id: string; username: string; avatarUrl?: string };
-    _count: { reports: number };
-  };
 }
 
 export interface ModerationStats {
