@@ -1,102 +1,17 @@
 import { api } from "@/lib/axios";
-
-type ApiResponse<T> = { ok: boolean; response: T; message: string };
-
-export interface AdminTestSummary {
-  id: string;
-  title: string;
-  description?: string | null;
-  type: "VOCATIONAL" | "KNOWLEDGE";
-  status: "DRAFT" | "ACTIVE" | "INACTIVE";
-  estimatedMinutes: number;
-  createdAt: string;
-  updatedAt: string;
-  _count: { questions: number; vocalResults: number; knowledgeResults: number };
-}
-
-export interface AdminStats {
-  totalUsers: number;
-  totalTests: number;
-  totalVocational: number;
-  totalKnowledge: number;
-  testStats: {
-    id: string;
-    title: string;
-    type: string;
-    _count: { vocalResults: number; knowledgeResults: number };
-  }[];
-}
-
-export interface CreateTestData {
-  title: string;
-  description?: string;
-  type: "VOCATIONAL" | "KNOWLEDGE";
-  estimatedMinutes?: number;
-}
-
-export interface AdminQuestion {
-  id: string;
-  testId: string;
-  text: string;
-  order: number;
-  pilar?: string | null;
-  imageUrl?: string | null;
-  statements?: any;
-  options: {
-    id: string;
-    label: string;
-    text: string;
-    isCorrect: boolean;
-    order: number;
-    imageUrl?: string | null;
-  }[];
-}
-
-export interface AdminTestFull extends AdminTestSummary {
-  questions: AdminQuestion[];
-}
-
-export interface AdminReport {
-  id: string;
-  createdAt: string;
-  status: string;
-  reporter: { id: string; username: string; avatarUrl?: string };
-  post: {
-    id: string;
-    title?: string;
-    content: string;
-    mediaUrl?: string;
-    moderation: string;
-    isHidden: boolean;
-    author: { id: string; username: string; avatarUrl?: string };
-    _count: { reports: number };
-  };
-}
-
-export interface ModerationStats {
-  pending: number;
-  approved: number;
-  rejected: number;
-  flagged: number;
-  hidden: number;
-}
-
-export interface AdminFlaggedPost {
-  id: string;
-  title?: string | null;
-  content: string;
-  mediaUrl?: string | null;
-  moderation: string;
-  isHidden: boolean;
-  createdAt: string;
-  author: { id: string; username: string; avatarUrl?: string };
-  reports: {
-    id: string;
-    createdAt: string;
-    reporter: { id: string; username: string };
-  }[];
-  _count: { reports: number };
-}
+import type { ApiResponse } from "@/types/api.types";
+import {
+  AdminStats,
+  AdminFlaggedPost,
+  AdminQuestion,
+  AdminReport,
+  AdminTestFull,
+  AdminTestSummary,
+  AdminUser,
+  CreateTestData,
+  ModerationStats,
+} from "../types/admin.types";
+import { Ticket } from "@/features/support/types/support.types";
 
 export const adminService = {
   getStats: async (): Promise<AdminStats> => {
@@ -167,5 +82,40 @@ export const adminService = {
     action: "APPROVE" | "REJECT",
   ): Promise<void> => {
     await api.patch(`/feed/admin/posts/${postId}/moderate`, { action });
+  },
+  uploadTestImage: async (
+    file: File,
+    folder: "questions" | "options",
+  ): Promise<{ url: string; publicId: string }> => {
+    const formData = new FormData();
+    formData.append("image", file);
+    const { data } = await api.post<
+      ApiResponse<{ url: string; publicId: string }>
+    >(`/tests/admin/upload-image?folder=${folder}`, formData);
+    return data.response;
+  },
+  getUsers: async (search?: string): Promise<AdminUser[]> => {
+    const { data } = await api.get<ApiResponse<AdminUser[]>>(
+      `/users/admin/users${search ? `?search=${search}` : ""}`,
+    );
+    return data.response;
+  },
+  updateUser: async (
+    userId: string,
+    data: { role?: string; isActive?: boolean },
+  ): Promise<void> => {
+    await api.patch(`/users/admin/users/${userId}`, data);
+  },
+  getTickets: async (status?: string): Promise<Ticket[]> => {
+    const { data } = await api.get<ApiResponse<Ticket[]>>(
+      `/tickets/admin${status ? `?status=${status}` : ""}`,
+    );
+    return data.response;
+  },
+  updateTicket: async (
+    ticketId: string,
+    data: { status?: string; adminReply?: string },
+  ): Promise<void> => {
+    await api.patch(`/tickets/admin/${ticketId}`, data);
   },
 };

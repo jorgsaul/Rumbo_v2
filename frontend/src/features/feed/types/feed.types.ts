@@ -1,6 +1,5 @@
-import { User } from "@/features/auth/types/auth.types";
-
-export type ModerationStatus = "pending" | "approved" | "rejected" | "flagged";
+import { User } from "@/types/user.types";
+import { ModerationStatus } from "@/types/common.types";
 
 export interface Post {
   id: string;

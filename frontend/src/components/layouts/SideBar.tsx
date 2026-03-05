@@ -11,6 +11,7 @@ import {
   User,
   ChevronDown,
   ShieldCheck,
+  LifeBuoy,
 } from "lucide-react";
 
 interface NavItem {
@@ -35,6 +36,11 @@ const baseItems: NavItem[] = [
     label: "Perfil",
     href: "/profile",
     icon: User,
+  },
+  {
+    label: "Soporte",
+    href: "/soporte",
+    icon: LifeBuoy,
   },
 ];
 

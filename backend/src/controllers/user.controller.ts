@@ -12,6 +12,8 @@ import {
   searchUsersService,
   updateAvatarService,
   updateBannerService,
+  adminGetUsersService,
+  adminUpdateUserService,
 } from "../services/user.service";
 
 export const getMe = async (req: AuthRequest, res: Response) => {
@@ -133,6 +135,28 @@ export const updateBanner = async (req: AuthRequest, res: Response) => {
     if (!req.file) throw new Error("No se recibió imagen");
     const result = await updateBannerService(req.userId!, req.file.buffer);
     res.json({ ok: true, response: result });
+  } catch (error: any) {
+    res.status(400).json({ ok: false, message: error.message });
+  }
+};
+
+export const adminGetUsers = async (req: AuthRequest, res: Response) => {
+  try {
+    const search = req.query.search as string | undefined;
+    const users = await adminGetUsersService(search);
+    res.json({ ok: true, response: users });
+  } catch (error: any) {
+    res.status(500).json({ ok: false, message: error.message });
+  }
+};
+
+export const adminUpdateUser = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await adminUpdateUserService(
+      req.params.userId as string,
+      req.body,
+    );
+    res.json({ ok: true, response: user });
   } catch (error: any) {
     res.status(400).json({ ok: false, message: error.message });
   }

@@ -461,7 +461,8 @@ async function main() {
         {
           pregunta:
             "Seleccionar el nombre del radical alquilo representado por la siguiente estructura:",
-          imagen_secuencia: "cadena.png",
+          imagen_secuencia:
+            "https://res.cloudinary.com/de8qn7bm1/image/upload/v1772675939/cadena_ms4he0.png",
           opciones: {
             a: "n-Butil",
             b: "Secpropil",
@@ -636,12 +637,13 @@ async function main() {
         },
         {
           pregunta: "¿Qué figura complementa la secuencia?",
-          imagen_secuencia: "secuencia.png",
+          imagen_secuencia:
+            "https://res.cloudinary.com/de8qn7bm1/image/upload/v1772676092/secuencia_w0xnoc.png",
           opciones_imagenes: {
-            a: "opcion_a.png",
-            b: "opcion_b.png",
-            c: "opcion_c.png",
-            d: "opcion_d.png",
+            a: "https://res.cloudinary.com/de8qn7bm1/image/upload/v1772676100/opcion_a_rbzujy.png",
+            b: "https://res.cloudinary.com/de8qn7bm1/image/upload/v1772676101/opcion_b_c6b4a4.png",
+            c: "https://res.cloudinary.com/de8qn7bm1/image/upload/v1772676100/opcion_c_umkwlh.png",
+            d: "https://res.cloudinary.com/de8qn7bm1/image/upload/v1772676102/opcion_d_kc0xe6.png",
           },
           respuesta_correcta: "b",
         },
@@ -1280,7 +1282,7 @@ async function main() {
     return Object.entries(source).map(([key, value], index) => ({
       label: key.toUpperCase(),
       text: isImageOption ? "" : value,
-      imageUrl: isImageOption ? `/tests/images/${value}` : null,
+      imageUrl: isImageOption ? value : null,
       isCorrect: key.toLowerCase() === respuesta.toLowerCase(),
       order: index + 1,
     }));
@@ -1298,9 +1300,7 @@ async function main() {
           create: testData.preguntas.map((p: any, index: number) => ({
             text: p.pregunta,
             order: index + 1,
-            imageUrl: p.imagen_secuencia
-              ? `/tests/images/${p.imagen_secuencia}`
-              : null,
+            imageUrl: p.imagen_secuencia,
             statements: buildStatements(p),
             options: {
               create: buildOptions(

@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import prisma from "../lib/prisma";
 
 export interface AuthRequest extends Request {
   userId?: string;
   userRole?: string;
 }
 
-export const authMiddleware = (
+export const authMiddleware = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction,
@@ -23,6 +24,22 @@ export const authMiddleware = (
       id: string;
       role: string;
     };
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: { id: true, role: true, isActive: true },
+    });
+
+    if (!user) {
+      res.status(401).json({ ok: false, message: "Usuario no encontrado" });
+      return;
+    }
+
+    if (!user.isActive) {
+      res.status(403).json({ ok: false, message: "Cuenta desactivada" });
+      return;
+    }
+
     req.userId = decoded.id;
     req.userRole = decoded.role;
     next();

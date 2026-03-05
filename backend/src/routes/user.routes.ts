@@ -12,8 +12,13 @@ import {
   searchUsers,
   updateAvatar,
   updateBanner,
+  adminGetUsers,
+  adminUpdateUser,
 } from "../controllers/user.controller";
-import { authMiddleware } from "../middlewares/auth.middleware";
+import {
+  authMiddleware,
+  adminMiddleware,
+} from "../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -30,5 +35,14 @@ router.get("/:userId/comments", authMiddleware, getUserComments);
 router.get("/username/:username", authMiddleware, getUserByUsername);
 router.post("/:userId/follow", authMiddleware, followUser);
 router.get("/search", authMiddleware, searchUsers);
+
+//admin
+router.get("/admin/users", authMiddleware, adminMiddleware, adminGetUsers);
+router.patch(
+  "/admin/users/:userId",
+  authMiddleware,
+  adminMiddleware,
+  adminUpdateUser,
+);
 
 export default router;

@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
+import { adminService } from "../services/adminService";
+
 import {
-  adminService,
   AdminTestSummary,
   AdminStats,
   CreateTestData,
-} from "../services/adminService";
+} from "../types/admin.types";
 
 export const useAdminTests = () => {
   const [tests, setTests] = useState<AdminTestSummary[]>([]);

@@ -10,10 +10,12 @@ import {
   Save,
   ArrowLeft,
   Loader2,
-  GripVertical,
   Check,
+  ImagePlus,
+  X,
 } from "lucide-react";
-import { adminService, AdminQuestion } from "../services/adminService";
+import { adminService } from "../services/adminService";
+import { AdminQuestion } from "../types/admin.types";
 import { cn } from "@/lib/utils/cn";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
@@ -24,6 +26,7 @@ type DraftOption = {
   text: string;
   isCorrect: boolean;
   order: number;
+  imageUrl?: string | null;
 };
 
 type StatementType = "none" | "enunciados" | "tabla";
@@ -33,6 +36,7 @@ type DraftQuestion = {
   text: string;
   order: number;
   pilar?: string;
+  imageUrl?: string | null;
   statements?: { type: string; data: any };
   options: DraftOption[];
 };
@@ -50,9 +54,7 @@ function newQuestion(order: number, isVocational: boolean): DraftQuestion {
     text: "",
     order,
     pilar: isVocational ? "PASION" : undefined,
-    options: isVocational
-      ? [] // vocacional usa Likert, no opciones
-      : DEFAULT_OPTIONS.map((o) => ({ ...o })),
+    options: isVocational ? [] : DEFAULT_OPTIONS.map((o) => ({ ...o })),
     statements: undefined,
   };
 }
@@ -72,31 +74,45 @@ function OptionsEditor({
     onChange(options.map((o, i) => (i === idx ? { ...o, text } : o)));
   };
 
+  const updateImage = (idx: number, imageUrl: string | null) => {
+    onChange(options.map((o, i) => (i === idx ? { ...o, imageUrl } : o)));
+  };
+
   return (
     <div className="space-y-2">
       {options.map((opt, idx) => (
-        <div key={idx} className="flex items-center gap-2">
-          <button
-            onClick={() => setCorrect(idx)}
-            className={cn(
-              "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border-2 transition-colors",
-              opt.isCorrect
-                ? "bg-success border-success text-white"
-                : "border-neutral-200 dark:border-neutral-700 text-neutral-400 hover:border-success",
-            )}
-          >
-            {opt.isCorrect ? (
-              <Check size={13} />
-            ) : (
-              <span className="text-xs font-bold">{opt.label}</span>
-            )}
-          </button>
-          <input
-            value={opt.text}
-            onChange={(e) => updateText(idx, e.target.value)}
-            placeholder={`Opción ${opt.label}`}
-            className="flex-1 px-3 py-1.5 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white outline-none focus:border-primary transition-colors"
-          />
+        <div key={idx} className="space-y-1">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCorrect(idx)}
+              className={cn(
+                "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border-2 transition-colors",
+                opt.isCorrect
+                  ? "bg-success border-success text-white"
+                  : "border-neutral-200 dark:border-neutral-700 text-neutral-400 hover:border-success",
+              )}
+            >
+              {opt.isCorrect ? (
+                <Check size={13} />
+              ) : (
+                <span className="text-xs font-bold">{opt.label}</span>
+              )}
+            </button>
+            <input
+              value={opt.text}
+              onChange={(e) => updateText(idx, e.target.value)}
+              placeholder={`Opción ${opt.label}`}
+              className="flex-1 px-3 py-1.5 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white outline-none focus:border-primary transition-colors"
+            />
+          </div>
+          <div className="pl-9">
+            <ImageUploader
+              imageUrl={opt.imageUrl}
+              folder="options"
+              onUpload={(url) => updateImage(idx, url)}
+              onRemove={() => updateImage(idx, null)}
+            />
+          </div>
         </div>
       ))}
     </div>
@@ -335,6 +351,72 @@ function StatementsEditor({
   );
 }
 
+// COMPONENTE IMAGE UPLOADER
+
+function ImageUploader({
+  imageUrl,
+  onUpload,
+  onRemove,
+  folder,
+}: {
+  imageUrl?: string | null;
+  onUpload: (url: string) => void;
+  onRemove: () => void;
+  folder: "questions" | "options";
+}) {
+  const [uploading, setUploading] = useState(false);
+
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const result = await adminService.uploadTestImage(file, folder);
+      onUpload(result.url);
+    } catch {
+      // manejar error
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  if (imageUrl) {
+    return (
+      <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-700">
+        <img src={imageUrl} alt="" className="w-full h-full object-contain" />
+        <button
+          onClick={onRemove}
+          className="absolute top-2 right-2 p-1 rounded-full bg-black/50 text-white hover:bg-black/70"
+        >
+          <X size={13} />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <label
+      className={cn(
+        "flex items-center gap-1.5 text-xs text-neutral-400 hover:text-primary cursor-pointer px-2 py-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors",
+        uploading && "opacity-50 pointer-events-none",
+      )}
+    >
+      {uploading ? (
+        <Loader2 size={13} className="animate-spin" />
+      ) : (
+        <ImagePlus size={13} />
+      )}
+      {uploading ? "Subiendo..." : "Agregar imagen"}
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleChange}
+      />
+    </label>
+  );
+}
+
 // ─── Card de pregunta ─────────────────────────────────────────────────────────
 function QuestionCard({
   question,
@@ -389,6 +471,13 @@ function QuestionCard({
             placeholder="Texto de la pregunta"
             rows={2}
             className="w-full px-3 py-2 text-sm rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white outline-none focus:border-primary transition-colors resize-none"
+          />
+
+          <ImageUploader
+            imageUrl={question.imageUrl}
+            folder="questions"
+            onUpload={(url) => onChange({ ...question, imageUrl: url })}
+            onRemove={() => onChange({ ...question, imageUrl: null })}
           />
 
           {isVocational && (
@@ -459,6 +548,7 @@ export default function QuestionsEditor({ testId }: { testId: string }) {
             text: q.text,
             order: q.order,
             pilar: q.pilar ?? undefined,
+            imageUrl: q.imageUrl ?? null,
             statements:
               q.statements && Object.keys(q.statements).length > 0
                 ? q.statements
@@ -469,6 +559,7 @@ export default function QuestionsEditor({ testId }: { testId: string }) {
               text: o.text,
               isCorrect: o.isCorrect,
               order: o.order,
+              imageUrl: o.imageUrl ?? null,
             })),
           })),
         );
@@ -515,12 +606,14 @@ export default function QuestionsEditor({ testId }: { testId: string }) {
           order: q.order,
           pilar: q.pilar ?? undefined,
           statements: q.statements ?? undefined,
+          imageUrl: q.imageUrl ?? null,
           options: q.options.map((o) => ({
             id: o.id,
             label: o.label,
             text: o.text,
             isCorrect: o.isCorrect,
             order: o.order,
+            imageUrl: o.imageUrl ?? null,
           })),
         })),
       );

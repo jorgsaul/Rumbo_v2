@@ -1,5 +1,6 @@
 import prisma from "../lib/prisma";
 import type { IkigaiZone } from "@prisma/client";
+import { uploadImageService } from "./upload.service";
 
 export const getTestsService = async () => {
   return prisma.test.findMany({
@@ -400,4 +401,11 @@ export const adminUpsertQuestionsService = async (
   }
 
   return adminGetTestByIdService(testId);
+};
+
+export const uploadTestImageService = async (
+  buffer: Buffer,
+  folder: "questions" | "options",
+): Promise<{ url: string; publicId: string }> => {
+  return uploadImageService(buffer, `rumbo/tests/${folder}`);
 };

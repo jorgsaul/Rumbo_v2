@@ -75,6 +75,8 @@ model User {
   avatarPublicId String?
   bannerPublicId String?
 
+  isActive Boolean @default(true)
+  tickets         Ticket[]
   posts           Post[]
   comments        Comment[]
   likes           Like[]
@@ -248,6 +250,7 @@ model VocalTestResult {
   updatedAt DateTime @updatedAt
 }
 
+//SOPORTE
 model KnowledgeTestResult {
   id     String @id @default(cuid())
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -260,4 +263,30 @@ model KnowledgeTestResult {
   totalQuestions Int
 
   createdAt DateTime @default(now())
+}
+
+enum TicketStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+}
+
+enum TicketCategory {
+  BUG
+  QUESTION
+  SUGGESTION
+  OTHER
+}
+
+model Ticket {
+  id          String         @id @default(cuid())
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  title       String
+  description String
+  category    TicketCategory @default(OTHER)
+  status      TicketStatus   @default(OPEN)
+  adminReply  String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 }

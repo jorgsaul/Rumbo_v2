@@ -1,6 +1,21 @@
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
-
+const rutas = [
+  {
+    label: "Tests",
+    href: "/admin/tests",
+  },
+  {
+    label: "Moderación",
+    href: "/admin/moderation",
+  },
+  {
+    label: "Usuarios",
+    href: "/admin/users",
+  },
+  {
+    label: "Soporte",
+    href: "/admin/support",
+  },
+];
 export default function AdminLayout({
   children,
 }: {
@@ -13,19 +28,18 @@ export default function AdminLayout({
           Rumbo <span className="text-primary">Admin</span>
         </span>
         <div className="flex items-center gap-1 ml-4">
-          <a
-            href="/admin/tests"
-            className="text-xs px-3 py-1.5 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-          >
-            Tests
-          </a>
+          {rutas.map(
+            (value: { label: string; href: string }, index: number) => (
+              <a
+                key={index}
+                href={value.href}
+                className="text-xs px-3 py-1.5 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+              >
+                {value.label}
+              </a>
+            ),
+          )}
         </div>
-        <a
-          href="/admin/moderation"
-          className="text-xs px-3 py-1.5 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-        >
-          Moderación
-        </a>
         <div className="ml-auto">
           <a
             href="/feed"

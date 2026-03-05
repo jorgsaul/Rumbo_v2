@@ -268,3 +268,48 @@ export const updateBannerService = async (userId: string, buffer: Buffer) => {
     select: { id: true, bannerUrl: true },
   });
 };
+
+export const adminGetUsersService = async (search?: string) => {
+  return prisma.user.findMany({
+    where: search
+      ? {
+          OR: [
+            { username: { contains: search, mode: "insensitive" } },
+            { fullName: { contains: search, mode: "insensitive" } },
+            { email: { contains: search, mode: "insensitive" } },
+          ],
+        }
+      : undefined,
+    select: {
+      id: true,
+      username: true,
+      fullName: true,
+      email: true,
+      role: true,
+      isActive: true,
+      avatarUrl: true,
+      educationLevel: true,
+      createdAt: true,
+      _count: {
+        select: { posts: true, followers: true, following: true },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+};
+
+export const adminUpdateUserService = async (
+  userId: string,
+  data: { role?: "STUDENT" | "AUTHOR" | "ADMIN"; isActive?: boolean },
+) => {
+  return prisma.user.update({
+    where: { id: userId },
+    data,
+    select: {
+      id: true,
+      username: true,
+      role: true,
+      isActive: true,
+    },
+  });
+};

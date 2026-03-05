@@ -1,12 +1,13 @@
 import { post } from "@/lib";
-import { LoginCredentials, RegisterData, Response } from "../types/auth.types";
-import { User } from "../types/auth.types";
+import { LoginCredentials, RegisterData } from "../types/auth.types";
+import { ApiResponse } from "@/types/api.types";
+import { User } from "@/types/user.types";
 
 export const authService = {
   login: async (credentials: LoginCredentials) =>
-    post<Response<User>>("/auth/login", credentials),
+    post<ApiResponse<User>>("/auth/login", credentials),
   signup: async (userData: RegisterData) =>
-    post<Response<User>>("/auth/register", userData),
+    post<ApiResponse<User>>("/auth/register", userData),
   googleLogin: async (idToken: string) =>
-    post<Response<User>>("/auth/google", { idToken }),
+    post<ApiResponse<User>>("/auth/google", { idToken }),
 };

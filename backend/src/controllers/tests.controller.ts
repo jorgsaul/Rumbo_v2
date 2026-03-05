@@ -17,6 +17,7 @@ import {
   getVocalResultByIdService,
   deleteMyVocationalResultService,
   getMyVocationalResultService,
+  uploadTestImageService,
 } from "../services/tests.service";
 
 export const getTests = async (req: AuthRequest, res: Response) => {
@@ -188,6 +189,17 @@ export const adminUpsertQuestions = async (req: AuthRequest, res: Response) => {
       req.body.questions,
     );
     res.json({ ok: true, response: test });
+  } catch (error: any) {
+    res.status(400).json({ ok: false, message: error.message });
+  }
+};
+
+export const uploadTestImage = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.file) throw new Error("No se recibió imagen");
+    const folder = (req.query.folder as "questions" | "options") ?? "questions";
+    const result = await uploadTestImageService(req.file.buffer, folder);
+    res.json({ ok: true, response: result });
   } catch (error: any) {
     res.status(400).json({ ok: false, message: error.message });
   }

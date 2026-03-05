@@ -1,12 +1,4 @@
-export type UserRole = "ADMIN" | "STUDENT" | "AUTHOR";
-
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  role: UserRole;
-  avatarUrl: string;
-}
+import { UserRole } from "@/types/user.types";
 
 export interface RegisterData {
   role: UserRole;
@@ -21,9 +13,3 @@ export interface LoginCredentials {
 }
 
 export type RegisterStep = "Step1" | "Step2" | "Step3" | "Step4";
-
-export interface Response<T> {
-  response: T;
-  message: string;
-  ok: boolean;
-}

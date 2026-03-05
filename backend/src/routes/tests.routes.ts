@@ -16,11 +16,14 @@ import {
   getVocalResultById,
   deleteMyVocationalResult,
   getMyVocationalResult,
+  uploadTestImage,
 } from "../controllers/tests.controller";
 import {
   authMiddleware,
   adminMiddleware,
 } from "../middlewares/auth.middleware";
+
+import { upload } from "../lib/multer";
 
 const router = Router();
 //ADMIN ROUTES
@@ -51,6 +54,13 @@ router.put(
   authMiddleware,
   adminMiddleware,
   adminUpsertQuestions,
+);
+router.post(
+  "/admin/upload-image",
+  authMiddleware,
+  adminMiddleware,
+  upload.single("image"),
+  uploadTestImage,
 );
 
 //PUBLIC ROUTES

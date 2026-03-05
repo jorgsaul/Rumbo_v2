@@ -37,7 +37,7 @@ export default function RegisterStep4() {
       username: formData.username,
       password: formData.password,
     });
-    //router.push("/");
+    router.push("/");
   };
 
   return (
