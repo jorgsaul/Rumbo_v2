@@ -29,8 +29,8 @@ export function ProfileHeader({
   onLogout,
 }: ProfileHeaderProps) {
   return (
-    <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
-      <div className="relative w-full h-32 bg-primary/10">
+    <div className="rounded-xl border border-neutral-200 dark:border-neutral-800">
+      <div className="relative w-full h-32 bg-primary/10 rounded-t-xl overflow-hidden">
         {profile.bannerUrl && (
           <Image
             src={profile.bannerUrl}
@@ -41,9 +41,9 @@ export function ProfileHeader({
         )}
       </div>
 
-      <div className="px-5 pb-5 bg-white dark:bg-black-mode">
-        <div className="flex items-end justify-between -mt-8 mb-3">
-          <div className="w-16 h-16 rounded-full border-4 border-white dark:border-neutral-900 bg-primary/10 flex items-center justify-center overflow-hidden shrink-0">
+      <div className="relative px-5 pb-5 bg-white dark:bg-black-mode rounded-b-xl">
+        <div className="absolute -top-8 left-5 z-10">
+          <div className="relative w-16 h-16 rounded-full border-4 border-white dark:border-neutral-900 bg-primary/10 flex items-center justify-center overflow-hidden shadow-md">
             {profile.avatarUrl ? (
               <Image
                 src={profile.avatarUrl}
@@ -58,32 +58,35 @@ export function ProfileHeader({
               </span>
             )}
           </div>
-
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              leftIcon={<Settings size={15} />}
-              onClick={onEdit}
-            >
-              Editar
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              leftIcon={<LogOut size={15} />}
-              onClick={onLogout}
-            >
-              Salir
-            </Button>
-          </div>
         </div>
 
-        <div className="flex flex-col gap-0.5 mb-3">
-          <h1 className="text-lg font-semibold text-neutral-900 dark:text-white leading-tight">
-            {profile.fullName}
-          </h1>
-          <div className="flex items-center gap-2 flex-wrap">
+        <div className="pt-8">
+          <div className="flex items-end justify-between mb-3">
+            <h1 className="text-lg font-semibold text-neutral-900 dark:text-white leading-tight">
+              {profile.fullName}
+            </h1>
+
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                leftIcon={<Settings size={15} />}
+                onClick={onEdit}
+              >
+                Editar
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                leftIcon={<LogOut size={15} />}
+                onClick={onLogout}
+              >
+                Salir
+              </Button>
+            </div>
+          </div>
+          {/* Resto del contenido igual */}
+          <div className="flex items-center gap-2 flex-wrap mb-3">
             <span className="text-sm text-neutral-400">
               @{profile.username}
             </span>
@@ -97,32 +100,30 @@ export function ProfileHeader({
               </span>
             )}
           </div>
-        </div>
-
-        {profile.bio && (
-          <p className="text-sm text-neutral-600 dark:text-neutral-300 mb-3">
-            {profile.bio}
-          </p>
-        )}
-
-        <div className="flex gap-5">
-          <div className="flex flex-col items-center">
-            <span className="text-base font-semibold text-neutral-900 dark:text-white">
-              {profile._count.posts}
-            </span>
-            <span className="text-xs text-neutral-400">Publicaciones</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="text-base font-semibold text-neutral-900 dark:text-white">
-              {profile._count.followers}
-            </span>
-            <span className="text-xs text-neutral-400">Seguidores</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="text-base font-semibold text-neutral-900 dark:text-white">
-              {profile._count.following}
-            </span>
-            <span className="text-xs text-neutral-400">Siguiendo</span>
+          {profile.bio && (
+            <p className="text-sm text-neutral-600 dark:text-neutral-300 mb-3">
+              {profile.bio}
+            </p>
+          )}
+          <div className="flex gap-5">
+            <div className="flex flex-col items-center">
+              <span className="text-base font-semibold text-neutral-900 dark:text-white">
+                {profile._count.posts}
+              </span>
+              <span className="text-xs text-neutral-400">Publicaciones</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-base font-semibold text-neutral-900 dark:text-white">
+                {profile._count.followers}
+              </span>
+              <span className="text-xs text-neutral-400">Seguidores</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-base font-semibold text-neutral-900 dark:text-white">
+                {profile._count.following}
+              </span>
+              <span className="text-xs text-neutral-400">Siguiendo</span>
+            </div>
           </div>
         </div>
       </div>

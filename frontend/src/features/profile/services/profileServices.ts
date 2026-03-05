@@ -50,4 +50,26 @@ export const profileService = {
 
   searchUsers: (q: string): Promise<Response<any[]>> =>
     get<Response<any[]>>(`/users/search?q=${encodeURIComponent(q)}`),
+
+  updateAvatar: (
+    file: File,
+  ): Promise<Response<{ id: string; avatarUrl: string }>> => {
+    const formData = new FormData();
+    formData.append("avatar", file);
+    return patch<Response<{ id: string; avatarUrl: string }>>(
+      "/users/avatar",
+      formData,
+    );
+  },
+
+  updateBanner: (
+    file: File,
+  ): Promise<Response<{ id: string; bannerUrl: string }>> => {
+    const formData = new FormData();
+    formData.append("banner", file);
+    return patch<Response<{ id: string; bannerUrl: string }>>(
+      "/users/banner",
+      formData,
+    );
+  },
 };

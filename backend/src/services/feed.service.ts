@@ -34,6 +34,10 @@ export const getPostsService = async (
         where: { userId },
         select: { userId: true },
       },
+      reports: {
+        where: { reporterId: userId },
+        select: { reporterId: true },
+      },
       favorites: {
         where: { userId },
         select: { userId: true },
@@ -52,6 +56,7 @@ export const getPostsService = async (
     commentsCount: post._count.comments,
     isLiked: post.likes.length > 0,
     isSaved: post.favorites.length > 0,
+    isReported: post.reports.length > 0,
     createdAt: post.createdAt,
     moderation: post.moderation,
   }));
@@ -63,6 +68,8 @@ export const createPostService = async (
     title?: string;
     content: string;
     tags?: string[];
+    mediaUrl?: string;
+    mediaPublicId: string;
   },
 ) => {
   if (!data.content?.trim())
@@ -73,6 +80,7 @@ export const createPostService = async (
       authorId,
       title: data.title?.trim() || null,
       content: data.content.trim(),
+      mediaUrl: data.mediaUrl ?? null,
       moderation: "APPROVED",
       tags: {
         create: data.tags?.map((tagId) => ({ tagId })) ?? [],
@@ -108,6 +116,7 @@ export const createPostService = async (
     commentsCount: post._count.comments,
     isLiked: false,
     isSaved: false,
+    isReported: false,
     createdAt: post.createdAt,
     moderation: post.moderation,
   };
@@ -115,10 +124,13 @@ export const createPostService = async (
 
 export const deletePostService = async (userId: string, postId: string) => {
   const post = await prisma.post.findUnique({ where: { id: postId } });
-
   if (!post) throw new Error("Publicación no encontrada");
-  if (post.authorId !== userId)
-    throw new Error("No tienes permiso para eliminar esta publicación");
+  if (post.authorId !== userId) throw new Error("No tienes permiso");
+
+  if (post.mediaPublicId) {
+    const { deleteImageService } = await import("./upload.service");
+    await deleteImageService(post.mediaPublicId);
+  }
 
   await prisma.post.delete({ where: { id: postId } });
 };
@@ -155,16 +167,15 @@ export const savePostService = async (userId: string, postId: string) => {
   return { isSaved: true };
 };
 
-export const reportPostService = async (
-  userId: string,
-  postId: string,
-  reason?: string,
-) => {
+export const reportPostService = async (userId: string, postId: string) => {
   const existing = await prisma.report.findUnique({
     where: { reporterId_postId: { reporterId: userId, postId } },
   });
-
-  if (existing) throw new Error("Ya reportaste este post");
+  if (existing) {
+    const err = new Error("Ya reportaste este post");
+    (err as any).status = 409;
+    throw err;
+  }
 
   await prisma.report.create({
     data: { reporterId: userId, postId },
@@ -177,7 +188,10 @@ export const reportPostService = async (
   if (reportCount >= 3) {
     await prisma.post.update({
       where: { id: postId },
-      data: { isHidden: true },
+      data: {
+        isHidden: true,
+        moderation: "FLAGGED",
+      },
     });
   }
 };
@@ -239,4 +253,72 @@ export const searchPostsService = async (userId: string, q: string) => {
     createdAt: post.createdAt,
     moderation: post.moderation,
   }));
+};
+
+export const uploadPostImageService = async (buffer: Buffer) => {
+  const { uploadImageService } = await import("./upload.service");
+  return uploadImageService(buffer, "rumbo/posts");
+};
+
+//ADMIN
+
+export const adminGetReportsService = async () => {
+  return prisma.post.findMany({
+    where: {
+      isHidden: true,
+      moderation: "FLAGGED",
+    },
+    orderBy: { updatedAt: "desc" },
+    include: {
+      author: {
+        select: { id: true, username: true, avatarUrl: true },
+      },
+      reports: {
+        where: { status: "PENDING" },
+        include: {
+          reporter: {
+            select: { id: true, username: true },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      },
+      _count: { select: { reports: true } },
+    },
+  });
+};
+
+export const adminModeratePostService = async (
+  postId: string,
+  action: "APPROVE" | "REJECT",
+) => {
+  if (action === "APPROVE") {
+    // Restaurar post y limpiar reportes
+    await prisma.post.update({
+      where: { id: postId },
+      data: {
+        isHidden: false,
+        moderation: "APPROVED",
+      },
+    });
+    await prisma.report.updateMany({
+      where: { postId },
+      data: { status: "RESOLVED" },
+    });
+  } else {
+    // Borrar el post (cascade borra reportes, likes, etc)
+    await prisma.post.delete({ where: { id: postId } });
+  }
+
+  return { ok: true };
+};
+
+export const adminGetModerationStatsService = async () => {
+  const [pending, approved, rejected, flagged, hidden] = await Promise.all([
+    prisma.report.count({ where: { status: "PENDING" } }),
+    prisma.post.count({ where: { moderation: "APPROVED" } }),
+    prisma.post.count({ where: { moderation: "REJECTED" } }),
+    prisma.post.count({ where: { moderation: "FLAGGED" } }),
+    prisma.post.count({ where: { isHidden: true } }),
+  ]);
+  return { pending, approved, rejected, flagged, hidden };
 };

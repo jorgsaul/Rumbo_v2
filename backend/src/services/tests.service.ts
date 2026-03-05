@@ -168,6 +168,25 @@ export const getVocalResultByIdService = async (
   return result;
 };
 
+export const getMyVocationalResultService = async (
+  userId: string,
+  testId: string,
+) => {
+  return prisma.vocalTestResult.findFirst({
+    where: { userId, testId },
+    orderBy: { createdAt: "desc" },
+  });
+};
+
+export const deleteMyVocationalResultService = async (
+  userId: string,
+  testId: string,
+) => {
+  await prisma.vocalTestResult.deleteMany({
+    where: { userId, testId },
+  });
+};
+
 //ADMIN
 
 export const adminGetTestsService = async () => {
@@ -203,6 +222,19 @@ export const adminCreateTestService = async (data: {
       estimatedMinutes: data.estimatedMinutes ?? 15,
       status: "DRAFT",
     },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      type: true,
+      status: true,
+      estimatedMinutes: true,
+      createdAt: true,
+      updatedAt: true,
+      _count: {
+        select: { questions: true, vocalResults: true, knowledgeResults: true },
+      },
+    },
   });
 };
 
@@ -235,6 +267,8 @@ export const adminUpdateTestService = async (
 };
 
 export const adminDeleteTestService = async (testId: string) => {
+  await prisma.vocalTestResult.deleteMany({ where: { testId } });
+  await prisma.knowledgeTestResult.deleteMany({ where: { testId } });
   return prisma.test.delete({ where: { id: testId } });
 };
 

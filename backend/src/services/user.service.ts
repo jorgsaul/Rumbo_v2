@@ -1,5 +1,6 @@
 import prisma from "../lib/prisma";
 import { getPostsService } from "./feed.service";
+import { uploadImageService, deleteImageService } from "./upload.service";
 
 export const getMeService = async (userId: string) => {
   const user = await prisma.user.findUnique({
@@ -226,5 +227,44 @@ export const searchUsersService = async (q: string) => {
       educationLevel: true,
     },
     take: 8,
+  });
+};
+
+export const updateAvatarService = async (userId: string, buffer: Buffer) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { avatarPublicId: true },
+  });
+
+  // Borrar avatar anterior si existe
+  if (user?.avatarPublicId) {
+    await deleteImageService(user.avatarPublicId);
+  }
+
+  const { url, publicId } = await uploadImageService(buffer, "rumbo/avatars");
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: { avatarUrl: url, avatarPublicId: publicId },
+    select: { id: true, avatarUrl: true },
+  });
+};
+
+export const updateBannerService = async (userId: string, buffer: Buffer) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { bannerPublicId: true },
+  });
+
+  if (user?.bannerPublicId) {
+    await deleteImageService(user.bannerPublicId);
+  }
+
+  const { url, publicId } = await uploadImageService(buffer, "rumbo/banners");
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: { bannerUrl: url, bannerPublicId: publicId },
+    select: { id: true, bannerUrl: true },
   });
 };

@@ -8,10 +8,23 @@ export const feedService = {
     return get<Response<Post[]>>(url);
   },
 
+  uploadImage: async (
+    file: File,
+  ): Promise<Response<{ url: string; publicId: string }>> => {
+    const formData = new FormData();
+    formData.append("image", file);
+    return post<Response<{ url: string; publicId: string }>>(
+      "/feed/upload-image",
+      formData,
+    );
+  },
+
   createPost: (data: {
     title?: string;
     content: string;
     tags: string[];
+    mediaUrl?: string;
+    mediaPublicId?: string;
   }): Promise<Response<Post>> => post<Response<Post>>("/feed", data),
 
   deletePost: (postId: string): Promise<Response<null>> =>

@@ -134,7 +134,7 @@ export default function ResultsScreen({
             onClick={onRestart}
             className="border border-neutral-200 dark:border-neutral-700"
           >
-            Realizar otro test
+            Rehacer test
           </Button>
           {onViewProfile && (
             <Button

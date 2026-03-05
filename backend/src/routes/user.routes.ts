@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { upload } from "../lib/multer";
 import {
   getMe,
   updateProfile,
@@ -9,10 +10,16 @@ import {
   getUserByUsername,
   followUser,
   searchUsers,
+  updateAvatar,
+  updateBanner,
 } from "../controllers/user.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
+
+//Profile
+router.patch("/avatar", authMiddleware, upload.single("avatar"), updateAvatar);
+router.patch("/banner", authMiddleware, upload.single("banner"), updateBanner);
 
 router.get("/me", authMiddleware, getMe);
 router.patch("/me", authMiddleware, updateProfile);

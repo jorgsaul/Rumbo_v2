@@ -93,6 +93,7 @@ model Post {
   title      String?
   content    String
   mediaUrl   String?
+  mediaPublicId String?
   moderation ModerationStatus @default(PENDING)
   isHidden   Boolean          @default(false)
   createdAt  DateTime         @default(now())

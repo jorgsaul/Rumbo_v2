@@ -9,6 +9,10 @@ import {
   getTagsService,
   deletePostService,
   searchPostsService,
+  uploadPostImageService,
+  adminGetModerationStatsService,
+  adminGetReportsService,
+  adminModeratePostService,
 } from "../services/feed.service";
 
 export const getPosts = async (req: AuthRequest, res: Response) => {
@@ -65,11 +69,11 @@ export const savePost = async (req: AuthRequest, res: Response) => {
 
 export const reportPost = async (req: AuthRequest, res: Response) => {
   try {
-    const { reason } = req.body;
-    await reportPostService(req.userId!, req.params.postId as string, reason);
+    await reportPostService(req.userId!, req.params.postId as string);
     res.json({ ok: true, message: "Reporte enviado" });
   } catch (error: any) {
-    res.status(400).json({ ok: false, message: error.message });
+    const status = error.status ?? 400;
+    res.status(status).json({ ok: false, message: error.message });
   }
 };
 
@@ -87,6 +91,51 @@ export const searchPosts = async (req: AuthRequest, res: Response) => {
     const q = typeof req.query.q === "string" ? req.query.q : "";
     const posts = await searchPostsService(req.userId!, q);
     res.json({ ok: true, response: posts });
+  } catch (error: any) {
+    res.status(500).json({ ok: false, message: error.message });
+  }
+};
+
+export const uploadPostImage = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.file) throw new Error("No se recibió imagen");
+    const result = await uploadPostImageService(req.file.buffer);
+    res.json({ ok: true, response: result });
+  } catch (error: any) {
+    res.status(400).json({ ok: false, message: error.message });
+  }
+};
+
+//ADMIN
+export const adminGetReports = async (req: AuthRequest, res: Response) => {
+  try {
+    const reports = await adminGetReportsService();
+    res.json({ ok: true, response: reports });
+  } catch (error: any) {
+    res.status(500).json({ ok: false, message: error.message });
+  }
+};
+
+export const adminModeratePost = async (req: AuthRequest, res: Response) => {
+  try {
+    const { action } = req.body;
+    const result = await adminModeratePostService(
+      req.params.postId as string,
+      action,
+    );
+    res.json({ ok: true, response: result });
+  } catch (error: any) {
+    res.status(400).json({ ok: false, message: error.message });
+  }
+};
+
+export const adminGetModerationStats = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  try {
+    const stats = await adminGetModerationStatsService();
+    res.json({ ok: true, response: stats });
   } catch (error: any) {
     res.status(500).json({ ok: false, message: error.message });
   }

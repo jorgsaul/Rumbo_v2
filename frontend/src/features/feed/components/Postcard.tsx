@@ -71,10 +71,10 @@ export function PostCard({
         {post.content}
       </p>
 
-      {post.image && (
+      {post.mediaUrl && (
         <div className="relative w-full aspect-video rounded-lg overflow-hidden">
           <Image
-            src={post.image}
+            src={post.mediaUrl}
             alt="imagen del post"
             fill
             className="object-cover"

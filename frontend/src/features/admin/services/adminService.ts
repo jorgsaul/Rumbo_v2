@@ -55,6 +55,49 @@ export interface AdminQuestion {
 export interface AdminTestFull extends AdminTestSummary {
   questions: AdminQuestion[];
 }
+
+export interface AdminReport {
+  id: string;
+  createdAt: string;
+  status: string;
+  reporter: { id: string; username: string; avatarUrl?: string };
+  post: {
+    id: string;
+    title?: string;
+    content: string;
+    mediaUrl?: string;
+    moderation: string;
+    isHidden: boolean;
+    author: { id: string; username: string; avatarUrl?: string };
+    _count: { reports: number };
+  };
+}
+
+export interface ModerationStats {
+  pending: number;
+  approved: number;
+  rejected: number;
+  flagged: number;
+  hidden: number;
+}
+
+export interface AdminFlaggedPost {
+  id: string;
+  title?: string | null;
+  content: string;
+  mediaUrl?: string | null;
+  moderation: string;
+  isHidden: boolean;
+  createdAt: string;
+  author: { id: string; username: string; avatarUrl?: string };
+  reports: {
+    id: string;
+    createdAt: string;
+    reporter: { id: string; username: string };
+  }[];
+  _count: { reports: number };
+}
+
 export const adminService = {
   getStats: async (): Promise<AdminStats> => {
     const { data } =
@@ -106,5 +149,23 @@ export const adminService = {
       { questions },
     );
     return data.response;
+  },
+  getModerationStats: async (): Promise<ModerationStats> => {
+    const { data } = await api.get<ApiResponse<ModerationStats>>(
+      "/feed/admin/moderation/stats",
+    );
+    return data.response;
+  },
+  getReports: async (): Promise<AdminFlaggedPost[]> => {
+    const { data } = await api.get<ApiResponse<AdminFlaggedPost[]>>(
+      "/feed/admin/reports",
+    );
+    return data.response;
+  },
+  moderatePost: async (
+    postId: string,
+    action: "APPROVE" | "REJECT",
+  ): Promise<void> => {
+    await api.patch(`/feed/admin/posts/${postId}/moderate`, { action });
   },
 };

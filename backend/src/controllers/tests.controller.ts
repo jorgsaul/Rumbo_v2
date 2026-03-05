@@ -15,6 +15,8 @@ import {
   adminGetTestByIdService,
   adminUpsertQuestionsService,
   getVocalResultByIdService,
+  deleteMyVocationalResultService,
+  getMyVocationalResultService,
 } from "../services/tests.service";
 
 export const getTests = async (req: AuthRequest, res: Response) => {
@@ -88,6 +90,36 @@ export const getVocalResultById = async (req: AuthRequest, res: Response) => {
   } catch (error: any) {
     const status = error.message === "No autorizado" ? 403 : 404;
     res.status(status).json({ ok: false, message: error.message });
+  }
+};
+
+export const getMyVocationalResult = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  try {
+    const result = await getMyVocationalResultService(
+      req.userId!,
+      req.params.testId as string,
+    );
+    res.json({ ok: true, response: result });
+  } catch (error: any) {
+    res.status(500).json({ ok: false, message: error.message });
+  }
+};
+
+export const deleteMyVocationalResult = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  try {
+    await deleteMyVocationalResultService(
+      req.userId!,
+      req.params.testId as string,
+    );
+    res.json({ ok: true, response: null });
+  } catch (error: any) {
+    res.status(500).json({ ok: false, message: error.message });
   }
 };
 

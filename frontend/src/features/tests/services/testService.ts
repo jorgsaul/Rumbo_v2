@@ -64,3 +64,18 @@ export const getVocalResultById = async (
   );
   return data.response;
 };
+
+export const getMyVocationalResult = async (
+  testId: string,
+): Promise<VocalTestResult | null> => {
+  const { data } = await api.get<ApiResponse<VocalTestResult | null>>(
+    `/tests/${testId}/my-result`,
+  );
+  return data.response;
+};
+
+export const deleteMyVocationalResult = async (
+  testId: string,
+): Promise<void> => {
+  await api.delete(`/tests/${testId}/my-result`);
+};

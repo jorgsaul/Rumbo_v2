@@ -10,6 +10,8 @@ import {
   getUserByUsernameService,
   followUserService,
   searchUsersService,
+  updateAvatarService,
+  updateBannerService,
 } from "../services/user.service";
 
 export const getMe = async (req: AuthRequest, res: Response) => {
@@ -113,5 +115,25 @@ export const searchUsers = async (req: AuthRequest, res: Response) => {
     res.json({ ok: true, response: users });
   } catch (error: any) {
     res.status(500).json({ ok: false, message: error.message });
+  }
+};
+
+export const updateAvatar = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.file) throw new Error("No se recibió imagen");
+    const result = await updateAvatarService(req.userId!, req.file.buffer);
+    res.json({ ok: true, response: result });
+  } catch (error: any) {
+    res.status(400).json({ ok: false, message: error.message });
+  }
+};
+
+export const updateBanner = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.file) throw new Error("No se recibió imagen");
+    const result = await updateBannerService(req.userId!, req.file.buffer);
+    res.json({ ok: true, response: result });
+  } catch (error: any) {
+    res.status(400).json({ ok: false, message: error.message });
   }
 };

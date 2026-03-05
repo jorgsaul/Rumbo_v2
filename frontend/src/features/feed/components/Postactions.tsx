@@ -41,7 +41,8 @@ export function PostActions({
         icon={Flag}
         label="Reportar"
         onClick={onReport}
-        activeClassName="text-warning-700"
+        active={post.isReported}
+        activeClassName="text-danger fill-danger"
       />
 
       <IconButton

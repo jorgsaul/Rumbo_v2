@@ -60,7 +60,6 @@ export function SearchModal({ onClose }: SearchModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-neutral-950">
-      {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
         <Search size={18} className="text-neutral-400 shrink-0" />
         <input
@@ -79,7 +78,6 @@ export function SearchModal({ onClose }: SearchModalProps) {
         </button>
       </div>
 
-      {/* Resultados */}
       <div className="flex-1 overflow-y-auto">
         {isLoading && (
           <p className="text-sm text-neutral-400 text-center py-6">

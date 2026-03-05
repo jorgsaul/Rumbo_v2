@@ -7,11 +7,12 @@ export interface Post {
   author: User;
   title?: string;
   content: string;
-  image?: string;
+  mediaUrl?: string;
   tags: string[];
   likes: number;
   isLiked: boolean;
   isSaved: boolean;
+  isReported: boolean;
   commentsCount: number;
   createdAt: string;
   moderation?: ModerationStatus;

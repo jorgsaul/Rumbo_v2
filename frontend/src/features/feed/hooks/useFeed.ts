@@ -3,12 +3,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { feedService } from "../services/feedService";
 import type { Post } from "../types/feed.types";
+import { useToast } from "@/context/ToastContext";
 
 export function useFeed(initialTag?: string) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [activeTag, setActiveTag] = useState<string | undefined>(initialTag);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { addToast } = useToast();
 
   const fetchPosts = useCallback(async (tag?: string) => {
     setIsLoading(true);
@@ -78,11 +80,31 @@ export function useFeed(initialTag?: string) {
     }
   };
 
-  const handleReport = async (postId: string, reason?: string) => {
+  const handleReport = async (postId: string) => {
     try {
-      await feedService.reportPost(postId, reason);
-    } catch {
-      // Toast en el futuro
+      await feedService.reportPost(postId);
+      setPosts((prev) =>
+        prev.map((p) => (p.id === postId ? { ...p, isReported: true } : p)),
+      );
+      addToast({
+        title: "Reporte enviado",
+        description: "Gracias por ayudar a mantener la comunidad segura",
+        category: "success",
+      });
+    } catch (error: any) {
+      if (error.response?.status === 409) {
+        addToast({
+          title: "Ya reportaste esta publicación",
+          description: "Solo puedes reportar una publicación una vez",
+          category: "warning",
+        });
+      } else {
+        addToast({
+          title: "Error al reportar",
+          description: "Intenta de nuevo más tarde",
+          category: "danger",
+        });
+      }
     }
   };
 

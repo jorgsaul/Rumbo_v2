@@ -115,9 +115,7 @@ export default function UserProfileView({ username }: UserProfileViewProps) {
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-4">
-      {/* Header */}
       <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
-        {/* Banner */}
         <div className="relative w-full h-32 bg-primary/10">
           {profile.bannerUrl && (
             <Image
@@ -131,7 +129,7 @@ export default function UserProfileView({ username }: UserProfileViewProps) {
 
         <div className="px-5 pb-5 bg-white dark:bg-black-mode">
           <div className="flex items-end justify-between -mt-8 mb-3">
-            <div className="w-16 h-16 rounded-full border-4 border-white dark:border-neutral-900 bg-primary/10 flex items-center justify-center overflow-hidden shrink-0">
+            <div className="z-10 w-16 h-16 rounded-full border-4 border-white dark:border-neutral-900 bg-primary/10 flex items-center justify-center overflow-hidden shrink-0">
               {profile.avatarUrl ? (
                 <Image
                   src={profile.avatarUrl}

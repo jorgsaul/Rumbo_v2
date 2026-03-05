@@ -45,7 +45,8 @@ export default function TestsPage() {
           Tests
         </h1>
         <p className="text-sm text-neutral-400">
-          Descubre tu perfil vocacional y pon a prueba tus conocimientos
+          Descubre tu perfil vocacional y pon a prueba tus conocimientos. Puedes
+          revisar tus resultados en tu perfil.
         </p>
       </div>
 

@@ -44,7 +44,7 @@ const adminItems: NavItem[] = [
     icon: ShieldCheck,
     children: [
       { label: "Tests", href: "/admin/tests" },
-      { label: "Reportes", href: "/admin/reports" },
+      { label: "Reportes", href: "/admin/moderation" },
       { label: "Usuarios", href: "/admin/users" },
     ],
   },

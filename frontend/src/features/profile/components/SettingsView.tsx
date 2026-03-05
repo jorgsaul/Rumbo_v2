@@ -8,6 +8,9 @@ import { useTheme } from "@/hooks/useTheme";
 import { Button, Input } from "@/components/ui";
 import Card from "@/components/ui/Card";
 import { ArrowLeft, Moon, Sun, Lock, Unlock } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { cn } from "@/lib";
 
 export default function SettingsView() {
   const { profile, isLoading, error } = useProfile();
@@ -20,6 +23,40 @@ export default function SettingsView() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [bannerUploading, setBannerUploading] = useState(false);
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    try {
+      const res = await profileService.updateAvatar(file);
+      if (res.ok) {
+        profile!.avatarUrl = res.response.avatarUrl;
+      }
+    } catch {
+      setSaveError("Error al subir avatar");
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
+  const handleBannerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBannerUploading(true);
+    try {
+      const res = await profileService.updateBanner(file);
+      if (res.ok) {
+        profile!.bannerUrl = res.response.bannerUrl;
+      }
+    } catch {
+      setSaveError("Error al subir banner");
+    } finally {
+      setBannerUploading(false);
+    }
+  };
 
   useEffect(() => {
     if (profile) {
@@ -73,6 +110,100 @@ export default function SettingsView() {
           Configuración
         </h1>
       </div>
+
+      <Card
+        border="light"
+        shadow="none"
+        rounded="xl"
+        padding="md"
+        className="flex flex-col gap-4"
+      >
+        <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+          Fotos de perfil
+        </h2>
+
+        {/* Banner */}
+        <div className="relative">
+          <div className="w-full h-24 rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+            {profile.bannerUrl ? (
+              <Image
+                src={profile.bannerUrl}
+                alt="Banner"
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <p className="text-xs text-neutral-400">Sin banner</p>
+              </div>
+            )}
+          </div>
+          <label
+            className={cn(
+              "absolute bottom-2 right-2 p-1.5 rounded-lg bg-black/50 text-white cursor-pointer hover:bg-black/70 transition-colors",
+              bannerUploading && "opacity-50 pointer-events-none",
+            )}
+          >
+            {bannerUploading ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <Camera size={14} />
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleBannerChange}
+            />
+          </label>
+        </div>
+
+        {/* Avatar */}
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <div className="w-16 h-16 rounded-full overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+              {profile.avatarUrl ? (
+                <Image
+                  src={profile.avatarUrl}
+                  alt="Avatar"
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <p className="text-lg font-bold text-neutral-400">
+                    {profile.fullName[0]?.toUpperCase()}
+                  </p>
+                </div>
+              )}
+            </div>
+            <label
+              className={cn(
+                "absolute -bottom-1 -right-1 p-1 rounded-full bg-primary text-white cursor-pointer hover:bg-primary/80 transition-colors",
+                avatarUploading && "opacity-50 pointer-events-none",
+              )}
+            >
+              {avatarUploading ? (
+                <Loader2 size={11} className="animate-spin" />
+              ) : (
+                <Camera size={11} />
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarChange}
+              />
+            </label>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
+              {profile.fullName}
+            </p>
+            <p className="text-xs text-neutral-400">@{profile.username}</p>
+          </div>
+        </div>
+      </Card>
 
       <Card
         border="light"

@@ -5,6 +5,7 @@ export interface User {
   username: string;
   email: string;
   role: UserRole;
+  avatarUrl: string;
 }
 
 export interface RegisterData {

@@ -35,7 +35,7 @@ export default function TestVocacional({ testId }: TestVocacionalProps) {
     goToQuestion,
     startTest,
     restartTest,
-    resetAll,
+    retakeTest,
   } = useVocationalTest();
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export default function TestVocacional({ testId }: TestVocacionalProps) {
     return (
       <ResultsScreen
         result={result}
-        onRestart={restartTest}
+        onRestart={retakeTest}
         onViewProfile={() => router.push("/profile?tab=tests")}
       />
     );

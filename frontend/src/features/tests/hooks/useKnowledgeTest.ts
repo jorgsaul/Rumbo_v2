@@ -80,11 +80,12 @@ export const useKnowledgeTest = () => {
     setIsSubmitting(true);
 
     try {
+      const { progress: currentProgress } = useKnowledgeTestStore.getState();
       const questions = test.questions;
       let correctAnswers = 0;
 
       questions.forEach((question, index) => {
-        const selectedLabel = progress.answers[index];
+        const selectedLabel = currentProgress.answers[index];
         const correctOption = question.options.find((opt) => opt.isCorrect);
         if (correctOption && selectedLabel === correctOption.label) {
           correctAnswers++;
@@ -108,7 +109,7 @@ export const useKnowledgeTest = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [test, progress.answers, totalQuestions, setIsSubmitting, setResult]);
+  }, [test, totalQuestions, setIsSubmitting, setResult]);
 
   const restartTest = useCallback(() => {
     resetProgress();

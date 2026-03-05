@@ -2,6 +2,7 @@ import { Tag } from "@/components/ui";
 import type { Post } from "../types/feed.types";
 import { formatDate } from "@/utils/FormatDate";
 import Link from "next/link";
+import Image from "next/image";
 
 const TAG_VARIANTS: Record<
   string,
@@ -23,8 +24,20 @@ export function PostHeader({ post }: PostHeaderProps) {
   return (
     <div className="flex items-start justify-between gap-3">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-          <span className="text-xs font-semibold text-primary">{initials}</span>
+        <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0 overflow-hidden">
+          {post.author.avatarUrl ? (
+            <Image
+              src={post.author.avatarUrl}
+              alt={post.author.username}
+              width={36}
+              height={36}
+              className="object-cover w-full h-full"
+            />
+          ) : (
+            <span className="text-xs font-semibold text-primary">
+              {initials}
+            </span>
+          )}
         </div>
 
         <div className="flex flex-col">
@@ -35,7 +48,7 @@ export function PostHeader({ post }: PostHeaderProps) {
           </span>
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-neutral-400 capitalize">
-              {post.author.role}
+              {post.author.role === "STUDENT" ? "Estudiante" : "Autor"}
             </span>
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
             <span className="text-xs text-neutral-400">

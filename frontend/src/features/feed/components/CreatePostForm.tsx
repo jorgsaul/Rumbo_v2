@@ -6,7 +6,9 @@ import type { Post } from "../types/feed.types";
 import { Button } from "@/components/ui";
 import { Tag } from "@/components/ui";
 import Card from "@/components/ui/Card";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, ImagePlus, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { cn } from "@/lib";
 
 const TAG_VARIANTS: Record<
   string,
@@ -39,6 +41,37 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [uploadedMedia, setUploadedMedia] = useState<{
+    url: string;
+    publicId: string;
+  } | null>(null);
+
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setImageUploading(true);
+    try {
+      const res = await feedService.uploadImage(file);
+      if (res.ok) setUploadedMedia(res.response);
+    } catch {
+      setError("Error al subir imagen");
+      setImagePreview(null);
+      setImageFile(null);
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    setUploadedMedia(null);
+  };
 
   useEffect(() => {
     feedService.getTags().then((res) => {
@@ -77,12 +110,17 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
         title: title.trim() || undefined,
         content,
         tags: selectedTags.map((t) => t.id),
+        mediaUrl: uploadedMedia?.url,
+        mediaPublicId: uploadedMedia?.publicId,
       });
       if (res.ok) {
         onPostCreated(res.response);
         setContent("");
         setTitle("");
         setSelectedTags([]);
+        setImagePreview(null);
+        setImageFile(null);
+        setUploadedMedia(null);
       } else {
         setError(res.message);
       }
@@ -125,6 +163,60 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
         rows={3}
         className="w-full text-sm bg-transparent border-none outline-none resize-none text-neutral-700 dark:text-neutral-300 placeholder:text-neutral-400"
       />
+
+      {/* Preview de imagen */}
+      {imagePreview && (
+        <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+          <Image
+            src={imagePreview}
+            alt="Preview"
+            fill
+            className="object-cover"
+          />
+          {imageUploading && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <Loader2 size={20} className="animate-spin text-white" />
+            </div>
+          )}
+          {!imageUploading && (
+            <button
+              onClick={removeImage}
+              className="absolute top-2 right-2 p-1 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Botón agregar imagen — en la fila de acciones */}
+      <div className="flex items-center justify-between">
+        <label
+          className={cn(
+            "flex items-center gap-1.5 text-xs text-neutral-400 hover:text-primary transition-colors cursor-pointer px-2 py-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800",
+            imagePreview && "opacity-50 pointer-events-none",
+          )}
+        >
+          <ImagePlus size={15} />
+          Imagen
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageSelect}
+          />
+        </label>
+
+        {/* mover aquí el botón Publicar */}
+        <Button
+          size="sm"
+          onClick={handleSubmit}
+          loading={isLoading}
+          disabled={!content.trim() || imageUploading}
+        >
+          Publicar
+        </Button>
+      </div>
 
       <div className="flex items-center gap-2 flex-wrap">
         {selectedTags.map((tag) => (
@@ -197,17 +289,6 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
       </div>
 
       {error && <p className="text-xs text-danger">{error}</p>}
-
-      <div className="flex justify-end">
-        <Button
-          size="sm"
-          onClick={handleSubmit}
-          loading={isLoading}
-          disabled={!content.trim()}
-        >
-          Publicar
-        </Button>
-      </div>
     </Card>
   );
 }

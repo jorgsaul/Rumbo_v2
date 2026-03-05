@@ -20,6 +20,12 @@ export default function AdminLayout({
             Tests
           </a>
         </div>
+        <a
+          href="/admin/moderation"
+          className="text-xs px-3 py-1.5 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+        >
+          Moderación
+        </a>
         <div className="ml-auto">
           <a
             href="/feed"

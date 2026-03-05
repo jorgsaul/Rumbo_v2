@@ -4,6 +4,8 @@ import { useState } from "react";
 import { cn } from "@/lib/utils/cn";
 import Header from "@/components/layouts/Header";
 import SideBar from "@/components/layouts/SideBar";
+import AvisoToast from "@/components/shared/AvisoToast";
+import { useToast } from "@/context/ToastContext";
 
 export default function MainLayout({
   children,
@@ -11,6 +13,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { toast, removeToast } = useToast();
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
@@ -40,6 +43,16 @@ export default function MainLayout({
 
         <main className="flex-1 p-6 min-w-0">{children}</main>
       </div>
+      {toast && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <AvisoToast
+            title={toast.title}
+            description={toast.description}
+            category={toast.category}
+            onClose={() => removeToast(toast.id)}
+          />
+        </div>
+      )}
     </div>
   );
 }

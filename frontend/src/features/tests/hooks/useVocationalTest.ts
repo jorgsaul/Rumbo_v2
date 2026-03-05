@@ -1,12 +1,19 @@
 import { useCallback } from "react";
+import { useAuthStore } from "@/features/auth/hooks/useAuthStore";
 import { useRouter } from "next/navigation";
 import { useVocationalTestStore } from "@/features/tests/stores/useVocationalTestStore";
-import { getTestById, submitVocationalTest } from "../services/testService";
+import {
+  getTestById,
+  submitVocationalTest,
+  getMyVocationalResult,
+  deleteMyVocationalResult,
+} from "../services/testService";
 import { calcularIkigai } from "@/features/tests/helpers/ikigaiCalculator";
 import type { Question } from "@/features/tests/types/tests.types";
 
 export const useVocationalTest = () => {
   const router = useRouter();
+  const { user } = useAuthStore();
   const {
     test,
     progress,
@@ -23,22 +30,42 @@ export const useVocationalTest = () => {
     setShowWelcome,
     resetProgress,
     resetAll,
+    setUserId,
   } = useVocationalTestStore();
 
   const loadTest = useCallback(
     async (testId: string) => {
       setIsLoading(true);
+      if (user?.id) setUserId(user.id);
       try {
-        const data = await getTestById(testId);
+        const [data, existingResult] = await Promise.all([
+          getTestById(testId),
+          getMyVocationalResult(testId),
+        ]);
         setTest(data);
+        if (existingResult) {
+          setResult(existingResult);
+          setShowWelcome(false);
+        }
       } catch (error) {
         console.error("Error cargando test vocacional:", error);
       } finally {
         setIsLoading(false);
       }
     },
-    [setTest, setIsLoading],
+    [setTest, setIsLoading, setUserId, setResult, setShowWelcome, user?.id],
   );
+
+  const retakeTest = useCallback(async () => {
+    if (!test) return;
+    try {
+      await deleteMyVocationalResult(test.id);
+      resetProgress();
+      setShowWelcome(true);
+    } catch (error) {
+      console.error("Error al rehacer test:", error);
+    }
+  }, [test, resetProgress, setShowWelcome]);
 
   const currentQuestion: Question | null =
     test?.questions[progress.currentQuestionIndex] ?? null;
@@ -143,7 +170,9 @@ export const useVocationalTest = () => {
     prevQuestion,
     goToQuestion,
     startTest,
+    setUserId,
     restartTest,
     resetAll,
+    retakeTest,
   };
 };
