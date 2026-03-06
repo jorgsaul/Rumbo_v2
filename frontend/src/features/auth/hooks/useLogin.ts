@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "./useAuthStore";
 import { authService } from "../services/authServices";
 import { LoginCredentials } from "../types/auth.types";
+import Cookies from "js-cookie";
 
 export default function useLogin() {
   const { setUser } = useAuthStore();
@@ -17,6 +18,11 @@ export default function useLogin() {
       const res = await authService.login(credentials);
       if (res.ok) {
         setUser(res.response);
+        Cookies.set("auth-client", res.response.id, {
+          expires: 7,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+        });
         router.push("/feed");
       } else {
         setError(res.message);
