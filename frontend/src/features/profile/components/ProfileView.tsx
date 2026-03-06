@@ -7,6 +7,7 @@ import { useAuthStore } from "@/features/auth/hooks/useAuthStore";
 import { ProfileHeader } from "./ProfileHeader";
 import { ProfileTabs, TabId } from "./ProfileTabs";
 import { ProfileActivity } from "./ProfileActivity";
+import Cookies from "js-cookie";
 
 export default function ProfileView() {
   const { profile, isLoading, error } = useProfile();
@@ -22,6 +23,7 @@ export default function ProfileView() {
       });
     } finally {
       logout();
+      Cookies.remove("auth-client");
       router.push("/login");
     }
   };

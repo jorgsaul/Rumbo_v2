@@ -6,14 +6,21 @@ const DEFAULT_GUEST = "/login";
 
 export default function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
+  const authClient = request.cookies.get("auth-client")?.value;
   const pathname = request.nextUrl.pathname;
 
   const isPublicRoute = PUBLIC_ROUTES.some((route) =>
     pathname.startsWith(route),
   );
 
-  if (!token && !isPublicRoute) {
+  const isAuthenticated = !!token || !!authClient;
+
+  if (!isAuthenticated && !isPublicRoute) {
     return NextResponse.redirect(new URL(DEFAULT_GUEST, request.url));
+  }
+
+  if (isAuthenticated && isPublicRoute) {
+    return NextResponse.redirect(new URL(DEFAULT_LOGGED, request.url));
   }
 
   return NextResponse.next();
