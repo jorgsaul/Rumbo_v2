@@ -16,10 +16,6 @@ export default function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(DEFAULT_GUEST, request.url));
   }
 
-  if (token && isPublicRoute) {
-    return NextResponse.redirect(new URL(DEFAULT_LOGGED, request.url));
-  }
-
   return NextResponse.next();
 }
 
