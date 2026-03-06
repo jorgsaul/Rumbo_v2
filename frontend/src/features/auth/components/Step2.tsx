@@ -14,7 +14,16 @@ const step2Schema = z.object({
 type Step2Data = z.infer<typeof step2Schema>;
 
 export default function RegisterStep2() {
-  const { data, setData, nextStep, step, previousStep } = useRegister();
+  const {
+    data,
+    setData,
+    nextStep,
+    step,
+    previousStep,
+    sendCode,
+    isLoading,
+    error,
+  } = useRegister();
 
   const {
     register,
@@ -25,9 +34,8 @@ export default function RegisterStep2() {
     defaultValues: { email: data.email },
   });
 
-  const onSubmit = (formData: Step2Data) => {
-    setData({ email: formData.email });
-    nextStep();
+  const onSubmit = async (formData: Step2Data) => {
+    await sendCode(formData.email);
   };
 
   return (
@@ -62,7 +70,8 @@ export default function RegisterStep2() {
             ← Regresar
           </Button>
         )}
-        <Button type="submit" size="sm" className="ml-auto">
+        {error && <p className="text-sm text-danger">{error}</p>}
+        <Button type="submit" size="sm" className="ml-auto" loading={isLoading}>
           Continuar →
         </Button>
       </div>

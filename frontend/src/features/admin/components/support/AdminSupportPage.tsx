@@ -10,7 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import { adminService } from "../services/adminService";
+import { adminService } from "../../services/adminService";
 import { Ticket } from "@/features/support/types/support.types";
 import { cn } from "@/lib/utils/cn";
 import Card from "@/components/ui/Card";

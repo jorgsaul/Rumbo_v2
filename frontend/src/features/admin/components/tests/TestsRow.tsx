@@ -1,4 +1,4 @@
-import { AdminTestSummary } from "../services/adminService";
+import { AdminTestSummary } from "../../services/adminService";
 import {
   Pencil,
   Trash2,

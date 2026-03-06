@@ -1,6 +1,6 @@
 import { Button, Card } from "@/components/ui";
 import { useState } from "react";
-import { AdminTestSummary, CreateTestData } from "../services/adminService";
+import { AdminTestSummary, CreateTestData } from "../../services/adminService";
 
 export default function TestModal({
   test,

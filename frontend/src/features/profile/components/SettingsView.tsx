@@ -5,12 +5,15 @@ import { useRouter } from "next/navigation";
 import { useProfile } from "../hooks/useProfile";
 import { profileService } from "../services/profileServices";
 import { useTheme } from "@/hooks/useTheme";
-import { Button, Input } from "@/components/ui";
-import Card from "@/components/ui/Card";
+import {
+  Button,
+  Input,
+  Card,
+  ToggleSwitch,
+  ProfileImageUploader,
+  IconButton,
+} from "@/components/ui";
 import { ArrowLeft, Moon, Sun, Lock, Unlock } from "lucide-react";
-import { Camera, Loader2 } from "lucide-react";
-import Image from "next/image";
-import { cn } from "@/lib";
 
 export default function SettingsView() {
   const { profile, isLoading, error } = useProfile();
@@ -100,17 +103,11 @@ export default function SettingsView() {
   return (
     <div className="max-w-lg mx-auto flex flex-col gap-4">
       <div className="flex items-center gap-3">
-        <button
-          onClick={() => router.back()}
-          className="text-neutral-400 hover:text-neutral-700 dark:hover:text-white transition-colors"
-        >
-          <ArrowLeft size={20} />
-        </button>
+        <IconButton onClick={() => router.back()} icon={ArrowLeft} />
         <h1 className="text-lg font-semibold text-neutral-900 dark:text-white">
           Configuración
         </h1>
       </div>
-
       <Card
         border="light"
         shadow="none"
@@ -122,89 +119,20 @@ export default function SettingsView() {
           Fotos de perfil
         </h2>
 
-        {/* Banner */}
-        <div className="relative">
-          <div className="w-full h-24 rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-            {profile.bannerUrl ? (
-              <Image
-                src={profile.bannerUrl}
-                alt="Banner"
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <p className="text-xs text-neutral-400">Sin banner</p>
-              </div>
-            )}
-          </div>
-          <label
-            className={cn(
-              "absolute bottom-2 right-2 p-1.5 rounded-lg bg-black/50 text-white cursor-pointer hover:bg-black/70 transition-colors",
-              bannerUploading && "opacity-50 pointer-events-none",
-            )}
-          >
-            {bannerUploading ? (
-              <Loader2 size={14} className="animate-spin" />
-            ) : (
-              <Camera size={14} />
-            )}
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleBannerChange}
-            />
-          </label>
-        </div>
+        <ProfileImageUploader
+          imageUrl={profile.bannerUrl}
+          uploading={bannerUploading}
+          onChange={handleBannerChange}
+          variant="banner"
+        />
 
-        {/* Avatar */}
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="w-16 h-16 rounded-full overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-              {profile.avatarUrl ? (
-                <Image
-                  src={profile.avatarUrl}
-                  alt="Avatar"
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <p className="text-lg font-bold text-neutral-400">
-                    {profile.fullName[0]?.toUpperCase()}
-                  </p>
-                </div>
-              )}
-            </div>
-            <label
-              className={cn(
-                "absolute -bottom-1 -right-1 p-1 rounded-full bg-primary text-white cursor-pointer hover:bg-primary/80 transition-colors",
-                avatarUploading && "opacity-50 pointer-events-none",
-              )}
-            >
-              {avatarUploading ? (
-                <Loader2 size={11} className="animate-spin" />
-              ) : (
-                <Camera size={11} />
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleAvatarChange}
-              />
-            </label>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
-              {profile.fullName}
-            </p>
-            <p className="text-xs text-neutral-400">@{profile.username}</p>
-          </div>
-        </div>
+        <ProfileImageUploader
+          imageUrl={profile.avatarUrl}
+          uploading={avatarUploading}
+          onChange={handleAvatarChange}
+          variant="avatar"
+        />
       </Card>
-
       <Card
         border="light"
         shadow="none"
@@ -246,105 +174,51 @@ export default function SettingsView() {
           </p>
         </div>
       </Card>
-
       <Card
         border="light"
         shadow="none"
         rounded="xl"
         padding="md"
-        className="flex flex-col gap-3"
+        className="flex flex-col gap-4"
       >
-        <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-          Privacidad
-        </h2>
-
-        <button
-          onClick={() => setIsPrivate((prev) => !prev)}
-          className="flex items-center justify-between w-full"
-        >
-          <div className="flex items-center gap-3">
-            {isPrivate ? (
+        <ToggleSwitch
+          active={isPrivate}
+          onClick={() => setIsPrivate((p) => !p)}
+          icon={
+            isPrivate ? (
               <Lock size={18} className="text-primary" />
             ) : (
               <Unlock size={18} className="text-neutral-400" />
-            )}
-            <div className="text-left">
-              <p className="text-sm font-medium text-neutral-900 dark:text-white">
-                {isPrivate ? "Perfil privado" : "Perfil público"}
-              </p>
-              <p className="text-xs text-neutral-400">
-                {isPrivate
-                  ? "Solo tus seguidores pueden ver tu actividad"
-                  : "Cualquiera puede ver tu actividad"}
-              </p>
-            </div>
-          </div>
+            )
+          }
+          label={isPrivate ? "Perfil privado" : "Perfil público"}
+          description={
+            isPrivate
+              ? "Solo tus seguidores pueden ver tu actividad"
+              : "Cualquiera puede ver tu actividad"
+          }
+        />
 
-          <div
-            className={`w-10 h-6 rounded-full transition-colors relative ${
-              isPrivate ? "bg-primary" : "bg-neutral-300 dark:bg-neutral-600"
-            }`}
-          >
-            <div
-              className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                isPrivate ? "translate-x-5" : "translate-x-1"
-              }`}
-            />
-          </div>
-        </button>
-      </Card>
-
-      <Card
-        border="light"
-        shadow="none"
-        rounded="xl"
-        padding="md"
-        className="flex flex-col gap-3"
-      >
-        <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-          Apariencia
-        </h2>
-
-        <button
+        <ToggleSwitch
+          active={isDark}
           onClick={toggleTheme}
-          className="flex items-center justify-between w-full"
-        >
-          <div className="flex items-center gap-3">
-            {isDark ? (
+          icon={
+            isDark ? (
               <Moon size={18} className="text-primary" />
             ) : (
               <Sun size={18} className="text-neutral-400" />
-            )}
-            <div className="text-left">
-              <p className="text-sm font-medium text-neutral-900 dark:text-white">
-                {isDark ? "Modo oscuro" : "Modo claro"}
-              </p>
-              <p className="text-xs text-neutral-400">
-                Cambia el tema de la aplicación
-              </p>
-            </div>
-          </div>
-
-          <div
-            className={`w-10 h-6 rounded-full transition-colors relative ${
-              isDark ? "bg-primary" : "bg-neutral-300 dark:bg-neutral-600"
-            }`}
-          >
-            <div
-              className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                isDark ? "translate-x-5" : "translate-x-1"
-              }`}
-            />
-          </div>
-        </button>
+            )
+          }
+          label={isDark ? "Modo oscuro" : "Modo claro"}
+          description="Cambia el tema de la aplicación"
+        />
+        {saveError && (
+          <p className="text-sm text-danger text-center">{saveError}</p>
+        )}
+        {saved && (
+          <p className="text-sm text-success text-center">Cambios guardados</p>
+        )}
       </Card>
-
-      {saveError && (
-        <p className="text-sm text-danger text-center">{saveError}</p>
-      )}
-      {saved && (
-        <p className="text-sm text-success text-center">Cambios guardados</p>
-      )}
 
       <Button fullWidth onClick={handleSave} loading={isSaving}>
         Guardar cambios

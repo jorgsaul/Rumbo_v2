@@ -4,13 +4,14 @@ import { cn } from "@/lib";
 
 interface IconButtonProps {
   icon: React.ElementType;
-  label: string;
+  label?: string;
   onClick?: () => void;
   active?: boolean;
   count?: number;
   disabled?: boolean;
   className?: string;
   activeClassName?: string;
+  iconSize?: number;
 }
 
 export function IconButton({
@@ -21,6 +22,7 @@ export function IconButton({
   count,
   disabled = false,
   className,
+  iconSize = 20,
   activeClassName = "text-primary",
 }: IconButtonProps) {
   return (
@@ -40,7 +42,7 @@ export function IconButton({
       )}
     >
       <Icon
-        size={16}
+        size={iconSize}
         fill={active ? "currentColor" : "none"}
         className="transition-transform duration-150 hover:scale-110"
       />

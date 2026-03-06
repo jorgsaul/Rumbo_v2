@@ -91,3 +91,22 @@ export interface AdminUser {
   createdAt: string;
   _count: { posts: number; followers: number; following: number };
 }
+
+export interface DraftOption {
+  id?: string;
+  label: string;
+  text: string;
+  isCorrect: boolean;
+  order: number;
+  imageUrl?: string | null;
+}
+
+export interface DraftQuestion {
+  id?: string;
+  text: string;
+  order: number;
+  pilar?: string;
+  imageUrl?: string | null;
+  statements?: { type: string; data: any };
+  options: DraftOption[];
+}

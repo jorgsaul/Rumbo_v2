@@ -2,36 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import {
-  Search,
-  Shield,
-  User,
-  BookOpen,
-  Loader2,
-  Check,
-  X,
-  ToggleLeft,
-  ToggleRight,
-} from "lucide-react";
-import { adminService } from "../services/adminService";
-import { AdminUser } from "../types/admin.types";
+import { Search, Loader2, ToggleLeft, ToggleRight } from "lucide-react";
+import { adminService } from "../../services/adminService";
+import { AdminUser } from "../../types/admin.types";
 import { cn } from "@/lib/utils/cn";
 import Card from "@/components/ui/Card";
 import { formatDate } from "@/utils/FormatDate";
-
-const ROLE_CONFIG = {
-  ADMIN: { label: "Admin", color: "bg-danger/10 text-danger", icon: Shield },
-  AUTHOR: {
-    label: "Autor",
-    color: "bg-primary/10 text-primary",
-    icon: BookOpen,
-  },
-  STUDENT: {
-    label: "Alumno",
-    color: "bg-neutral-100 dark:bg-neutral-800 text-neutral-500",
-    icon: User,
-  },
-};
+import { ROLE_CONFIG } from "../../types/questionsEditor.constants";
 
 function UserRow({
   user,
@@ -45,7 +22,6 @@ function UserRow({
   isUpdating: boolean;
 }) {
   const roleConfig = ROLE_CONFIG[user.role];
-  const Icon = roleConfig.icon;
 
   return (
     <Card
@@ -56,7 +32,6 @@ function UserRow({
       className={cn("transition-opacity", !user.isActive && "opacity-50")}
     >
       <div className="flex items-center gap-3">
-        {/* Avatar */}
         <div className="w-9 h-9 rounded-full bg-primary/10 overflow-hidden shrink-0 flex items-center justify-center">
           {user.avatarUrl ? (
             <Image
@@ -73,7 +48,6 @@ function UserRow({
           )}
         </div>
 
-        {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <p className="text-sm font-semibold text-neutral-900 dark:text-white truncate">
@@ -92,7 +66,6 @@ function UserRow({
           </p>
         </div>
 
-        {/* Role selector */}
         <div className="flex items-center gap-2 shrink-0">
           <select
             value={user.role}

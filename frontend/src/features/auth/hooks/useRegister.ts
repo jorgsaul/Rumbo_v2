@@ -29,6 +29,33 @@ export default function useRegister() {
     }
   };
 
+  const sendCode = async (email: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await authService.sendVerificationCode(email);
+      setData({ email });
+      nextStep();
+    } catch {
+      setError("Error al enviar el código");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifyCode = async (code: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await authService.verifyCode(data.email, code);
+      nextStep();
+    } catch {
+      setError("Código incorrecto o expirado");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const sendData = async (extraData?: Partial<typeof data>) => {
     setIsLoading(true);
     const finalData = { ...data, ...extraData };
@@ -56,6 +83,8 @@ export default function useRegister() {
     setData,
     reset,
     sendData,
+    sendCode,
+    verifyCode,
     isLoading,
     error,
   };

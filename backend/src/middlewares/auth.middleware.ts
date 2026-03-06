@@ -27,8 +27,18 @@ export const authMiddleware = async (
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
-      select: { id: true, role: true, isActive: true },
+      select: { id: true, role: true, isActive: true},
     });
+    
+    /*
+    if (!user?.isVerified && req.path !== "/verify-email") {
+      res.status(403).json({
+        ok: false,
+        message: "Verifica tu correo primero",
+        code: "UNVERIFIED",
+      });
+      return;
+    }*/
 
     if (!user) {
       res.status(401).json({ ok: false, message: "Usuario no encontrado" });

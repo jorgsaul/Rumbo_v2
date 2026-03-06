@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import prisma from "../lib/prisma";
 import { RegisterData, LoginCredentials } from "../types/auth.types";
 import { OAuth2Client } from "google-auth-library";
+import { resend, sendVerificationEmail, sendResetEmail } from "../lib/resend";
+import crypto from "node:crypto";
 
 export const registerService = async (data: RegisterData) => {
   const { username, email, password, role, educationLevel } = data;
@@ -12,13 +14,11 @@ export const registerService = async (data: RegisterData) => {
 
   if (exists) throw new Error("El email o usuario ya está registrado");
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-
   const user = await prisma.user.create({
     data: {
       username,
       email,
-      password: hashedPassword,
+      password: await bcrypt.hash(password, 10),
       fullName: username,
       role,
       educationLevel,
@@ -31,6 +31,8 @@ export const registerService = async (data: RegisterData) => {
       educationLevel: true,
     },
   });
+
+  await prisma.pendingVerification.delete({ where: { email } });
 
   return user;
 };
@@ -116,4 +118,70 @@ export const googleAuthService = async (idToken: string) => {
 
   const { password: _, ...userWithoutPassword } = user;
   return { user: userWithoutPassword, token };
+};
+
+export const forgotPasswordService = async (email: string) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) return;
+
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiry = new Date(Date.now() + 60 * 60 * 1000);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { resetToken: token, resetTokenExpiry: expiry },
+  });
+
+  await sendResetEmail(email, token);
+};
+
+export const resetPasswordService = async (
+  token: string,
+  newPassword: string,
+) => {
+  const user = await prisma.user.findFirst({
+    where: { resetToken: token },
+  });
+
+  if (!user) throw new Error("Token inválido");
+  if (!user.resetTokenExpiry || user.resetTokenExpiry < new Date())
+    throw new Error("Token expirado");
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      password: await bcrypt.hash(newPassword, 10),
+      resetToken: null,
+      resetTokenExpiry: null,
+    },
+  });
+};
+
+export const sendVerificationCodeService = async (email: string) => {
+  // Verificar si ya existe cuenta con ese email
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (existing) throw new Error("Este correo ya está registrado");
+
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiry = new Date(Date.now() + 15 * 60 * 1000);
+
+  // Guardar en tabla temporal o en cache — como no hay usuario aún,
+  // guárdalo en una tabla PendingVerification
+  await prisma.pendingVerification.upsert({
+    where: { email },
+    update: { code, expiry },
+    create: { email, code, expiry },
+  });
+
+  await sendVerificationEmail(email, code);
+};
+
+export const verifyCodeService = async (email: string, code: string) => {
+  const pending = await prisma.pendingVerification.findUnique({
+    where: { email },
+  });
+  if (!pending) throw new Error("Código no encontrado");
+  if (pending.code !== code) throw new Error("Código incorrecto");
+  if (pending.expiry < new Date()) throw new Error("Código expirado");
+  // No borramos aún — se borra al completar el registro
 };

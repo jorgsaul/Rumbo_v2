@@ -10,10 +10,9 @@ import {
   AlertCircle,
   Loader2,
 } from "lucide-react";
-import { useAdminTests } from "../hooks/useAdminTests";
-import { AdminTestSummary, CreateTestData } from "../services/adminService";
-import { Card, Button } from "@/components/ui";
-import StatCard from "./StatCard";
+import { useAdminTests } from "../../hooks/useAdminTests";
+import { AdminTestSummary, CreateTestData } from "../../services/adminService";
+import { Card, Button, StatCard } from "@/components/ui";
 import TestModal from "./TestsModal";
 import TestRow from "./TestsRow";
 import { useRouter } from "next/navigation";

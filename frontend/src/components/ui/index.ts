@@ -5,3 +5,6 @@ export { Tag } from "./Tag";
 export { IconButton } from "./IconButton";
 export { RadioGroup } from "./RadioGroup";
 export { OTPInput } from "./OTPInput";
+export { ProfileImageUploader } from "./ProfileImageUploader";
+export { ToggleSwitch } from "./ToggleSwitch";
+export { StatCard } from "./StatCard";

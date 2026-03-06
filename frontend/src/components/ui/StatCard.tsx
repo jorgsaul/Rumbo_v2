@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui";
 import { cn } from "@/lib";
 
-export default function StatCard({
+export function StatCard({
   label,
   value,
   icon: Icon,

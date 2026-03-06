@@ -11,9 +11,9 @@ import {
   EyeOff,
   Trash2,
 } from "lucide-react";
-import { adminService } from "../services/adminService";
+import { adminService } from "../../services/adminService";
 
-import { AdminFlaggedPost, ModerationStats } from "../types/admin.types";
+import { AdminFlaggedPost, ModerationStats } from "../../types/admin.types";
 import { cn } from "@/lib/utils/cn";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
