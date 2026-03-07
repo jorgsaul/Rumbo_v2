@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import prisma from "../lib/prisma";
 import { RegisterData, LoginCredentials } from "../types/auth.types";
 import { OAuth2Client } from "google-auth-library";
-import { resend, sendVerificationEmail, sendResetEmail } from "../lib/resend";
+import { sendVerificationEmail, sendResetEmail } from "../lib/mailer";
 import crypto from "node:crypto";
 
 export const registerService = async (data: RegisterData) => {
