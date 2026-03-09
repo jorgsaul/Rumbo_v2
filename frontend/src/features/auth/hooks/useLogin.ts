@@ -41,9 +41,12 @@ export default function useLogin() {
       const res = await authService.googleLogin(idToken);
       if (res.ok) {
         setUser(res.response);
+        Cookies.set("auth-client", res.response.id, {
+          expires: 7,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+        });
         router.push("/feed");
-      } else {
-        setError(res.message);
       }
     } catch {
       setError("Error al iniciar sesión con Google");
