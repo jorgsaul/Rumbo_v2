@@ -105,7 +105,7 @@ export default function LoginForm() {
               }
             }}
             onError={() => console.error(error)}
-            width="100%"
+            width="342px"
             text="signin_with"
             shape="rectangular"
             theme="outline"
