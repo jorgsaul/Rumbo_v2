@@ -35,7 +35,8 @@ export default function RegisterStep2() {
   });
 
   const onSubmit = async (formData: Step2Data) => {
-    await sendCode(formData.email);
+    //await sendCode(formData.email);
+    nextStep();
   };
 
   return (
