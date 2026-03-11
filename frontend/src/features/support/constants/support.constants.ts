@@ -52,7 +52,7 @@ export const FAQ = [
     items: [
       {
         q: "¿Qué pasa si pongo mi perfil en privado?",
-        a: "Tu actividad, publicaciones y resultados solo serán visibles para tus seguidores aprobados.",
+        a: "Tu actividad, publicaciones y resultados solo serán visibles para ti.",
       },
       {
         q: "¿Puedo cambiar mi nombre de usuario?",

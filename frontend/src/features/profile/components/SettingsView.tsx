@@ -194,7 +194,7 @@ export default function SettingsView() {
           label={isPrivate ? "Perfil privado" : "Perfil público"}
           description={
             isPrivate
-              ? "Solo tus seguidores pueden ver tu actividad"
+              ? "Solo tu puedes ver tu actividad"
               : "Cualquiera puede ver tu actividad"
           }
         />
