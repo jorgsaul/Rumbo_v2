@@ -12,6 +12,7 @@ import {
   ChevronDown,
   ShieldCheck,
   LifeBuoy,
+  ExternalLink,
 } from "lucide-react";
 
 interface NavItem {
@@ -41,6 +42,17 @@ const baseItems: NavItem[] = [
     label: "Soporte",
     href: "/soporte",
     icon: LifeBuoy,
+  },
+  {
+    label: "Recursos Externos",
+    icon: ExternalLink,
+    children: [
+      {
+        label: "Oferta educativa",
+        href: "https://www.cecyt9.ipn.mx/oferta-educativa/",
+      },
+      { label: "IMCO", href: "https://comparacarreras.imco.org.mx/" },
+    ],
   },
 ];
 
