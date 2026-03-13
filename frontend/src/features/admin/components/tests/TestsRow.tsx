@@ -9,6 +9,7 @@ import {
   ListOrdered,
 } from "lucide-react";
 import { cn } from "@/lib";
+import { useConfirmation } from "@/context/ConfirmationContext";
 
 const STATUS_CONFIG = {
   ACTIVE: { label: "Activo", className: "bg-success/10 text-success" },
@@ -34,6 +35,23 @@ export default function TestRow({
 }) {
   const statusCfg = STATUS_CONFIG[test.status];
   const isActive = test.status === "ACTIVE";
+  const { confirm } = useConfirmation();
+
+  const handleDelete = async ()=> {
+    const ok = await confirm({
+      title: "ELIMINACION DE TEST",
+      description: "Estas a punto de eliminar un test, la acción NO es reversible. ¿Estas seguro de querer elimnarlo?",
+      category: "danger"
+    })
+
+    if(!ok) return
+
+    try{
+      onDelete()
+    } catch(e){
+      console.error(e)
+    }
+  }
 
   const results =
     test.type === "VOCATIONAL"
@@ -88,7 +106,7 @@ export default function TestRow({
           <Pencil size={15} />
         </button>
         <button
-          onClick={onDelete}
+          onClick={handleDelete}
           className="p-1.5 rounded-lg text-neutral-400 hover:text-danger hover:bg-danger/10 transition-colors"
         >
           <Trash2 size={15} />
