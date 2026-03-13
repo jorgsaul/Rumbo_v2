@@ -6,10 +6,10 @@ import Button from "@/components/ui/Button";
 import { AlertTriangle, Info, CheckCircle, XCircle, X } from "lucide-react";
 
 const CATEGORY_CONFIG = {
-  danger:  { icon: XCircle,       color: "text-danger",  btn: "danger" },
-  warning: { icon: AlertTriangle, color: "text-warning", btn: "warning" },
-  info:    { icon: Info,          color: "text-info",    btn: "primary" },
-  success: { icon: CheckCircle,   color: "text-success", btn: "success" },
+  danger:  { icon: XCircle,       color: "text-danger"},
+  warning: { icon: AlertTriangle, color: "text-warning"},
+  info:    { icon: Info,          color: "text-info"},
+  success: { icon: CheckCircle,   color: "text-success"},
 } as const;
 
 export default function ConfirmModal() {
@@ -17,7 +17,7 @@ export default function ConfirmModal() {
 
   if (!confirmation) return null;
 
-  const { icon: Icon, color, btn } = CATEGORY_CONFIG[confirmation.category];
+  const { icon: Icon, color } = CATEGORY_CONFIG[confirmation.category];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -34,7 +34,7 @@ export default function ConfirmModal() {
         </button>
 
         <div className="flex items-center gap-3">
-          <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", `bg-${btn}/10`)}>
+          <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0")}>
             <Icon size={20} className={color} />
           </div>
           <h2 className="text-base font-semibold text-neutral-900 dark:text-white">
@@ -50,7 +50,7 @@ export default function ConfirmModal() {
           <Button variant="ghost" size="sm" onClick={() => resolve(false)}>
             Cancelar
           </Button>
-          <Button variant={"primary"} size="sm" onClick={() => resolve(true)}>
+          <Button variant={color == "text-danger" ? "danger" : "primary"} size="sm" onClick={() => resolve(true)}>
             Confirmar
           </Button>
         </div>
