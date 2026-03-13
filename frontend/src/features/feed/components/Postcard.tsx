@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { useAuthStore } from "@/features/auth/hooks/useAuthStore";
 import { feedService } from "../services/feedService";
+import { useConfirmation } from "@/context/ConfirmationContext";
 
 interface PostCardProps {
   post: Post;
@@ -29,11 +30,18 @@ export function PostCard({
   const [showComments, setShowComments] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const { user } = useAuthStore();
+  const {confirm} = useConfirmation();
 
   const isOwner = user?.id === post.author.id;
 
   const handleDelete = async () => {
-    if (!confirm("¿Eliminar esta publicación?")) return;
+    const approved = await confirm({
+      title: "¿Deseas eliminar tu publicacion?",
+      description: "Esta acción no es reversible",
+      category: "warning"
+    })
+    if(!approved) return
+    
     setDeleting(true);
     try {
       await feedService.deletePost(post.id);
