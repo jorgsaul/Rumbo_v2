@@ -14,19 +14,9 @@ const STEPS = {
   Step4: <RegisterStep4 />,
 };
 
-const STEP_TITLES = {
-  Step1: "Cuéntanos sobre ti",
-  Step2: "Tu correo",
-  Step3: "Verificación",
-  Step4: "Crea tu cuenta",
-};
-
 export default function AuthRegisterLayout() {
   const { step } = useRegister();
-
-  const totalSteps = Object.keys(STEPS).length;
   const currentStep = parseInt(step.replace("Step", ""));
-  const progress = (currentStep / totalSteps) * 100;
 
   return (
     <div className="flex flex-col gap-8">
