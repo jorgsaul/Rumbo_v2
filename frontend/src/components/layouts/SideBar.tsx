@@ -49,7 +49,7 @@ const baseItems: NavItem[] = [
     children: [
       {
         label: "Oferta educativa",
-        href: "https://www.cecyt9.ipn.mx/oferta-educativa/",
+        href: "https://www.ipn.mx/oferta-educativa/educacion-superior/",
       },
       { label: "IMCO", href: "https://comparacarreras.imco.org.mx/" },
     ],
@@ -64,6 +64,7 @@ const adminItems: NavItem[] = [
       { label: "Tests", href: "/admin/tests" },
       { label: "Reportes", href: "/admin/moderation" },
       { label: "Usuarios", href: "/admin/users" },
+      { label: "Soporte", href: "/admin/support" },
     ],
   },
 ];
