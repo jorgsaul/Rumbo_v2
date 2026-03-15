@@ -6,10 +6,10 @@ import Button from "@/components/ui/Button";
 import { AlertTriangle, Info, CheckCircle, XCircle, X } from "lucide-react";
 
 const CATEGORY_CONFIG = {
-  danger:  { icon: XCircle,       color: "text-danger"},
-  warning: { icon: AlertTriangle, color: "text-warning"},
-  info:    { icon: Info,          color: "text-info"},
-  success: { icon: CheckCircle,   color: "text-success"},
+  danger: { icon: XCircle, color: "text-danger" },
+  warning: { icon: AlertTriangle, color: "text-warning" },
+  info: { icon: Info, color: "text-info" },
+  success: { icon: CheckCircle, color: "text-success" },
 } as const;
 
 export default function ConfirmModal() {
@@ -33,24 +33,36 @@ export default function ConfirmModal() {
           <X size={16} />
         </button>
 
-        <div className="flex items-center gap-3">
-          <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0")}>
-            <Icon size={20} className={color} />
+        <div className="flex flex-col items-center text-center gap-3 pt-2">
+          <div
+            className={cn(
+              "w-14 h-14 rounded-2xl flex items-center justify-center",
+              confirmation.category === "danger" && "bg-danger/10",
+              confirmation.category === "warning" && "bg-warning/10",
+              confirmation.category === "info" && "bg-info/10",
+              confirmation.category === "success" && "bg-success/10",
+            )}
+          >
+            <Icon size={26} className={color} />
           </div>
           <h2 className="text-base font-semibold text-neutral-900 dark:text-white">
             {confirmation.title}
           </h2>
         </div>
 
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed text-center">
           {confirmation.description}
         </p>
 
-        <div className="flex items-center justify-end gap-2 pt-1">
+        <div className="flex items-center justify-center gap-2 pt-1">
           <Button variant="ghost" size="sm" onClick={() => resolve(false)}>
             Cancelar
           </Button>
-          <Button variant={color == "text-danger" ? "danger" : "primary"} size="sm" onClick={() => resolve(true)}>
+          <Button
+            variant={confirmation.category === "danger" ? "danger" : "primary"}
+            size="sm"
+            onClick={() => resolve(true)}
+          >
             Confirmar
           </Button>
         </div>

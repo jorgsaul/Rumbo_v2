@@ -13,7 +13,6 @@ import {
 export default function TicketCard({ ticket }: { ticket: ITicket }) {
   const [expanded, setExpanded] = useState(false);
   const status = STATUS_CONFIG[ticket.status];
-  const Icon = status.icon;
 
   return (
     <Card
@@ -24,25 +23,30 @@ export default function TicketCard({ ticket }: { ticket: ITicket }) {
       className="space-y-2"
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-neutral-900 dark:text-white truncate">
-            {ticket.title}
-          </p>
-          <p className="text-xs text-neutral-400 mt-0.5">
-            {CATEGORY_OPTIONS.find((c) => c.value === ticket.category)?.label} ·{" "}
-            {formatDate(ticket.createdAt)}
-          </p>
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-neutral-900 dark:text-white truncate">
+              {ticket.title}
+            </p>
+            <p className="text-xs text-neutral-400 mt-0.5">
+              {CATEGORY_OPTIONS.find((c) => c.value === ticket.category)?.label}{" "}
+              · {formatDate(ticket.createdAt)}
+            </p>
+          </div>
         </div>
+
         <div className="flex items-center gap-2 shrink-0">
-          <span
-            className={cn(
-              "text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1",
-              status.color,
-            )}
-          >
-            <Icon size={11} />
+          <div className="flex items-center gap-1 text-xs font-medium text-neutral-500 dark:text-neutral-400">
+            <div
+              className={cn(
+                "w-1.5 h-1.5 rounded-full shrink-0",
+                ticket.status === "OPEN" && "bg-warning",
+                ticket.status === "IN_REVIEW" && "bg-info",
+                ticket.status === "RESOLVED" && "bg-success",
+              )}
+            />
             {status.label}
-          </span>
+          </div>
           <button
             onClick={() => setExpanded(!expanded)}
             className="text-neutral-300 hover:text-neutral-500 transition-colors"
@@ -58,7 +62,7 @@ export default function TicketCard({ ticket }: { ticket: ITicket }) {
             {ticket.description}
           </p>
           {ticket.adminReply && (
-            <div className="p-3 rounded-xl bg-primary/5 border border-primary/20 space-y-1">
+            <div className="space-y-1 pt-2 border-t border-neutral-100 dark:border-neutral-800">
               <p className="text-xs font-medium text-primary">
                 Respuesta del equipo
               </p>

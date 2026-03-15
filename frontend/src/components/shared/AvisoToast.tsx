@@ -6,25 +6,14 @@ interface AvisoProps {
   title?: string;
   description?: string;
   category: "info" | "success" | "warning" | "danger";
-  size?: "sm" | "md" | "lg";
-  date?: Date;
-  read?: boolean;
-  iconClass?: keyof typeof IconClasses;
   onClose?: () => void;
 }
 
-const IconClasses = {
-  info: Info,
-  warning: TriangleAlert,
-  danger: OctagonAlert,
-  success: Check,
-};
-
-const ColorClasses = {
-  success: "bg-success border-success-700",
-  danger: "bg-danger border-danger-700",
-  warning: "bg-warning border-warning-700",
-  info: "bg-info border-info-700",
+const ICON_MAP = {
+  info: { icon: Info, color: "text-info" },
+  warning: { icon: TriangleAlert, color: "text-warning" },
+  danger: { icon: OctagonAlert, color: "text-danger" },
+  success: { icon: Check, color: "text-success" },
 };
 
 export default function AvisoToast({
@@ -33,31 +22,50 @@ export default function AvisoToast({
   description = "",
   onClose,
 }: AvisoProps) {
-  const Icon = IconClasses[category];
+  const { icon: Icon, color } = ICON_MAP[category];
 
   return (
     <Card
-      className={cn(
-        ColorClasses[category],
-        "text-white pl-0 pr-2 max-w-xl min-w-100 border-2 border-gray-300 dark:border-[#1c1c1c]",
-      )}
       padding="sm"
-      disableDarkMode
+      rounded="xl"
+      border="light"
+      shadow="md"
+      className="max-w-sm min-w-72 bg-white dark:bg-neutral-900"
     >
-      <div className="flex justify-between items-center">
-        <span className="h-full w-20 inline-flex justify-center items-center">
-          <Icon />
-        </span>
-        <div className="w-full">
-          <b>{title}</b>
-          <p>{description}</p>
+      <div className="flex items-center gap-3">
+        <div
+          className={cn(
+            "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
+            category === "info" && "bg-info/10",
+            category === "warning" && "bg-warning/10",
+            category === "danger" && "bg-danger/10",
+            category === "success" && "bg-success/10",
+          )}
+        >
+          <Icon size={16} className={color} />
         </div>
-        <Button
-          children={<X />}
-          variant="ghost"
-          className="!shadow-none rounded-full"
-          onClick={onClose}
-        />
+
+        <div className="flex-1 min-w-0">
+          {title && (
+            <p className="text-sm font-semibold text-neutral-900 dark:text-white">
+              {title}
+            </p>
+          )}
+          {description && (
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              {description}
+            </p>
+          )}
+        </div>
+
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="text-neutral-300 hover:text-neutral-500 transition-colors shrink-0"
+          >
+            <X size={14} />
+          </button>
+        )}
       </div>
     </Card>
   );

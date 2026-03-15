@@ -8,20 +8,23 @@ export function useProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchProfile = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await profileService.getMe();
+      if (res.ok) setProfile(res.response);
+      else setError(res.message);
+    } catch {
+      setError("No se pudo cargar el perfil");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const res = await profileService.getMe();
-        if (res.ok) setProfile(res.response);
-        else setError(res.message);
-      } catch {
-        setError("No se pudo cargar el perfil");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetch();
+    fetchProfile();
   }, []);
 
-  return { profile, isLoading, error };
+  return { profile, isLoading, error, retry: fetchProfile };
 }

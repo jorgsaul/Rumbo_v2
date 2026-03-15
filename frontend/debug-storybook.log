@@ -1,0 +1,39 @@
+[23:47:10.342] [INFO] storybook v10.2.19
+[23:47:11.263] [DEBUG] Getting package.json info for C:/Users/Admin/Desktop/Rumbo_v2/frontend/package.json...
+[23:47:13.340] [DEBUG] Serving static files from [36mfrontend/node_modules/@chromatic-com/storybook/assets[39m at [36m/addon-visual-tests-assets[39m
+[23:47:13.340] [DEBUG] Serving static files from [36mfrontend/public[39m at [36m/[39m
+[23:47:13.341] [INFO] Starting...
+[23:47:13.715] [DEBUG] Starting preview..
+[23:47:13.739] [WARN] 🚨 Unable to index ./src/stories/Button.stories.ts:
+  TypeError: Duplicate declaration "Button"
+  54 | };
+  55 |
+> 56 | export const Button: Story = {
+     |              ^^^^^^^^^^^^^
+  57 |   args: {
+  58 |     primary: false,
+  59 |     label: "Button"
+    at File2.buildCodeFrameError (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/_node-chunks/chunk-OOCT2CCT.js:33442:16)
+    at _Scope.checkBlockScopedCollisions (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/_node-chunks/chunk-OOCT2CCT.js:24207:31)
+    at _Scope.registerBinding (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/_node-chunks/chunk-OOCT2CCT.js:24291:20)
+    at _Scope.registerDeclaration (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/_node-chunks/chunk-OOCT2CCT.js:24250:18)
+    at Object.BlockScoped (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/_node-chunks/chunk-OOCT2CCT.js:24099:83)
+    at Object.newFn (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/_node-chunks/chunk-OOCT2CCT.js:23526:21)
+    at NodePath._call (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/_node-chunks/chunk-OOCT2CCT.js:31811:22)
+    at NodePath.call (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/_node-chunks/chunk-OOCT2CCT.js:31801:22)
+    at NodePath.visit (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/_node-chunks/chunk-OOCT2CCT.js:31834:38)
+    at TraversalContext.visitQueue (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/_node-chunks/chunk-OOCT2CCT.js:31720:49)
+[23:47:13.752] [ERROR] Failed to build the preview
+[23:47:13.754] [ERROR] Error: Unable to index ./src/stories/Button.stories.ts
+    at _StoryIndexGenerator.getIndexAndStats (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/core-server/index.js:6087:15)
+    at async _StoryIndexGenerator.getIndex (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/core-server/index.js:6076:13)
+    at async getOptimizeDeps (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/@storybook/builder-vite/dist/index.js:1879:15)
+    at async createViteServer (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/@storybook/builder-vite/dist/index.js:1906:19)
+    at async Module.start (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/@storybook/builder-vite/dist/index.js:1934:17)
+    at async storybookDevServer (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/core-server/index.js:7295:83)
+    at async buildOrThrow (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/core-server/index.js:4506:12)
+    at async buildDevStandalone (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/core-server/index.js:7710:41)
+    at async withTelemetry (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/_node-chunks/chunk-FJZ625UU.js:218:12)
+    at async dev (file:///C:/Users/Admin/Desktop/Rumbo_v2/frontend/node_modules/storybook/dist/bin/core.js:2734:3)
+[23:47:13.758] [WARN] Broken build, fix the error above.
+You may need to refresh the browser.

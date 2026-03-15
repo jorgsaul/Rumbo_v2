@@ -7,10 +7,11 @@ import { useAuthStore } from "@/features/auth/hooks/useAuthStore";
 import { ProfileHeader } from "./ProfileHeader";
 import { ProfileTabs, TabId } from "./ProfileTabs";
 import { ProfileActivity } from "./ProfileActivity";
+import { Button } from "@/components/ui";
 import Cookies from "js-cookie";
 
 export default function ProfileView() {
-  const { profile, isLoading, error } = useProfile();
+  const { profile, isLoading, error, retry } = useProfile();
   const { logout } = useAuthStore();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>("posts");
@@ -36,7 +37,17 @@ export default function ProfileView() {
     );
   }
 
-  if (error || !profile) {
+  if (error)
+    return (
+      <div className="flex flex-col items-center justify-center h-64 gap-3">
+        <p className="text-sm text-neutral-400">No se pudo conectar</p>
+        <Button variant="ghost" size="sm" onClick={retry}>
+          Reintentar
+        </Button>
+      </div>
+    );
+
+  if (!profile) {
     return (
       <div className="flex items-center justify-center h-64">
         <p className="text-danger text-sm">
