@@ -37,21 +37,22 @@ export default function TestRow({
   const isActive = test.status === "ACTIVE";
   const { confirm } = useConfirmation();
 
-  const handleDelete = async ()=> {
+  const handleDelete = async () => {
     const ok = await confirm({
       title: "ELIMINACION DE TEST",
-      description: "Estas a punto de eliminar un test, la acción NO es reversible. ¿Estas seguro de querer elimnarlo?",
-      category: "danger"
-    })
+      description:
+        "Estas a punto de eliminar un test, la acción NO es reversible. ¿Estas seguro de querer elimnarlo?",
+      category: "danger",
+    });
 
-    if(!ok) return
+    if (!ok) return;
 
-    try{
-      onDelete()
-    } catch(e){
-      console.error(e)
+    try {
+      onDelete();
+    } catch (e) {
+      console.error(e);
     }
-  }
+  };
 
   const results =
     test.type === "VOCATIONAL"
