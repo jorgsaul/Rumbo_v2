@@ -17,6 +17,20 @@ export default function MainLayout({
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+      (function() {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    `,
+          }}
+        />
+      </head>
       <Header onMenuToggle={() => setSidebarOpen((prev) => !prev)} />
 
       <div className="flex pt-16">
