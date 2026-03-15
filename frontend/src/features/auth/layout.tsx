@@ -5,6 +5,7 @@ import RegisterStep1 from "./components/Step1";
 import RegisterStep2 from "./components/Step2";
 import RegisterStep3 from "./components/Step3";
 import RegisterStep4 from "./components/Step4";
+import RegisterStepper from "./components/RegisterStepper";
 
 const STEPS = {
   Step1: <RegisterStep1 />,
@@ -29,24 +30,12 @@ export default function AuthRegisterLayout() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">
           Crear cuenta
         </h1>
-
-        <div className="flex flex-col gap-1.5">
-          <div className="w-full h-1 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-primary rounded-full transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <p className="text-xs text-neutral-400">
-            {currentStep} de {totalSteps} — {STEP_TITLES[step]}
-          </p>
-        </div>
+        <RegisterStepper currentStep={currentStep} />
       </div>
-
       <div className="min-h-48">{STEPS[step]}</div>
     </div>
   );
