@@ -1,5 +1,5 @@
 import { PrismaClient, IkigaiPilar } from "@prisma/client";
-import { questions } from "./data/testData";
+import { questions } from "../../src/lib/data/testData";
 
 const prisma = new PrismaClient();
 

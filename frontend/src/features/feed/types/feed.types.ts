@@ -7,7 +7,7 @@ export interface Post {
   title?: string;
   content: string;
   mediaUrl?: string;
-  tags: string[];
+  tags: PostTag[];
   likes: number;
   isLiked: boolean;
   isSaved: boolean;
@@ -15,6 +15,11 @@ export interface Post {
   commentsCount: number;
   createdAt: string;
   moderation?: ModerationStatus;
+}
+
+export interface PostTag {
+  name: string;
+  color: string;
 }
 
 export interface PostComment {

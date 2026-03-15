@@ -164,7 +164,6 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
         className="w-full text-sm bg-transparent border-none outline-none resize-none text-neutral-700 dark:text-neutral-300 placeholder:text-neutral-400"
       />
 
-      {/* Preview de imagen */}
       {imagePreview && (
         <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800">
           <Image
@@ -189,7 +188,6 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
         </div>
       )}
 
-      {/* Botón agregar imagen — en la fila de acciones */}
       <div className="flex items-center justify-between">
         <label
           className={cn(
@@ -207,7 +205,6 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
           />
         </label>
 
-        {/* mover aquí el botón Publicar */}
         <Button
           size="sm"
           onClick={handleSubmit}
@@ -223,16 +220,15 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
           <button
             key={tag.id}
             onClick={() => toggleTag(tag)}
-            className="flex items-center gap-1 group"
+            className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border transition-colors"
+            style={{
+              backgroundColor: `${tag.category.color}20`,
+              color: tag.category.color,
+              borderColor: tag.category.color,
+            }}
           >
-            <Tag
-              label={tag.name}
-              variant={TAG_VARIANTS[tag.name] ?? "neutral"}
-            />
-            <X
-              size={12}
-              className="text-neutral-400 group-hover:text-danger transition-colors"
-            />
+            {tag.name}
+            <X size={11} />
           </button>
         ))}
 
@@ -254,13 +250,13 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 z-50 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-lg p-2 min-w-48">
+              <div className="absolute top-full left-0 mt-1 z-50 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-lg p-3 min-w-56 max-h-64 overflow-y-auto">
                 {Object.entries(tagsByCategory).map(([category, tags]) => (
-                  <div key={category} className="mb-2 last:mb-0">
-                    <p className="text-xs text-neutral-400 px-2 mb-1">
+                  <div key={category} className="mb-3 last:mb-0">
+                    <p className="text-xs font-semibold text-neutral-400 uppercase tracking-widest px-1 mb-1.5">
                       {category}
                     </p>
-                    <div className="flex flex-col gap-0.5">
+                    <div className="flex flex-wrap gap-1.5">
                       {tags.map((tag) => {
                         const isSelected = selectedTags.find(
                           (t) => t.id === tag.id,
@@ -269,11 +265,19 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
                           <button
                             key={tag.id}
                             onClick={() => toggleTag(tag)}
-                            className={`flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors text-left ${
+                            className="text-xs px-2.5 py-1 rounded-full border transition-colors"
+                            style={
                               isSelected
-                                ? "bg-primary/10 text-primary"
-                                : "hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300"
-                            }`}
+                                ? {
+                                    backgroundColor: `${tag.category.color}20`,
+                                    color: tag.category.color,
+                                    borderColor: tag.category.color,
+                                  }
+                                : {
+                                    borderColor: "#e5e7eb",
+                                    color: "#6b7280",
+                                  }
+                            }
                           >
                             {tag.name}
                           </button>

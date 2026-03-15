@@ -1,18 +1,7 @@
-import { Tag } from "@/components/ui";
 import type { Post } from "../types/feed.types";
 import { formatDate } from "@/utils/FormatDate";
 import Link from "next/link";
 import Image from "next/image";
-
-const TAG_VARIANTS: Record<
-  string,
-  "primary" | "success" | "info" | "warning" | "danger"
-> = {
-  "Mi experiencia": "success",
-  Orientación: "primary",
-  Recursos: "info",
-  Pregunta: "warning",
-};
 
 interface PostHeaderProps {
   post: Post;
@@ -60,7 +49,16 @@ export function PostHeader({ post }: PostHeaderProps) {
 
       <div className="flex gap-1.5 flex-wrap justify-end">
         {post.tags.map((tag) => (
-          <Tag key={tag} label={tag} variant={TAG_VARIANTS[tag] ?? "neutral"} />
+          <span
+            key={tag.name}
+            className="text-xs px-2 py-0.5 rounded-full font-medium"
+            style={{
+              backgroundColor: `${tag.color}20`,
+              color: tag.color,
+            }}
+          >
+            {tag.name}
+          </span>
         ))}
       </div>
     </div>

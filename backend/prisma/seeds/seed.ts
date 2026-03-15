@@ -1,4 +1,4 @@
-import prisma from "./prisma";
+import prisma from "../../src/lib/prisma";
 
 async function main() {
   await prisma.knowledgeTestResult.deleteMany();
@@ -10,25 +10,6 @@ async function main() {
   await prisma.user.deleteMany();
   await prisma.tag.deleteMany();
   await prisma.tagCategory.deleteMany();
-  // Crear tags y categorías
-  const category = await prisma.tagCategory.create({
-    data: {
-      name: "General",
-      description: "Tags generales",
-      color: "#5a1236",
-      tags: {
-        create: [
-          { name: "Mi experiencia" },
-          { name: "Pregunta" },
-          { name: "Orientación" },
-          { name: "Recursos" },
-          { name: "Carreras" },
-          { name: "Test vocacional" },
-        ],
-      },
-    },
-    include: { tags: true },
-  });
 
   // Crear usuario autor
   const author = await prisma.user.create({
@@ -42,9 +23,6 @@ async function main() {
   });
 
   // Crear posts
-  const tag1 = category.tags.find((t) => t.name === "Mi experiencia")!;
-  const tag2 = category.tags.find((t) => t.name === "Orientación")!;
-
   await prisma.post.create({
     data: {
       authorId: author.id,
@@ -52,9 +30,6 @@ async function main() {
       content:
         "Cuando estaba en preparatoria no sabía qué estudiar, pero después de hacer el test vocacional todo cambió. Les comparto mi experiencia para que no se sientan solos en este proceso.",
       moderation: "APPROVED",
-      tags: {
-        create: [{ tagId: tag1.id }, { tagId: tag2.id }],
-      },
     },
   });
 
@@ -65,9 +40,6 @@ async function main() {
       content:
         "Tres preguntas que me hubiera gustado hacerme antes de elegir: ¿Qué se me da bien? ¿Qué me apasiona? ¿Qué necesita el mundo? Si respondes las tres, el resto se acomoda.",
       moderation: "APPROVED",
-      tags: {
-        create: [{ tagId: tag2.id }],
-      },
     },
   });
 
