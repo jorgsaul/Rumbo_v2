@@ -61,11 +61,13 @@ export const submitKnowledge = async (req: AuthRequest, res: Response) => {
 
 export const getUserResults = async (req: AuthRequest, res: Response) => {
   try {
-    const { userId } = req.params;
-    const data = await getUserResultsService(userId as string);
-    res.json({ ok: true, response: data });
+    const results = await getUserResultsService(
+      req.params.userId as string,
+      req.userId!,
+    );
+    res.json({ ok: true, response: results });
   } catch (error: any) {
-    res.status(500).json({ ok: false, message: error.message });
+    res.status(403).json({ ok: false, message: error.message });
   }
 };
 

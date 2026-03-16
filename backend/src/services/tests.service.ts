@@ -123,7 +123,18 @@ export const submitKnowledgeService = async (
   return result;
 };
 
-export const getUserResultsService = async (userId: string) => {
+export const getUserResultsService = async (
+  userId: string,
+  requestingUserId: string,
+) => {
+  if (userId !== requestingUserId) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { isPrivate: true },
+    });
+    if (user?.isPrivate) throw new Error("Este perfil es privado");
+  }
+
   const [vocalResults, knowledgeResults] = await Promise.all([
     prisma.vocalTestResult.findMany({
       where: { userId },
@@ -159,13 +170,21 @@ export const getLatestVocationalResultService = async (userId: string) => {
 
 export const getVocalResultByIdService = async (
   resultId: string,
-  userId: string,
+  requestingUserId: string,
 ) => {
   const result = await prisma.vocalTestResult.findUnique({
     where: { id: resultId },
+    include: {
+      user: {
+        select: { isPrivate: true, id: true },
+      },
+    },
   });
+
   if (!result) throw new Error("Resultado no encontrado");
-  if (result.userId !== userId) throw new Error("No autorizado");
+  if (result.userId === requestingUserId) return result;
+  if (result.user.isPrivate) throw new Error("Este perfil es privado");
+
   return result;
 };
 
