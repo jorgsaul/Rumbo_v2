@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FlaskConical, BookOpen, Trophy, Clock } from "lucide-react";
+import { FlaskConical, BookOpen, Trophy, Clock, Share2 } from "lucide-react";
+import { useToast } from "@/context/ToastContext";
 import { cn } from "@/lib/utils/cn";
 import Card from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
@@ -15,6 +16,7 @@ import type {
   KnowledgeTestResult,
   IkigaiZone,
 } from "@/features/tests/types/tests.types";
+import { IconButton } from "@/components/ui";
 
 const isVocational = (r: TestResult): r is VocalTestResult => "zonaIkigai" in r;
 
@@ -37,6 +39,19 @@ const getScoreVariant = (
 };
 
 function VocalResultCard({ result }: { result: VocalTestResult }) {
+  const { addToast } = useToast();
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}/resultados/${result.id}`;
+    navigator.clipboard.writeText(url);
+    addToast({
+      title: "Link copiado",
+      description: "Comparte tu resultado con quien quieras",
+      category: "success",
+    });
+  };
+
   const zona = ZONA_LABEL[result.zonaIkigai];
   const profile = {
     tecnologico: result.perfilTecnologico,
@@ -73,6 +88,15 @@ function VocalResultCard({ result }: { result: VocalTestResult }) {
           </div>
         </div>
         <Tag label={zona.label} variant={zona.variant} />
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Tag label={zona.label} variant={zona.variant} />
+        <IconButton
+          icon={Share2}
+          label="Compartir resultado"
+          onClick={() => handleShare}
+        />
       </div>
 
       <div className="flex items-center gap-3">
