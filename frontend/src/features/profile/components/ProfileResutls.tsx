@@ -41,8 +41,7 @@ const getScoreVariant = (
 function VocalResultCard({ result }: { result: VocalTestResult }) {
   const { addToast } = useToast();
 
-  const handleShare = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleShare = () => {
     const url = `${window.location.origin}/resultados/${result.id}`;
     navigator.clipboard.writeText(url);
     addToast({
@@ -92,11 +91,13 @@ function VocalResultCard({ result }: { result: VocalTestResult }) {
 
       <div className="flex items-center gap-2">
         <Tag label={zona.label} variant={zona.variant} />
-        <IconButton
-          icon={Share2}
-          label="Compartir resultado"
-          onClick={() => handleShare}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <IconButton
+            icon={Share2}
+            label="Compartir resultado"
+            onClick={handleShare}
+          />
+        </div>
       </div>
 
       <div className="flex items-center gap-3">
