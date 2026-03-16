@@ -25,7 +25,15 @@ export const getPostsService = async (
         },
       },
       tags: {
-        include: { tag: true },
+        include: {
+          tag: {
+            include: {
+              category: {
+                select: { color: true },
+              },
+            },
+          },
+        },
       },
       _count: {
         select: { likes: true, comments: true },
@@ -51,7 +59,10 @@ export const getPostsService = async (
     title: post.title,
     content: post.content,
     mediaUrl: post.mediaUrl,
-    tags: post.tags.map((pt) => pt.tag.name),
+    tags: post.tags.map((pt) => ({
+      name: pt.tag.name,
+      color: pt.tag.category?.color ?? "#6b7280",
+    })),
     likes: post._count.likes,
     commentsCount: post._count.comments,
     isLiked: post.likes.length > 0,
@@ -97,7 +108,15 @@ export const createPostService = async (
         },
       },
       tags: {
-        include: { tag: true },
+        include: {
+          tag: {
+            include: {
+              category: {
+                select: { color: true },
+              },
+            },
+          },
+        },
       },
       _count: {
         select: { likes: true, comments: true },
@@ -111,7 +130,10 @@ export const createPostService = async (
     title: post.title,
     content: post.content,
     mediaUrl: post.mediaUrl,
-    tags: post.tags.map((pt) => pt.tag.name),
+    tags: post.tags.map((pt) => ({
+      name: pt.tag.name,
+      color: pt.tag.category?.color ?? "#6b7280",
+    })),
     likes: post._count.likes,
     commentsCount: post._count.comments,
     isLiked: false,
@@ -232,7 +254,17 @@ export const searchPostsService = async (userId: string, q: string) => {
           role: true,
         },
       },
-      tags: { include: { tag: true } },
+      tags: {
+        include: {
+          tag: {
+            include: {
+              category: {
+                select: { color: true },
+              },
+            },
+          },
+        },
+      },
       _count: { select: { likes: true, comments: true } },
       likes: { where: { userId }, select: { userId: true } },
       favorites: { where: { userId }, select: { userId: true } },
@@ -245,7 +277,10 @@ export const searchPostsService = async (userId: string, q: string) => {
     title: post.title,
     content: post.content,
     mediaUrl: post.mediaUrl,
-    tags: post.tags.map((pt) => pt.tag.name),
+    tags: post.tags.map((pt) => ({
+      name: pt.tag.name,
+      color: pt.tag.category?.color ?? "#6b7280",
+    })),
     likes: post._count.likes,
     commentsCount: post._count.comments,
     isLiked: post.likes.length > 0,
