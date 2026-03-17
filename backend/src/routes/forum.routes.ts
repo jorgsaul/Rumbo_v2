@@ -15,10 +15,6 @@ import {
 
 const router = Router();
 
-router.get("/", authMiddleware, getForums);
-router.get("/:forumId", authMiddleware, getForumById);
-router.get("/:forumId/posts", authMiddleware, getForumPosts);
-router.post("/requests", authMiddleware, createForumRequest);
 router.get(
   "/admin/requests",
   authMiddleware,
@@ -37,5 +33,10 @@ router.patch(
   adminMiddleware,
   adminToggleForum,
 );
+
+router.get("/", authMiddleware, getForums);
+router.get("/:forumId", authMiddleware, getForumById);
+router.get("/:forumId/posts", authMiddleware, getForumPosts);
+router.post("/requests", authMiddleware, createForumRequest);
 
 export default router;
