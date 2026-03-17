@@ -19,12 +19,13 @@ export const feedService = {
     );
   },
 
-  createPost: (data: {
+  createPost: async (data: {
     title?: string;
     content: string;
-    tags: string[];
+    tags?: string[];
     mediaUrl?: string;
     mediaPublicId?: string;
+    forumId?: string;
   }): Promise<ApiResponse<Post>> => post<ApiResponse<Post>>("/feed", data),
 
   deletePost: (postId: string): Promise<ApiResponse<null>> =>

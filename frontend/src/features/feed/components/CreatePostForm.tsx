@@ -4,21 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import { feedService } from "../services/feedService";
 import type { Post } from "../types/feed.types";
 import { Button } from "@/components/ui";
-import { Tag } from "@/components/ui";
 import Card from "@/components/ui/Card";
 import { ChevronDown, X, ImagePlus, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib";
-
-const TAG_VARIANTS: Record<
-  string,
-  "primary" | "success" | "info" | "warning" | "danger" | "neutral"
-> = {
-  "Mi experiencia": "success",
-  Orientación: "primary",
-  Recursos: "info",
-  Pregunta: "warning",
-};
 
 interface AvailableTag {
   id: string;
@@ -28,11 +17,15 @@ interface AvailableTag {
 
 interface CreatePostFormProps {
   onPostCreated: (post: Post) => void;
+  forumId?: string;
 }
 
 const MAX_TAGS = 3;
 
-export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
+export function CreatePostForm({
+  onPostCreated,
+  forumId,
+}: CreatePostFormProps) {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [selectedTags, setSelectedTags] = useState<AvailableTag[]>([]);
@@ -112,6 +105,7 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
         tags: selectedTags.map((t) => t.id),
         mediaUrl: uploadedMedia?.url,
         mediaPublicId: uploadedMedia?.publicId,
+        forumId,
       });
       if (res.ok) {
         onPostCreated(res.response);
