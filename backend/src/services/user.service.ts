@@ -1,6 +1,7 @@
 import prisma from "../lib/prisma";
 import { getPostsService } from "./feed.service";
 import { uploadImageService, deleteImageService } from "./upload.service";
+import { createNotificationService } from "./notification.service";
 
 export const getMeService = async (userId: string) => {
   const user = await prisma.user.findUnique({
@@ -302,6 +303,14 @@ export const adminUpdateUserService = async (
   userId: string,
   data: { role?: "STUDENT" | "AUTHOR" | "ADMIN"; isActive?: boolean },
 ) => {
+  if (data.isActive === false) {
+    await createNotificationService(
+      userId,
+      "ACCOUNT_DEACTIVATED",
+      "Cuenta desactivada",
+      "Tu cuenta ha sido desactivada. Contacta al equipo si crees que es un error.",
+    );
+  }
   return prisma.user.update({
     where: { id: userId },
     data,

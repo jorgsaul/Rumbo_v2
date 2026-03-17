@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma";
+import { createNotificationService } from "./notification.service";
 
 export const getForumsService = async () => {
   return prisma.forum.findMany({
@@ -120,6 +121,16 @@ export const adminResolveForumRequestService = async (
       },
     });
   }
+
+  await createNotificationService(
+    request.userId,
+    "FORUM_REQUEST",
+    action === "APPROVED" ? "Foro aprobado" : "Foro rechazado",
+    action === "APPROVED"
+      ? `Tu solicitud para crear "${request.name}" fue aprobada`
+      : `Tu solicitud para crear "${request.name}" fue rechazada`,
+    action === "APPROVED" ? "/foros" : undefined,
+  );
 };
 
 export const adminToggleForumService = async (forumId: string) => {
