@@ -1,9 +1,10 @@
 import PostDetailPage from "@/features/forums/components/PostDetailPage";
 
-export default function Page({
+export default async function Page({
   params,
 }: {
-  params: { forumId: string; postId: string };
+  params: Promise<{ forumId: string; postId: string }>;
 }) {
-  return <PostDetailPage postId={params.postId} forumId={params.forumId} />;
+  const { forumId, postId } = await params;
+  return <PostDetailPage postId={postId} forumId={forumId} />;
 }
