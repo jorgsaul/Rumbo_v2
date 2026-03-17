@@ -32,6 +32,11 @@ export interface PostComment {
     avatarUrl?: string;
     role: string;
   };
+  post?: {
+    id: string;
+    title?: string | null;
+    content: string;
+  };
   content: string;
   isHidden: boolean;
   createdAt: string;
