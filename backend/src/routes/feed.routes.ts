@@ -13,6 +13,7 @@ import {
   adminGetModerationStats,
   adminGetReports,
   adminModeratePost,
+  getPostById,
 } from "../controllers/feed.controller";
 import {
   getComments,
@@ -28,6 +29,7 @@ const router = Router();
 
 router.get("/tags", getTags);
 router.get("/", authMiddleware, getPosts);
+router.get("/:postId", authMiddleware, getPostById);
 router.delete("/:postId", authMiddleware, deletePost);
 router.post("/:postId/like", authMiddleware, likePost);
 router.post("/:postId/save", authMiddleware, savePost);

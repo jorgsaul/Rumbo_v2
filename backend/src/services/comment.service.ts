@@ -2,7 +2,7 @@ import prisma from "../lib/prisma";
 
 export const getCommentsService = async (postId: string) => {
   return prisma.comment.findMany({
-    where: { postId, isHidden: false },
+    where: { postId, isHidden: false, parentId: null }, // solo comentarios raíz
     orderBy: { createdAt: "asc" },
     include: {
       author: {
@@ -14,6 +14,22 @@ export const getCommentsService = async (postId: string) => {
           role: true,
         },
       },
+      replies: {
+        where: { isHidden: false },
+        orderBy: { createdAt: "asc" },
+        include: {
+          author: {
+            select: {
+              id: true,
+              username: true,
+              fullName: true,
+              avatarUrl: true,
+              role: true,
+            },
+          },
+        },
+      },
+      _count: { select: { replies: true } },
     },
   });
 };
@@ -22,11 +38,17 @@ export const createCommentService = async (
   authorId: string,
   postId: string,
   content: string,
+  parentId?: string,
 ) => {
   if (!content?.trim()) throw new Error("El comentario no puede estar vacío");
 
   return prisma.comment.create({
-    data: { authorId, postId, content: content.trim() },
+    data: {
+      authorId,
+      postId,
+      content: content.trim(),
+      parentId: parentId ?? null,
+    },
     include: {
       author: {
         select: {
@@ -37,6 +59,8 @@ export const createCommentService = async (
           role: true,
         },
       },
+      replies: true,
+      _count: { select: { replies: true } },
     },
   });
 };
