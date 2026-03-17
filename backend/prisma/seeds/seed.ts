@@ -17,29 +17,8 @@ async function main() {
       username: "carlos_autor",
       fullName: "Carlos Mendoza",
       email: "carlos@rumbo.com",
-      password: "hasheado123",
+      password: "$2b$10$yz1w9vpkOZgtvfu1dYYWoeRC8xPGGA9ebxo5AhN7h2AvL0CZXMTwq",
       role: "AUTHOR",
-    },
-  });
-
-  // Crear posts
-  await prisma.post.create({
-    data: {
-      authorId: author.id,
-      title: "Mi camino a ingeniería",
-      content:
-        "Cuando estaba en preparatoria no sabía qué estudiar, pero después de hacer el test vocacional todo cambió. Les comparto mi experiencia para que no se sientan solos en este proceso.",
-      moderation: "APPROVED",
-    },
-  });
-
-  await prisma.post.create({
-    data: {
-      authorId: author.id,
-      title: "¿Cómo elegir carrera sin morir en el intento?",
-      content:
-        "Tres preguntas que me hubiera gustado hacerme antes de elegir: ¿Qué se me da bien? ¿Qué me apasiona? ¿Qué necesita el mundo? Si respondes las tres, el resto se acomoda.",
-      moderation: "APPROVED",
     },
   });
 
