@@ -1,10 +1,11 @@
 "use client";
 
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, Search, Bell } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import { Search } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { SearchModal } from "@/features/search/components/SearchModal";
+import NotificationPanel from "@/features/notifications/components/NotificationPanel";
+import { useNotifications } from "@/features/notifications/hooks/useNotifications";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -12,6 +13,20 @@ interface HeaderProps {
 
 export default function Header({ onMenuToggle }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const { notifications, unreadCount, markAsRead, markAllAsRead } =
+    useNotifications();
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -35,6 +50,30 @@ export default function Header({ onMenuToggle }: HeaderProps) {
         >
           <Search size={20} />
         </button>
+
+        <div className="relative" ref={notifRef}>
+          <button
+            onClick={() => setNotifOpen((prev) => !prev)}
+            className="relative text-white hover:opacity-80 transition-opacity"
+          >
+            <Bell size={20} />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-danger text-white text-[10px] font-bold flex items-center justify-center">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </button>
+
+          {notifOpen && (
+            <NotificationPanel
+              notifications={notifications}
+              unreadCount={unreadCount}
+              onMarkAsRead={markAsRead}
+              onMarkAllAsRead={markAllAsRead}
+              onClose={() => setNotifOpen(false)}
+            />
+          )}
+        </div>
       </header>
 
       {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} />}
