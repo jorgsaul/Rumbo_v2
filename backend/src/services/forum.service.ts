@@ -55,6 +55,7 @@ export const getForumPostsService = async (forumId: string, userId: string) => {
     title: post.title,
     content: post.content,
     mediaUrl: post.mediaUrl,
+    forumId: post.forumId,
     tags: post.tags.map((pt) => ({
       name: pt.tag.name,
       color: pt.tag.category?.color ?? "#6b7280",

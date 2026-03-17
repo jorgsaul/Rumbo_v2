@@ -59,6 +59,7 @@ export const getPostsService = async (
     title: post.title,
     content: post.content,
     mediaUrl: post.mediaUrl,
+    forumId: post.forumId,
     tags: post.tags.map((pt) => ({
       name: pt.tag.name,
       color: pt.tag.category?.color ?? "#6b7280",
@@ -182,6 +183,7 @@ export const createPostService = async (
     title: post.title,
     content: post.content,
     mediaUrl: post.mediaUrl,
+    forumId: post.forumId,
     tags: post.tags.map((pt) => ({
       name: pt.tag.name,
       color: pt.tag.category?.color ?? "#6b7280",
@@ -329,6 +331,7 @@ export const searchPostsService = async (userId: string, q: string) => {
     title: post.title,
     content: post.content,
     mediaUrl: post.mediaUrl,
+    forumId: post.forumId,
     tags: post.tags.map((pt) => ({
       name: pt.tag.name,
       color: pt.tag.category?.color ?? "#6b7280",
