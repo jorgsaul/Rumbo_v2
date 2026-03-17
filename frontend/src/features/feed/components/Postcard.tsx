@@ -11,6 +11,7 @@ import { Trash2 } from "lucide-react";
 import { useAuthStore } from "@/features/auth/hooks/useAuthStore";
 import { feedService } from "../services/feedService";
 import { useConfirmation } from "@/context/ConfirmationContext";
+import { useRouter } from "next/navigation";
 
 interface PostCardProps {
   post: Post;
@@ -27,10 +28,10 @@ export function PostCard({
   onSave,
   onDeleted,
 }: PostCardProps) {
-  const [showComments, setShowComments] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const { user } = useAuthStore();
-  const {confirm} = useConfirmation();
+  const { confirm } = useConfirmation();
+  const router = useRouter();
 
   const isOwner = user?.id === post.author.id;
 
@@ -38,10 +39,10 @@ export function PostCard({
     const approved = await confirm({
       title: "¿Deseas eliminar tu publicacion?",
       description: "Esta acción no es reversible",
-      category: "warning"
-    })
-    if(!approved) return
-    
+      category: "warning",
+    });
+    if (!approved) return;
+
     setDeleting(true);
     try {
       await feedService.deletePost(post.id);
@@ -58,14 +59,19 @@ export function PostCard({
       rounded="xl"
       padding="md"
       clickable="none"
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-4 cursor-pointer"
+      onClick={() =>
+        router.push(`/foros/${post.forumId ?? "general"}/${post.id}`)
+      }
     >
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <PostHeader post={post} />
         </div>
         {isOwner && (
-          <IconButton icon={Trash2} label="Eliminar" onClick={handleDelete} />
+          <div onClick={(e) => e.stopPropagation()}>
+            <IconButton icon={Trash2} label="Eliminar" onClick={handleDelete} />
+          </div>
         )}
       </div>
 
@@ -93,11 +99,12 @@ export function PostCard({
       <PostActions
         post={post}
         onLike={onLike}
-        onComment={() => setShowComments((prev) => !prev)}
+        onComment={() =>
+          router.push(`/foros/${post.forumId ?? "general"}/${post.id}`)
+        }
         onReport={onReport}
         onSave={onSave}
       />
-      {showComments && <CommentSection postId={post.id} />}
     </Card>
   );
 }

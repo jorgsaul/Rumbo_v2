@@ -13,7 +13,20 @@ import {
   adminGetModerationStatsService,
   adminGetReportsService,
   adminModeratePostService,
+  getPostByIdService,
 } from "../services/feed.service";
+
+export const getPostById = async (req: AuthRequest, res: Response) => {
+  try {
+    const post = await getPostByIdService(
+      req.params.postId as string,
+      req.userId!,
+    );
+    res.json({ ok: true, response: post });
+  } catch (error: any) {
+    res.status(404).json({ ok: false, message: error.message });
+  }
+};
 
 export const getPosts = async (req: AuthRequest, res: Response) => {
   try {

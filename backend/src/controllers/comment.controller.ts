@@ -21,6 +21,7 @@ export const createComment = async (req: AuthRequest, res: Response) => {
       req.userId!,
       req.params.postId as string,
       req.body.content,
+      req.body.parentId,
     );
     res.status(201).json({ ok: true, response: comment });
   } catch (error: any) {

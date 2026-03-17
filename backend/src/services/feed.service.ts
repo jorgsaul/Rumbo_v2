@@ -59,6 +59,7 @@ export const getPostsService = async (
     title: post.title,
     content: post.content,
     mediaUrl: post.mediaUrl,
+    forumId: post.forumId,
     tags: post.tags.map((pt) => ({
       name: pt.tag.name,
       color: pt.tag.category?.color ?? "#6b7280",
@@ -73,6 +74,56 @@ export const getPostsService = async (
   }));
 };
 
+export const getPostByIdService = async (postId: string, userId: string) => {
+  const post = await prisma.post.findUnique({
+    where: { id: postId, isHidden: false },
+    include: {
+      author: {
+        select: {
+          id: true,
+          username: true,
+          fullName: true,
+          avatarUrl: true,
+          role: true,
+        },
+      },
+      tags: {
+        include: {
+          tag: {
+            include: { category: { select: { color: true } } },
+          },
+        },
+      },
+      _count: { select: { likes: true, comments: true } },
+      likes: { where: { userId }, select: { userId: true } },
+      favorites: { where: { userId }, select: { userId: true } },
+      reports: { where: { reporterId: userId }, select: { reporterId: true } },
+    },
+  });
+
+  if (!post) throw new Error("Publicación no encontrada");
+
+  return {
+    id: post.id,
+    author: post.author,
+    title: post.title,
+    content: post.content,
+    mediaUrl: post.mediaUrl,
+    forumId: post.forumId,
+    tags: post.tags.map((pt) => ({
+      name: pt.tag.name,
+      color: pt.tag.category?.color ?? "#6b7280",
+    })),
+    likes: post._count.likes,
+    commentsCount: post._count.comments,
+    isLiked: post.likes.length > 0,
+    isSaved: post.favorites.length > 0,
+    isReported: post.reports.length > 0,
+    createdAt: post.createdAt,
+    moderation: post.moderation,
+  };
+};
+
 export const createPostService = async (
   authorId: string,
   data: {
@@ -81,6 +132,7 @@ export const createPostService = async (
     tags?: string[];
     mediaUrl?: string;
     mediaPublicId: string;
+    forumId?: string;
   },
 ) => {
   if (!data.content?.trim())
@@ -93,6 +145,7 @@ export const createPostService = async (
       content: data.content.trim(),
       mediaUrl: data.mediaUrl ?? null,
       moderation: "APPROVED",
+      forumId: data.forumId ?? null,
       tags: {
         create: data.tags?.map((tagId) => ({ tagId })) ?? [],
       },
@@ -130,6 +183,7 @@ export const createPostService = async (
     title: post.title,
     content: post.content,
     mediaUrl: post.mediaUrl,
+    forumId: post.forumId,
     tags: post.tags.map((pt) => ({
       name: pt.tag.name,
       color: pt.tag.category?.color ?? "#6b7280",
@@ -277,6 +331,7 @@ export const searchPostsService = async (userId: string, q: string) => {
     title: post.title,
     content: post.content,
     mediaUrl: post.mediaUrl,
+    forumId: post.forumId,
     tags: post.tags.map((pt) => ({
       name: pt.tag.name,
       color: pt.tag.category?.color ?? "#6b7280",

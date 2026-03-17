@@ -14,6 +14,7 @@ export interface Post {
   isReported: boolean;
   commentsCount: number;
   createdAt: string;
+  forumId: string | null;
   moderation?: ModerationStatus;
 }
 
@@ -31,12 +32,15 @@ export interface PostComment {
     avatarUrl?: string;
     role: string;
   };
+  post?: {
+    id: string;
+    title?: string | null;
+    content: string;
+  };
   content: string;
   isHidden: boolean;
   createdAt: string;
-  post?: {
-    id: string;
-    title: string;
-    content: string;
-  };
+  parentId?: string | null;
+  replies?: PostComment[];
+  _count?: { replies: number };
 }

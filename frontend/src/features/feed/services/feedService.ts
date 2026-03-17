@@ -8,6 +8,9 @@ export const feedService = {
     return get<ApiResponse<Post[]>>(url);
   },
 
+  getPostById: async (postId: string): Promise<ApiResponse<Post>> =>
+    get<ApiResponse<Post>>(`/feed/${postId}`),
+
   uploadImage: async (
     file: File,
   ): Promise<ApiResponse<{ url: string; publicId: string }>> => {
@@ -19,12 +22,13 @@ export const feedService = {
     );
   },
 
-  createPost: (data: {
+  createPost: async (data: {
     title?: string;
     content: string;
-    tags: string[];
+    tags?: string[];
     mediaUrl?: string;
     mediaPublicId?: string;
+    forumId?: string;
   }): Promise<ApiResponse<Post>> => post<ApiResponse<Post>>("/feed", data),
 
   deletePost: (postId: string): Promise<ApiResponse<null>> =>
@@ -50,11 +54,11 @@ export const feedService = {
   getComments: (postId: string): Promise<ApiResponse<PostComment[]>> =>
     get<ApiResponse<PostComment[]>>(`/feed/${postId}/comments`),
 
-  createComment: (
-    postId: string,
-    content: string,
-  ): Promise<ApiResponse<PostComment>> =>
-    post<ApiResponse<PostComment>>(`/feed/${postId}/comments`, { content }),
+  createComment: async (postId: string, content: string, parentId?: string) =>
+    post<ApiResponse<PostComment>>(`/feed/${postId}/comments`, {
+      content,
+      parentId,
+    }),
 
   deleteComment: (
     postId: string,

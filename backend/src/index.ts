@@ -7,6 +7,7 @@ import feedRoutes from "./routes/feed.routes";
 import userRoutes from "./routes/user.routes";
 import testsRoutes from "./routes/tests.routes";
 import ticketRoutes from "./routes/ticket.routes";
+import forumRoutes from "./routes/forum.routes";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -23,6 +24,7 @@ app.use("/auth", authRoutes);
 app.use("/feed", feedRoutes);
 app.use("/users", userRoutes);
 app.use("/tickets", ticketRoutes);
+app.use("/forums", forumRoutes);
 
 app.get("/health", (req, res) => {
   res.json({ ok: true, message: "API funcionando" });
