@@ -16,7 +16,10 @@ export default function ForumCard({ forum }: { forum: Forum }) {
       shadow="sm"
       clickable="lift"
       className="space-y-3 cursor-pointer"
-      onClick={() => router.push(`/foros/${forum.id}`)}
+      onClick={() => {
+        console.log(forum.id);
+        router.push(`/foros/${forum.id}`);
+      }}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
