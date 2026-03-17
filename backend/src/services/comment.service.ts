@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma";
+import { createNotificationService } from "./notification.service";
 
 export const getCommentsService = async (postId: string) => {
   return prisma.comment.findMany({
@@ -41,6 +42,37 @@ export const createCommentService = async (
   parentId?: string,
 ) => {
   if (!content?.trim()) throw new Error("El comentario no puede estar vacío");
+
+  const postData = await prisma.post.findUnique({
+    where: { id: postId },
+    select: { authorId: true, forumId: true },
+  });
+
+  if (postData && postData.authorId !== authorId) {
+    await createNotificationService(
+      postData.authorId,
+      "POST_COMMENT",
+      "Nuevo comentario",
+      `Alguien comentó tu publicación`,
+      `/foros/${postData.forumId ?? "general"}/${postId}`,
+    );
+  }
+
+  if (parentId) {
+    const parentComment = await prisma.comment.findUnique({
+      where: { id: parentId },
+      select: { authorId: true },
+    });
+    if (parentComment && parentComment.authorId !== authorId) {
+      await createNotificationService(
+        parentComment.authorId,
+        "COMMENT_REPLY",
+        "Nueva respuesta",
+        `Alguien respondió tu comentario`,
+        `/foros/${postData?.forumId ?? "general"}/${postId}`,
+      );
+    }
+  }
 
   return prisma.comment.create({
     data: {

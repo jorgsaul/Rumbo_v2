@@ -40,6 +40,8 @@ model User {
   reports          Report[]
   tickets          Ticket[]
   vocalTestResults VocalTestResult[]
+  notifications    Notification[]
+  deactivationReason String?
 }
 
 model PendingVerification {
@@ -256,6 +258,27 @@ model ForumRequest {
   forumId     String?
   forum       Forum?             @relation(fields: [forumId], references: [id])
   user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  body      String
+  read      Boolean          @default(false)
+  link      String?
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum NotificationType {
+  NEW_POST_FOLLOWED
+  POST_COMMENT
+  COMMENT_REPLY
+  FORUM_REQUEST
+  POST_HIDDEN
+  ACCOUNT_DEACTIVATED
 }
 
 enum Role {

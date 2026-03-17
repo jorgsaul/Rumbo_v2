@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma";
+import { createNotificationService } from "./notification.service";
 
 export const getPostsService = async (
   userId: string,
@@ -177,6 +178,23 @@ export const createPostService = async (
     },
   });
 
+  const followers = await prisma.follow.findMany({
+    where: { followingId: authorId },
+    select: { followerId: true },
+  });
+
+  await Promise.all(
+    followers.map((f) =>
+      createNotificationService(
+        f.followerId,
+        "NEW_POST_FOLLOWED",
+        "Nueva publicación",
+        `${post.author.username} publicó algo nuevo`,
+        `/foros/${post.forumId ?? "general"}/${post.id}`,
+      ),
+    ),
+  );
+
   return {
     id: post.id,
     author: post.author,
@@ -269,6 +287,18 @@ export const reportPostService = async (userId: string, postId: string) => {
         moderation: "FLAGGED",
       },
     });
+    const hiddenPost = await prisma.post.findUnique({
+      where: { id: postId },
+      select: { authorId: true },
+    });
+    if (hiddenPost) {
+      await createNotificationService(
+        hiddenPost.authorId,
+        "POST_HIDDEN",
+        "Publicación ocultada",
+        "Tu publicación fue ocultada por reportes. El equipo la revisará.",
+      );
+    }
   }
 };
 
