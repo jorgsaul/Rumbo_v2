@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   LifeBuoy,
   ExternalLink,
+  Compass,
 } from "lucide-react";
 
 interface NavItem {
@@ -27,6 +28,11 @@ const baseItems: NavItem[] = [
     label: "Feed",
     href: "/feed",
     icon: Rss,
+  },
+  {
+    label: "Explorar",
+    href: "/foros",
+    icon: Compass,
   },
   {
     label: "Tests",
@@ -65,6 +71,7 @@ const adminItems: NavItem[] = [
       { label: "Reportes", href: "/admin/moderation" },
       { label: "Usuarios", href: "/admin/users" },
       { label: "Soporte", href: "/admin/support" },
+      { label: "Foros", href: "/admin/forums" },
     ],
   },
 ];

@@ -15,6 +15,10 @@ const rutas = [
     label: "Soporte",
     href: "/admin/support",
   },
+  {
+    label: "Foros",
+    href: "/admin/forums",
+  },
 ];
 export default function AdminLayout({
   children,
