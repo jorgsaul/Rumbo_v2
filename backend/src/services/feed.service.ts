@@ -81,6 +81,7 @@ export const createPostService = async (
     tags?: string[];
     mediaUrl?: string;
     mediaPublicId: string;
+    forumId?: string;
   },
 ) => {
   if (!data.content?.trim())
@@ -93,6 +94,7 @@ export const createPostService = async (
       content: data.content.trim(),
       mediaUrl: data.mediaUrl ?? null,
       moderation: "APPROVED",
+      forumId: data.forumId ?? null,
       tags: {
         create: data.tags?.map((tagId) => ({ tagId })) ?? [],
       },
