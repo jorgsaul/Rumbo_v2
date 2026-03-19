@@ -14,6 +14,7 @@ import {
   adminGetReportsService,
   adminModeratePostService,
   getPostByIdService,
+  getPersonalizedFeedService,
 } from "../services/feed.service";
 
 export const getPostById = async (req: AuthRequest, res: Response) => {
@@ -25,6 +26,15 @@ export const getPostById = async (req: AuthRequest, res: Response) => {
     res.json({ ok: true, response: post });
   } catch (error: any) {
     res.status(404).json({ ok: false, message: error.message });
+  }
+};
+
+export const getPersonalizedFeed = async (req: AuthRequest, res: Response) => {
+  try {
+    const posts = await getPersonalizedFeedService(req.userId!);
+    res.json({ ok: true, response: posts });
+  } catch (error: any) {
+    res.status(500).json({ ok: false, message: error.message });
   }
 };
 

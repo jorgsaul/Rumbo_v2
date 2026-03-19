@@ -39,14 +39,12 @@ export default function ForumCard({ forum: initialForum }: { forum: Forum }) {
       className="cursor-pointer overflow-hidden p-0"
       onClick={() => router.push(`/foros/${forum.id}`)}
     >
-      {/* Banner */}
       <div className="w-full h-20 bg-primary/10 relative">
         {forum.bannerUrl ? (
           <Image src={forum.bannerUrl} alt="" fill className="object-cover" />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5" />
+          <div className="w-full h-full bg-linear-to-br from-primary/20 to-primary/5" />
         )}
-        {/* Imagen del foro */}
         <div className="absolute -bottom-4 left-4 w-10 h-10 rounded-xl border-2 border-white dark:border-neutral-900 bg-primary/10 overflow-hidden">
           {forum.imageUrl ? (
             <Image src={forum.imageUrl} alt="" fill className="object-cover" />

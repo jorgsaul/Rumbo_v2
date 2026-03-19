@@ -122,7 +122,7 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
         {forum.bannerUrl ? (
           <Image src={forum.bannerUrl} alt="" fill className="object-cover" />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5" />
+          <div className="w-full h-full bg-linear-to-br from-primary/20 to-primary/5" />
         )}
       </div>
 
