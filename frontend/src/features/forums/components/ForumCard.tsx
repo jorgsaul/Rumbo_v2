@@ -87,7 +87,10 @@ export default function ForumCard({ forum: initialForum }: { forum: Forum }) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => router.push(`/foros/${forum.id}/editar`)}
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/foros/${forum.id}/editar`);
+              }}
             >
               Editar
             </Button>

@@ -5,11 +5,12 @@ import { forumService, Forum } from "../services/forumService";
 import { feedService } from "@/features/feed/services/feedService";
 import type { Post } from "@/features/feed/types/feed.types";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, MessageSquare, Plus, Check } from "lucide-react";
+import { Loader2, MessageSquare, Plus, Check } from "lucide-react";
 import { PostCard } from "@/features/feed/components/Postcard";
 import { CreatePostForm } from "@/features/feed/components/CreatePostForm";
 import Button from "@/components/ui/Button";
 import Image from "next/image";
+import { useAuthStore } from "@/features/auth/hooks/useAuthStore";
 
 interface ForumDetailPageProps {
   forumId: string;
@@ -22,6 +23,8 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [joiningForum, setJoiningForum] = useState(false);
+  const { user } = useAuthStore();
+  const isCreator = forum?.createdBy.id === user?.id;
   const router = useRouter();
 
   useEffect(() => {
@@ -120,7 +123,7 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
 
       <div className="flex items-end justify-between gap-3 px-1">
         <div className="flex items-start gap-3">
-          <div className="w-14 h-14 rounded-2xl border-4 border-white dark:border-neutral-950 bg-primary/10 overflow-hidden shrink-0 -mt-8">
+          <div className="w-14 h-14 rounded-2xl border-4 border-white dark:border-neutral-950 bg-primary/10 overflow-hidden shrink-0 -mt-6">
             {forum.imageUrl ? (
               <Image
                 src={forum.imageUrl}
@@ -146,15 +149,26 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <Button
-            variant={forum.isMember ? "ghost" : "primary"}
-            size="sm"
-            onClick={handleJoin}
-            loading={joiningForum}
-            leftIcon={forum.isMember ? <Check size={13} /> : undefined}
-          >
-            {forum.isMember ? "Unido" : "Unirse"}
-          </Button>
+          {!isCreator && (
+            <Button
+              variant={forum.isMember ? "ghost" : "primary"}
+              size="sm"
+              onClick={handleJoin}
+              loading={joiningForum}
+              leftIcon={forum.isMember ? <Check size={13} /> : undefined}
+            >
+              {forum.isMember ? "Unido" : "Unirse"}
+            </Button>
+          )}
+          {isCreator && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push(`/foros/${forumId}/editar`)}
+            >
+              Editar
+            </Button>
+          )}
           <Button
             variant="primary"
             size="sm"

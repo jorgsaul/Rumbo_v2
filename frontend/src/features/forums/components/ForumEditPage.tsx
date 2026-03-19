@@ -109,7 +109,6 @@ export default function ForumEditPage({ forumId }: { forumId: string }) {
         </h1>
       </div>
 
-      {/* Banner */}
       <div className="relative w-full h-32 rounded-2xl overflow-hidden bg-primary/10">
         {forum.bannerUrl ? (
           <Image src={forum.bannerUrl} alt="" fill className="object-cover" />
