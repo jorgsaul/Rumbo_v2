@@ -24,10 +24,12 @@ import {
   authMiddleware,
   adminMiddleware,
 } from "../middlewares/auth.middleware";
+import { getPersonalizedFeedService } from "../services/feed.service";
 
 const router = Router();
 
 router.get("/tags", getTags);
+router.get("/personalized", authMiddleware, getPersonalizedFeedService);
 router.get("/", authMiddleware, getPosts);
 router.get("/:postId", authMiddleware, getPostById);
 router.delete("/:postId", authMiddleware, deletePost);

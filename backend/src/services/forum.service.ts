@@ -1,27 +1,47 @@
 import prisma from "../lib/prisma";
 import { createNotificationService } from "./notification.service";
 
-export const getForumsService = async () => {
-  return prisma.forum.findMany({
+export const getForumsService = async (userId: string) => {
+  const forums = await prisma.forum.findMany({
     where: { isActive: true },
     orderBy: { createdAt: "desc" },
     include: {
-      _count: { select: { posts: true } },
+      _count: { select: { posts: true, members: true } },
       createdBy: { select: { id: true, username: true } },
+      members: {
+        where: { userId },
+        select: { userId: true },
+      },
     },
   });
+
+  return forums.map((f) => ({
+    ...f,
+    isMember: f.members.length > 0,
+    members: undefined,
+  }));
 };
 
-export const getForumByIdService = async (forumId: string) => {
+export const getForumByIdService = async (forumId: string, userId: string) => {
   const forum = await prisma.forum.findUnique({
     where: { id: forumId },
     include: {
-      _count: { select: { posts: true } },
+      _count: { select: { posts: true, members: true } },
       createdBy: { select: { id: true, username: true } },
+      members: {
+        where: { userId },
+        select: { userId: true },
+      },
     },
   });
+
   if (!forum) throw new Error("Foro no encontrado");
-  return forum;
+
+  return {
+    ...forum,
+    isMember: forum.members.length > 0,
+    members: undefined,
+  };
 };
 
 export const getForumPostsService = async (forumId: string, userId: string) => {
@@ -83,6 +103,38 @@ export const createForumRequestService = async (
 
   return prisma.forumRequest.create({
     data: { userId, name: data.name, description: data.description },
+  });
+};
+
+export const joinForumService = async (userId: string, forumId: string) => {
+  const existing = await prisma.forumMember.findUnique({
+    where: { userId_forumId: { userId, forumId } },
+  });
+
+  if (existing) {
+    await prisma.forumMember.delete({
+      where: { userId_forumId: { userId, forumId } },
+    });
+    return { isMember: false };
+  }
+
+  await prisma.forumMember.create({
+    data: { userId, forumId },
+  });
+  return { isMember: true };
+};
+
+export const getMyForumsService = async (userId: string) => {
+  return prisma.forumMember.findMany({
+    where: { userId },
+    include: {
+      forum: {
+        include: {
+          _count: { select: { posts: true, members: true } },
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
   });
 };
 

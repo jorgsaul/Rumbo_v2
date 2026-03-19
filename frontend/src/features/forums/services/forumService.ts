@@ -8,8 +8,11 @@ export interface Forum {
   description?: string | null;
   isActive: boolean;
   createdAt: string;
+  imageUrl?: string | null;
+  bannerUrl?: string | null;
   createdBy: { id: string; username: string };
-  _count: { posts: number };
+  isMember: boolean;
+  _count: { posts: number; members: number };
 }
 
 export interface ForumRequest {
@@ -29,6 +32,18 @@ export const forumService = {
 
   getForumById: async (forumId: string): Promise<Forum> => {
     const { data } = await api.get<ApiResponse<Forum>>(`/forums/${forumId}`);
+    return data.response;
+  },
+
+  joinForum: async (forumId: string): Promise<{ isMember: boolean }> => {
+    const { data } = await api.post<ApiResponse<{ isMember: boolean }>>(
+      `/forums/${forumId}/join`,
+    );
+    return data.response;
+  },
+
+  getMyForums: async (): Promise<Forum[]> => {
+    const { data } = await api.get<ApiResponse<Forum[]>>("/forums/my");
     return data.response;
   },
 

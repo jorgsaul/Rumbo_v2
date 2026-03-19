@@ -16,7 +16,7 @@ export function useFeed(initialTag?: string) {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await feedService.getPosts(tag);
+      const res = await feedService.getPersonalizedFeed();
       if (res.ok) setPosts(res.response);
       else setError(res.message);
     } catch {

@@ -8,6 +8,9 @@ export const feedService = {
     return get<ApiResponse<Post[]>>(url);
   },
 
+  getPersonalizedFeed: async (): Promise<ApiResponse<Post[]>> =>
+    get<ApiResponse<Post[]>>("/feed/personalized"),
+
   getPostById: async (postId: string): Promise<ApiResponse<Post>> =>
     get<ApiResponse<Post>>(`/feed/${postId}`),
 

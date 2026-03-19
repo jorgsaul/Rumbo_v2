@@ -8,23 +8,49 @@ import {
   adminGetForumRequestsService,
   adminResolveForumRequestService,
   adminToggleForumService,
+  getMyForumsService,
+  joinForumService,
 } from "../services/forum.service";
 
-export const getForums = async (req: Request, res: Response) => {
+export const getForums = async (req: AuthRequest, res: Response) => {
   try {
-    const forums = await getForumsService();
+    const forums = await getForumsService(req.userId!);
     res.json({ ok: true, response: forums });
   } catch (error: any) {
     res.status(500).json({ ok: false, message: error.message });
   }
 };
 
-export const getForumById = async (req: Request, res: Response) => {
+export const getForumById = async (req: AuthRequest, res: Response) => {
   try {
-    const forum = await getForumByIdService(req.params.forumId as string);
+    const forum = await getForumByIdService(
+      req.params.forumId as string,
+      req.userId!,
+    );
     res.json({ ok: true, response: forum });
   } catch (error: any) {
     res.status(404).json({ ok: false, message: error.message });
+  }
+};
+
+export const joinForum = async (req: AuthRequest, res: Response) => {
+  try {
+    const result = await joinForumService(
+      req.userId!,
+      req.params.forumId as string,
+    );
+    res.json({ ok: true, response: result });
+  } catch (error: any) {
+    res.status(400).json({ ok: false, message: error.message });
+  }
+};
+
+export const getMyForums = async (req: AuthRequest, res: Response) => {
+  try {
+    const forums = await getMyForumsService(req.userId!);
+    res.json({ ok: true, response: forums });
+  } catch (error: any) {
+    res.status(500).json({ ok: false, message: error.message });
   }
 };
 
