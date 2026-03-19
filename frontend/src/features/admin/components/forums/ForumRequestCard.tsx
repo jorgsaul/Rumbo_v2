@@ -1,10 +1,17 @@
 "use client";
 
+import { Status } from "@/components/ui";
 import Card from "@/components/ui/Card";
 import { ForumRequest } from "@/features/forums/services/forumService";
 import { cn } from "@/lib";
 import { formatDate } from "@/utils/FormatDate";
 import { Check, Loader2, X } from "lucide-react";
+
+const STATUS_CONFIG = {
+  APPROVED: { label: "Aprobado", color: "bg-success/10" },
+  REJECTED: { label: "Rechazado", color: "bg-danger/10" },
+  PENDING: { label: "Pendiente", color: "bg-warning/10" },
+};
 
 export default function ForumRequestCard({
   request,
@@ -15,6 +22,8 @@ export default function ForumRequestCard({
   onResolve: (id: string, action: "APPROVED" | "REJECTED") => void;
   isUpdating: boolean;
 }) {
+  const status = STATUS_CONFIG[request.status];
+
   return (
     <Card padding="md" rounded="xl" border="light" shadow="sm">
       <div className="flex items-start justify-between gap-3">
@@ -71,18 +80,7 @@ export default function ForumRequestCard({
           </div>
         )}
 
-        {request.status !== "PENDING" && (
-          <span
-            className={cn(
-              "text-xs px-2 py-0.5 rounded-full font-medium shrink-0",
-              request.status === "APPROVED"
-                ? "bg-success/10 text-success"
-                : "bg-danger/10 text-danger",
-            )}
-          >
-            {request.status === "APPROVED" ? "Aprobado" : "Rechazado"}
-          </span>
-        )}
+        {request.status !== "PENDING" && <Status status={status} />}
       </div>
     </Card>
   );

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Ticket as ITicket } from "../types/support.types";
 import { cn } from "@/lib/utils/cn";
-import Card from "@/components/ui/Card";
+import { Card, Status } from "@/components/ui";
 import { formatDate } from "@/utils/FormatDate";
 import {
   STATUS_CONFIG,
@@ -36,17 +36,7 @@ export default function TicketCard({ ticket }: { ticket: ITicket }) {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <div className="flex items-center gap-1 text-xs font-medium text-neutral-500 dark:text-neutral-400">
-            <div
-              className={cn(
-                "w-1.5 h-1.5 rounded-full shrink-0",
-                ticket.status === "OPEN" && "bg-warning",
-                ticket.status === "IN_REVIEW" && "bg-info",
-                ticket.status === "RESOLVED" && "bg-success",
-              )}
-            />
-            {status.label}
-          </div>
+          <Status status={status} />
           <button
             onClick={() => setExpanded(!expanded)}
             className="text-neutral-300 hover:text-neutral-500 transition-colors"
