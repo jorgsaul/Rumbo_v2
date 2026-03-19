@@ -20,7 +20,10 @@ export function PostActions({
   onSave,
 }: PostActionsProps) {
   return (
-    <div className="flex items-center gap-5">
+    <div
+      className="flex items-center gap-5"
+      onClick={(e) => e.stopPropagation()}
+    >
       <IconButton
         icon={Heart}
         label="Me gusta"

@@ -16,21 +16,22 @@ import { cn } from "@/lib/utils/cn";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { formatDate } from "@/utils/FormatDate";
+import { Status } from "@/components/ui";
 
 const STATUS_CONFIG = {
   OPEN: {
     label: "Abierto",
-    color: "bg-warning/10 text-warning",
+    color: "bg-warning",
     icon: AlertCircle,
   },
   IN_REVIEW: {
     label: "En revisión",
-    color: "bg-info/10 text-info",
+    color: "bg-info",
     icon: Clock,
   },
   RESOLVED: {
     label: "Resuelto",
-    color: "bg-success/10 text-success",
+    color: "bg-success",
     icon: CheckCircle,
   },
 };
@@ -95,15 +96,7 @@ function TicketAdminCard({
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <span
-            className={cn(
-              "text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1",
-              status.color,
-            )}
-          >
-            <Icon size={11} />
-            {status.label}
-          </span>
+          <Status status={status} />
           <button
             onClick={() => setExpanded(!expanded)}
             className="text-neutral-300 hover:text-neutral-500"

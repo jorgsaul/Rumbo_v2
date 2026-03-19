@@ -22,7 +22,6 @@ export function FeedList() {
     <div className="space-y-4">
       <CreatePostForm onPostCreated={refetch} />
 
-      {/* Tabs */}
       <div className="flex gap-1 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
         {[
           { key: "all", label: "Para ti" },

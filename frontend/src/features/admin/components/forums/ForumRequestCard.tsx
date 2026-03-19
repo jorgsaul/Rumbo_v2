@@ -8,9 +8,9 @@ import { formatDate } from "@/utils/FormatDate";
 import { Check, Loader2, X } from "lucide-react";
 
 const STATUS_CONFIG = {
-  APPROVED: { label: "Aprobado", color: "bg-success/10" },
-  REJECTED: { label: "Rechazado", color: "bg-danger/10" },
-  PENDING: { label: "Pendiente", color: "bg-warning/10" },
+  APPROVED: { label: "Aprobado", color: "bg-success" },
+  REJECTED: { label: "Rechazado", color: "bg-danger" },
+  PENDING: { label: "Pendiente", color: "bg-warning" },
 };
 
 export default function ForumRequestCard({

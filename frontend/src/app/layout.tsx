@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Providers } from "./providers";
+export const dynamic = "force-dynamic";
+
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Mi App",
-  description: "Aplicación con cards coquetas",
+  title: "Rumbo",
+  description:
+    "Te brindamos herramientas para que puedas escoger mejor tu carrera profesional",
 };
 
 export default function RootLayout({
