@@ -47,9 +47,6 @@ export const forumService = {
     return data.response;
   },
 
-  getPersonalizedFeed: async (): Promise<ApiResponse<Post[]>> =>
-    get<ApiResponse<Post[]>>("/feed/personalized"),
-
   getForumPosts: async (forumId: string): Promise<Post[]> => {
     const { data } = await api.get<ApiResponse<Post[]>>(
       `/forums/${forumId}/posts`,
