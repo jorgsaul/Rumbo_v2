@@ -16,6 +16,7 @@ export interface Post {
   createdAt: string;
   forumId: string | null;
   moderation?: ModerationStatus;
+  forum: { id: string; name: string } | null;
 }
 
 export interface PostTag {

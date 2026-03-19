@@ -11,6 +11,8 @@ import {
   adminGetForumRequests,
   adminResolveForumRequest,
   adminToggleForum,
+  joinForum,
+  getMyForums,
 } from "../controllers/forum.controller";
 
 const router = Router();
@@ -33,6 +35,9 @@ router.patch(
   adminMiddleware,
   adminToggleForum,
 );
+
+router.post("/:forumId/join", authMiddleware, joinForum);
+router.get("/my", authMiddleware, getMyForums);
 
 router.get("/", authMiddleware, getForums);
 router.get("/:forumId", authMiddleware, getForumById);

@@ -30,11 +30,30 @@ export function PostHeader({ post }: PostHeaderProps) {
         </div>
 
         <div className="flex flex-col">
-          <span className="text-sm font-semibold text-neutral-900 dark:text-white leading-tight cursor-pointer hover:text-primary">
-            <Link href={`/profile/${post.author.username}`}>
-              {post.author.username}
-            </Link>
-          </span>
+          <div className="flex items-center gap-1.5">
+            {post.forum && (
+              <>
+                <Link
+                  href={`/foros/${post.forum.id}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs font-semibold text-primary hover:underline"
+                >
+                  {post.forum.name}
+                </Link>
+                <span className="text-neutral-300 dark:text-neutral-600">
+                  ·
+                </span>
+              </>
+            )}
+            <span className="text-sm font-semibold text-neutral-900 dark:text-white leading-tight cursor-pointer hover:text-primary">
+              <Link
+                href={`/profile/${post.author.username}`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                @{post.author.username}
+              </Link>
+            </span>
+          </div>
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-neutral-400 capitalize">
               {post.author.role === "STUDENT" ? "Estudiante" : "Autor"}

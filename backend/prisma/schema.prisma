@@ -42,6 +42,18 @@ model User {
   vocalTestResults VocalTestResult[]
   notifications    Notification[]
   deactivationReason String?
+  forumMemberships ForumMember[]
+}
+
+model ForumMember {
+  id        String   @id @default(cuid())
+  userId    String
+  forumId   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  forum     Forum    @relation(fields: [forumId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, forumId])
 }
 
 model PendingVerification {
@@ -246,6 +258,11 @@ model Forum {
   createdBy    User           @relation(fields: [createdById], references: [id])
   requests     ForumRequest[]
   posts        Post[]
+  imageUrl     String?
+  bannerUrl String?
+  bannerPublicId String?
+  imagePublicId String?
+  members ForumMember[]
 }
 
 model ForumRequest {
