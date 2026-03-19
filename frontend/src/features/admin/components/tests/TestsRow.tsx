@@ -13,8 +13,8 @@ import { useConfirmation } from "@/context/ConfirmationContext";
 import { Status } from "@/components/ui";
 
 const STATUS_CONFIG = {
-  ACTIVE: { label: "Activo", color: "bg-success/10" },
-  DRAFT: { label: "Borrador", color: "bg-warning/10g" },
+  ACTIVE: { label: "Activo", color: "bg-success" },
+  DRAFT: { label: "Borrador", color: "bg-warning" },
   INACTIVE: {
     label: "Inactivo",
     color: "bg-neutral-100 dark:bg-neutral-800",
