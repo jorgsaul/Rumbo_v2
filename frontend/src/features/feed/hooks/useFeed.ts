@@ -10,29 +10,40 @@ export function useFeed(initialTag?: string) {
   const [activeTag, setActiveTag] = useState<string | undefined>(initialTag);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"all" | "my-forums">("all");
   const { addToast } = useToast();
 
-  const fetchPosts = useCallback(async (tag?: string) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const res = await feedService.getPersonalizedFeed();
-      if (res.ok) setPosts(res.response);
-      else setError(res.message);
-    } catch {
-      setError("No se pudieron cargar los posts.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const fetchPosts = useCallback(
+    async (tab: "all" | "my-forums", tag?: string) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const res =
+          tab === "my-forums"
+            ? await feedService.getPersonalizedFeed()
+            : await feedService.getPosts(tag);
+        if (res.ok) setPosts(res.response);
+        else setError(res.message);
+      } catch {
+        setError("No se pudieron cargar los posts.");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    fetchPosts(activeTab, activeTag);
+  }, [activeTab, activeTag, fetchPosts]);
+
+  const switchTab = (tab: "all" | "my-forums") => {
+    setActiveTab(tab);
+  };
 
   const handleDelete = (postId: string) => {
     setPosts((prev) => prev.filter((p) => p.id !== postId));
   };
-
-  useEffect(() => {
-    fetchPosts(activeTag);
-  }, [activeTag, fetchPosts]);
 
   const filterByTag = (tag: string | undefined) => {
     setActiveTag(tag);
@@ -113,11 +124,13 @@ export function useFeed(initialTag?: string) {
     isLoading,
     error,
     activeTag,
+    activeTab,
+    switchTab,
     filterByTag,
     handleLike,
     handleSave,
     handleReport,
     handleDelete,
-    refetch: () => fetchPosts(activeTag),
+    refetch: () => fetchPosts(activeTab, activeTag),
   };
 }
