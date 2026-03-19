@@ -138,6 +138,50 @@ export const getMyForumsService = async (userId: string) => {
   });
 };
 
+export const updateForumService = async (
+  forumId: string,
+  userId: string,
+  data: { name?: string; description?: string },
+) => {
+  const forum = await prisma.forum.findUnique({ where: { id: forumId } });
+  if (!forum) throw new Error("Foro no encontrado");
+  if (forum.createdById !== userId) throw new Error("No tienes permiso");
+
+  return prisma.forum.update({
+    where: { id: forumId },
+    data,
+  });
+};
+
+export const updateForumImageService = async (
+  forumId: string,
+  userId: string,
+  buffer: Buffer,
+  type: "image" | "banner",
+) => {
+  const forum = await prisma.forum.findUnique({ where: { id: forumId } });
+  if (!forum) throw new Error("Foro no encontrado");
+  if (forum.createdById !== userId) throw new Error("No tienes permiso");
+
+  const { uploadImageService, deleteImageService } =
+    await import("./upload.service");
+
+  const oldPublicId =
+    type === "image" ? forum.imagePublicId : forum.bannerPublicId;
+  if (oldPublicId) await deleteImageService(oldPublicId);
+
+  const folder = `rumbo/forums/${type}`;
+  const result = await uploadImageService(buffer, folder);
+
+  return prisma.forum.update({
+    where: { id: forumId },
+    data:
+      type === "image"
+        ? { imageUrl: result.url, imagePublicId: result.publicId }
+        : { bannerUrl: result.url, bannerPublicId: result.publicId },
+  });
+};
+
 // ADMIN
 export const adminGetForumRequestsService = async (status?: string) => {
   return prisma.forumRequest.findMany({

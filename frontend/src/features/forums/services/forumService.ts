@@ -35,6 +35,31 @@ export const forumService = {
     return data.response;
   },
 
+  updateForum: async (
+    forumId: string,
+    data: { name?: string; description?: string },
+  ): Promise<Forum> => {
+    const { data: res } = await api.patch<ApiResponse<Forum>>(
+      `/forums/${forumId}`,
+      data,
+    );
+    return res.response;
+  },
+
+  updateForumImage: async (
+    forumId: string,
+    file: File,
+    type: "image" | "banner",
+  ): Promise<Forum> => {
+    const formData = new FormData();
+    formData.append("image", file);
+    const { data } = await api.post<ApiResponse<Forum>>(
+      `/forums/${forumId}/image?type=${type}`,
+      formData,
+    );
+    return data.response;
+  },
+
   joinForum: async (forumId: string): Promise<{ isMember: boolean }> => {
     const { data } = await api.post<ApiResponse<{ isMember: boolean }>>(
       `/forums/${forumId}/join`,

@@ -2,14 +2,16 @@
 import { Forum, forumService } from "../services/forumService";
 import { useRouter } from "next/navigation";
 import { MessageSquare, Users, Check } from "lucide-react";
-import { Card } from "@/components/ui";
-import Button from "@/components/ui/Button";
+import { Card, Button } from "@/components/ui";
 import { useState } from "react";
 import Image from "next/image";
+import { useAuthStore } from "@/features/auth/hooks/useAuthStore";
 
 export default function ForumCard({ forum: initialForum }: { forum: Forum }) {
   const [forum, setForum] = useState(initialForum);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuthStore();
+  const isCreator = forum.createdBy.id === user?.id;
   const router = useRouter();
 
   const handleJoin = async (e: React.MouseEvent) => {
@@ -68,16 +70,28 @@ export default function ForumCard({ forum: initialForum }: { forum: Forum }) {
               </p>
             )}
           </div>
-          <Button
-            variant={forum.isMember ? "ghost" : "primary"}
-            size="sm"
-            loading={isLoading}
-            onClick={handleJoin}
-            leftIcon={forum.isMember ? <Check size={13} /> : undefined}
-            className="shrink-0 text-xs"
-          >
-            {forum.isMember ? "Unido" : "Unirse"}
-          </Button>
+          {!isCreator && (
+            <Button
+              variant={forum.isMember ? "ghost" : "primary"}
+              size="sm"
+              loading={isLoading}
+              onClick={handleJoin}
+              leftIcon={forum.isMember ? <Check size={13} /> : undefined}
+              className="shrink-0 text-xs"
+            >
+              {forum.isMember ? "Unido" : "Unirse"}
+            </Button>
+          )}
+
+          {isCreator && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push(`/foros/${forum.id}/editar`)}
+            >
+              Editar
+            </Button>
+          )}
         </div>
 
         <div className="flex items-center gap-3 text-xs text-neutral-400">

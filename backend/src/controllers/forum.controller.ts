@@ -10,6 +10,8 @@ import {
   adminToggleForumService,
   getMyForumsService,
   joinForumService,
+  updateForumImageService,
+  updateForumService,
 } from "../services/forum.service";
 
 export const getForums = async (req: AuthRequest, res: Response) => {
@@ -30,6 +32,35 @@ export const getForumById = async (req: AuthRequest, res: Response) => {
     res.json({ ok: true, response: forum });
   } catch (error: any) {
     res.status(404).json({ ok: false, message: error.message });
+  }
+};
+
+export const updateForum = async (req: AuthRequest, res: Response) => {
+  try {
+    const forum = await updateForumService(
+      req.params.forumId as string,
+      req.userId!,
+      req.body,
+    );
+    res.json({ ok: true, response: forum });
+  } catch (error: any) {
+    res.status(400).json({ ok: false, message: error.message });
+  }
+};
+
+export const updateForumImage = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.file) throw new Error("No se recibió imagen");
+    const type = req.query.type as "image" | "banner";
+    const forum = await updateForumImageService(
+      req.params.forumId as string,
+      req.userId!,
+      req.file.buffer,
+      type,
+    );
+    res.json({ ok: true, response: forum });
+  } catch (error: any) {
+    res.status(400).json({ ok: false, message: error.message });
   }
 };
 
