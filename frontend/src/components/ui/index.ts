@@ -8,3 +8,4 @@ export { OTPInput } from "./OTPInput";
 export { ProfileImageUploader } from "./ProfileImageUploader";
 export { ToggleSwitch } from "./ToggleSwitch";
 export { StatCard } from "./StatCard";
+export { Status } from "./Status";

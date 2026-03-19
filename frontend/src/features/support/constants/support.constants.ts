@@ -10,17 +10,17 @@ export const CATEGORY_OPTIONS = [
 export const STATUS_CONFIG = {
   OPEN: {
     label: "Abierto",
-    color: "bg-warning/10 text-warning",
+    color: "bg-warning/10",
     icon: AlertCircle,
   },
   IN_REVIEW: {
     label: "En revisión",
-    color: "bg-info/10 text-info",
+    color: "bg-info/10",
     icon: Clock,
   },
   RESOLVED: {
     label: "Resuelto",
-    color: "bg-success/10 text-success",
+    color: "bg-success/10",
     icon: CheckCircle,
   },
 };

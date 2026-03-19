@@ -10,13 +10,14 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib";
 import { useConfirmation } from "@/context/ConfirmationContext";
+import { Status } from "@/components/ui";
 
 const STATUS_CONFIG = {
-  ACTIVE: { label: "Activo", className: "bg-success/10 text-success" },
-  DRAFT: { label: "Borrador", className: "bg-warning/10 text-warning" },
+  ACTIVE: { label: "Activo", color: "bg-success/10" },
+  DRAFT: { label: "Borrador", color: "bg-warning/10g" },
   INACTIVE: {
     label: "Inactivo",
-    className: "bg-neutral-100 dark:bg-neutral-800 text-neutral-400",
+    color: "bg-neutral-100 dark:bg-neutral-800",
   },
 };
 
@@ -83,14 +84,7 @@ export default function TestRow({
         </p>
       </div>
 
-      <span
-        className={cn(
-          "text-xs px-2 py-0.5 rounded-full font-medium",
-          statusCfg.className,
-        )}
-      >
-        {statusCfg.label}
-      </span>
+      <Status status={statusCfg} />
 
       <div className="flex items-center gap-1">
         <button
