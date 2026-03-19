@@ -110,14 +110,6 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 pb-12">
-      <button
-        onClick={() => router.back()}
-        className="p-2 rounded-xl text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-      >
-        <ArrowLeft size={18} />
-      </button>
-
-      {/* Banner */}
       <div className="relative w-full h-32 rounded-2xl overflow-hidden bg-primary/10">
         {forum.bannerUrl ? (
           <Image src={forum.bannerUrl} alt="" fill className="object-cover" />
@@ -126,10 +118,9 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
         )}
       </div>
 
-      {/* Header info */}
-      <div className="flex items-end justify-between gap-3 -mt-10 px-1">
-        <div className="flex items-end gap-3">
-          <div className="w-14 h-14 rounded-2xl border-4 border-white dark:border-neutral-950 bg-primary/10 overflow-hidden shrink-0">
+      <div className="flex items-end justify-between gap-3 px-1">
+        <div className="flex items-start gap-3">
+          <div className="w-14 h-14 rounded-2xl border-4 border-white dark:border-neutral-950 bg-primary/10 overflow-hidden shrink-0 -mt-8">
             {forum.imageUrl ? (
               <Image
                 src={forum.imageUrl}
@@ -144,7 +135,7 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
               </div>
             )}
           </div>
-          <div className="pb-1">
+          <div className="pt-2">
             <h1 className="text-lg font-bold text-neutral-900 dark:text-white">
               {forum.name}
             </h1>
