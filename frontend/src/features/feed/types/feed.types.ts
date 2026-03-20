@@ -45,3 +45,9 @@ export interface PostComment {
   replies?: PostComment[];
   _count?: { replies: number };
 }
+
+export interface TagWithCategory {
+  id: string;
+  name: string;
+  category: { name: string; color: string };
+}

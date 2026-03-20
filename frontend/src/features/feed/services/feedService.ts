@@ -1,6 +1,7 @@
 import { get, post, deletePop } from "@/lib";
 import type { Post, PostComment } from "../types/feed.types";
 import type { ApiResponse } from "@/types/api.types";
+import { TagWithCategory } from "../types/feed.types";
 
 export const feedService = {
   getPosts: (tag?: string): Promise<ApiResponse<Post[]>> => {
@@ -69,8 +70,8 @@ export const feedService = {
   ): Promise<ApiResponse<null>> =>
     post<ApiResponse<null>>(`/feed/${postId}/comments/${commentId}`, {}),
 
-  getTags: (): Promise<ApiResponse<{ id: string; name: string }[]>> =>
-    get<ApiResponse<{ id: string; name: string }[]>>("/feed/tags"),
+  getTags: (): Promise<ApiResponse<TagWithCategory[]>> =>
+    get<ApiResponse<TagWithCategory[]>>("/feed/tags"),
 
   searchPosts: (q: string): Promise<ApiResponse<Post[]>> =>
     get<ApiResponse<Post[]>>(`/feed/search?q=${encodeURIComponent(q)}`),

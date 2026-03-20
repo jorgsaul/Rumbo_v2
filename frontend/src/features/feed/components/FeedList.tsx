@@ -3,6 +3,14 @@ import { PostCard } from "./Postcard";
 import { useFeed } from "../hooks/useFeed";
 import { CreatePostForm } from "./CreatePostForm";
 import { cn } from "@/lib";
+import { useEffect, useState } from "react";
+import { feedService } from "../services/feedService";
+
+interface AvailableTag {
+  id: string;
+  name: string;
+  category: { name: string; color: string };
+}
 
 export function FeedList() {
   const {
@@ -10,13 +18,23 @@ export function FeedList() {
     isLoading,
     error,
     activeTab,
+    activeTag,
     switchTab,
+    filterByTag,
     handleLike,
     handleReport,
     handleSave,
     handleDelete,
     refetch,
   } = useFeed();
+
+  const [tags, setTags] = useState<AvailableTag[]>([]);
+
+  useEffect(() => {
+    feedService.getTags().then((res) => {
+      if (res.ok) setTags(res.response);
+    });
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -41,6 +59,40 @@ export function FeedList() {
           </button>
         ))}
       </div>
+
+      {tags.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+          <button
+            onClick={() => filterByTag(undefined)}
+            className={cn(
+              "text-xs px-3 py-1.5 rounded-full border shrink-0 transition-colors",
+              !activeTag
+                ? "bg-primary text-white border-primary"
+                : "border-neutral-200 dark:border-neutral-700 text-neutral-500 hover:border-primary",
+            )}
+          >
+            Todos
+          </button>
+          {tags.map((tag) => (
+            <button
+              key={tag.id}
+              onClick={() => filterByTag(tag.name)}
+              className="text-xs px-3 py-1.5 rounded-full border shrink-0 transition-colors"
+              style={
+                activeTag === tag.name
+                  ? {
+                      backgroundColor: tag.category.color,
+                      color: "white",
+                      borderColor: tag.category.color,
+                    }
+                  : { borderColor: "#e5e7eb", color: "#6b7280" }
+              }
+            >
+              {tag.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       {isLoading ? (
         <p className="text-sm text-neutral-400 text-center py-8">Cargando...</p>
