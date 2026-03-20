@@ -389,7 +389,10 @@ export const uploadPostImageService = async (buffer: Buffer) => {
   return uploadImageService(buffer, "rumbo/posts");
 };
 
-export const getPersonalizedFeedService = async (userId: string) => {
+export const getPersonalizedFeedService = async (
+  userId: string,
+  tag?: string,
+) => {
   const memberships = await prisma.forumMember.findMany({
     where: { userId },
     select: { forumId: true },
@@ -401,6 +404,7 @@ export const getPersonalizedFeedService = async (userId: string) => {
     where: {
       isHidden: false,
       ...(forumIds.length > 0 ? { forumId: { in: forumIds } } : {}),
+      ...(tag && { tags: { some: { tag: { name: tag } } } }),
     },
     orderBy: { createdAt: "desc" },
     include: {
