@@ -9,9 +9,10 @@ export const feedService = {
     return get<ApiResponse<Post[]>>(url);
   },
 
-  getPersonalizedFeed: async (): Promise<ApiResponse<Post[]>> =>
-    get<ApiResponse<Post[]>>("/feed/personalized"),
-
+  getPersonalizedFeed: async (tag?: string): Promise<ApiResponse<Post[]>> =>
+    get<ApiResponse<Post[]>>(
+      `/feed/personalized${tag ? `?tag=${encodeURIComponent(tag)}` : ""}`,
+    ),
   getPostById: async (postId: string): Promise<ApiResponse<Post>> =>
     get<ApiResponse<Post>>(`/feed/${postId}`),
 
