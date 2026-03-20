@@ -5,6 +5,7 @@ import { CreatePostForm } from "./CreatePostForm";
 import { cn } from "@/lib";
 import { useEffect, useState } from "react";
 import { feedService } from "../services/feedService";
+import { Filter } from "lucide-react";
 
 interface AvailableTag {
   id: string;
@@ -73,24 +74,26 @@ export function FeedList() {
           >
             Todos
           </button>
-          {tags.map((tag) => (
-            <button
-              key={tag.id}
-              onClick={() => filterByTag(tag.name)}
-              className="text-xs px-3 py-1.5 rounded-full border shrink-0 transition-colors"
-              style={
-                activeTag === tag.name
-                  ? {
-                      backgroundColor: tag.category.color,
-                      color: "white",
-                      borderColor: tag.category.color,
-                    }
-                  : { borderColor: "#e5e7eb", color: "#6b7280" }
-              }
-            >
-              {tag.name}
-            </button>
-          ))}
+          {tags.length > 0 && (
+            <div className="relative">
+              <select
+                value={activeTag ?? ""}
+                onChange={(e) => filterByTag(e.target.value || undefined)}
+                className="w-full px-3 py-2 text-sm rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
+              >
+                <option value="">Todas las etiquetas</option>
+                {tags.map((tag) => (
+                  <option key={tag.id} value={tag.name}>
+                    {tag.name}
+                  </option>
+                ))}
+              </select>
+              <Filter
+                size={14}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none"
+              />
+            </div>
+          )}
         </div>
       )}
 

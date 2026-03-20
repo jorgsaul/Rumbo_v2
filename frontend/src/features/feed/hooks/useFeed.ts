@@ -20,7 +20,7 @@ export function useFeed(initialTag?: string) {
       try {
         const res =
           tab === "my-forums"
-            ? await feedService.getPersonalizedFeed()
+            ? await feedService.getPersonalizedFeed(tag)
             : await feedService.getPosts(tag);
         if (res.ok) setPosts(res.response);
         else setError(res.message);
