@@ -35,6 +35,18 @@ export const forumService = {
     return data.response;
   },
 
+  getTopForums: async (): Promise<
+    {
+      id: string;
+      name: string;
+      imageUrl?: string | null;
+      _count: { posts: number };
+    }[]
+  > => {
+    const { data } = await api.get<ApiResponse<any[]>>("/forums/top");
+    return data.response;
+  },
+
   updateForum: async (
     forumId: string,
     data: { name?: string; description?: string },

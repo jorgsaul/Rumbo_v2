@@ -1,6 +1,20 @@
 import prisma from "../lib/prisma";
 import { createNotificationService } from "./notification.service";
 
+export const getTopForumsService = async () => {
+  return prisma.forum.findMany({
+    where: { isActive: true },
+    orderBy: { posts: { _count: "desc" } },
+    take: 5,
+    select: {
+      id: true,
+      name: true,
+      imageUrl: true,
+      _count: { select: { posts: true } },
+    },
+  });
+};
+
 export const getForumsService = async (userId: string) => {
   const forums = await prisma.forum.findMany({
     where: { isActive: true },

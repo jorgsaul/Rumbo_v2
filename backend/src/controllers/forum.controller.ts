@@ -12,7 +12,17 @@ import {
   joinForumService,
   updateForumImageService,
   updateForumService,
+  getTopForumsService,
 } from "../services/forum.service";
+
+export const getTopForums = async (req: AuthRequest, res: Response) => {
+  try {
+    const forums = await getTopForumsService();
+    res.json({ ok: true, response: forums });
+  } catch (error: any) {
+    res.status(500).json({ ok: false, message: error.message });
+  }
+};
 
 export const getForums = async (req: AuthRequest, res: Response) => {
   try {
