@@ -1,5 +1,5 @@
 import { FeedList } from "@/features/feed/components/FeedList";
-import FeedSidebar from "@/features/feed/components/feedSideBar";
+import FeedSidebar from "@/features/feed/components/FeedSidebar";
 
 export default function FeedPage() {
   return (
