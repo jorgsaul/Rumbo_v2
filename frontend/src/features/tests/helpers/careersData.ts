@@ -2487,7 +2487,7 @@ export const CAREERS = [
       dificultad_academica: 10,
     },
     profesion: {
-      empleabilidad: 0.9,
+      empleabilidad: 90,
       salario_inicial: 18000,
       salario_experiencia: 65000,
       sectores: [
@@ -2562,7 +2562,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.9,
+      empleabilidad: 90,
       salario_inicial: 16000,
       salario_experiencia: 50000,
       sectores: [
@@ -2637,7 +2637,7 @@ export const CAREERS = [
       dificultad_academica: 8,
     },
     profesion: {
-      empleabilidad: 0.92,
+      empleabilidad: 92,
       salario_inicial: 17000,
       salario_experiencia: 60000,
       sectores: [
@@ -2714,7 +2714,7 @@ export const CAREERS = [
       dificultad_academica: 6,
     },
     profesion: {
-      empleabilidad: 0.78,
+      empleabilidad: 78,
       salario_inicial: 14000,
       salario_experiencia: 40000,
       sectores: [
@@ -2786,7 +2786,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.85,
+      empleabilidad: 85,
       salario_inicial: 20000,
       salario_experiencia: 80000,
       sectores: [
@@ -2864,7 +2864,7 @@ export const CAREERS = [
       dificultad_academica: 8,
     },
     profesion: {
-      empleabilidad: 0.85,
+      empleabilidad: 85,
       salario_inicial: 16000,
       salario_experiencia: 45000,
       sectores: [
@@ -2939,7 +2939,7 @@ export const CAREERS = [
       dificultad_academica: 8,
     },
     profesion: {
-      empleabilidad: 0.85,
+      empleabilidad: 85,
       salario_inicial: 16000,
       salario_experiencia: 45000,
       sectores: [
@@ -3016,7 +3016,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.9,
+      empleabilidad: 90,
       salario_inicial: 17000,
       salario_experiencia: 40000,
       sectores: [
@@ -3089,7 +3089,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.8,
+      empleabilidad: 80,
       salario_inicial: 14000,
       salario_experiencia: 35000,
       sectores: [
@@ -3166,7 +3166,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.8,
+      empleabilidad: 80,
       salario_inicial: 15000,
       salario_experiencia: 35000,
       sectores: [
@@ -3243,7 +3243,7 @@ export const CAREERS = [
       dificultad_academica: 8,
     },
     profesion: {
-      empleabilidad: 0.9,
+      empleabilidad: 90,
       salario_inicial: 15000,
       salario_experiencia: 50000,
       sectores: [
@@ -3320,7 +3320,7 @@ export const CAREERS = [
       dificultad_academica: 9,
     },
     profesion: {
-      empleabilidad: 0.95,
+      empleabilidad: 95,
       salario_inicial: 20000,
       salario_experiencia: 60000,
       sectores: [
@@ -3393,7 +3393,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.9,
+      empleabilidad: 90,
       salario_inicial: 15000,
       salario_experiencia: 45000,
       sectores: [
@@ -3470,7 +3470,7 @@ export const CAREERS = [
       dificultad_academica: 10,
     },
     profesion: {
-      empleabilidad: 0.85,
+      empleabilidad: 85,
       salario_inicial: 16000,
       salario_experiencia: 50000,
       sectores: [
@@ -3547,7 +3547,7 @@ export const CAREERS = [
       dificultad_academica: 9,
     },
     profesion: {
-      empleabilidad: 0.9,
+      empleabilidad: 90,
       salario_inicial: 18000,
       salario_experiencia: 60000,
       sectores: [
@@ -3620,7 +3620,7 @@ export const CAREERS = [
       dificultad_academica: 8,
     },
     profesion: {
-      empleabilidad: 0.8,
+      empleabilidad: 80,
       salario_inicial: 14000,
       salario_experiencia: 35000,
       sectores: [
@@ -3699,7 +3699,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.9,
+      empleabilidad: 90,
       salario_inicial: 12000,
       salario_experiencia: 30000,
       sectores: [
@@ -3776,7 +3776,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.9,
+      empleabilidad: 90,
       salario_inicial: 13000,
       salario_experiencia: 32000,
       sectores: [
@@ -3853,7 +3853,7 @@ export const CAREERS = [
       dificultad_academica: 8,
     },
     profesion: {
-      empleabilidad: 0.88,
+      empleabilidad: 88,
       salario_inicial: 12000,
       salario_experiencia: 30000,
       sectores: [
@@ -3923,7 +3923,7 @@ export const CAREERS = [
       dificultad_academica: 4,
     },
     profesion: {
-      empleabilidad: 0.8,
+      empleabilidad: 80,
       salario_inicial: 12000,
       salario_experiencia: 40000,
       sectores: ["Salud (hospitales, clínicas)", "Emprendimiento/startups"],
@@ -3988,7 +3988,7 @@ export const CAREERS = [
       dificultad_academica: 4,
     },
     profesion: {
-      empleabilidad: 0.85,
+      empleabilidad: 85,
       salario_inicial: 11000,
       salario_experiencia: 30000,
       sectores: [
@@ -4057,7 +4057,7 @@ export const CAREERS = [
       dificultad_academica: 6,
     },
     profesion: {
-      empleabilidad: 0.7,
+      empleabilidad: 70,
       salario_inicial: 10000,
       salario_experiencia: 28000,
       sectores: [
@@ -4132,7 +4132,7 @@ export const CAREERS = [
       dificultad_academica: 4,
     },
     profesion: {
-      empleabilidad: 0.75,
+      empleabilidad: 75,
       salario_inicial: 9000,
       salario_experiencia: 25000,
       sectores: [
@@ -4203,7 +4203,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.85,
+      empleabilidad: 85,
       salario_inicial: 12000,
       salario_experiencia: 40000,
       sectores: ["Salud (hospitales, clínicas)", "Emprendimiento/startups"],
@@ -4270,7 +4270,7 @@ export const CAREERS = [
       dificultad_academica: 8,
     },
     profesion: {
-      empleabilidad: 0.95,
+      empleabilidad: 95,
       salario_inicial: 15000,
       salario_experiencia: 55000,
       sectores: [
@@ -4342,7 +4342,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.85,
+      empleabilidad: 85,
       salario_inicial: 13000,
       salario_experiencia: 35000,
       sectores: [
@@ -4416,7 +4416,7 @@ export const CAREERS = [
       dificultad_academica: 6,
     },
     profesion: {
-      empleabilidad: 0.85,
+      empleabilidad: 85,
       salario_inicial: 15000,
       salario_experiencia: 45000,
       sectores: [
@@ -4493,7 +4493,7 @@ export const CAREERS = [
       dificultad_academica: 5,
     },
     profesion: {
-      empleabilidad: 0.88,
+      empleabilidad: 88,
       salario_inicial: 14000,
       salario_experiencia: 40000,
       sectores: [
@@ -4571,7 +4571,7 @@ export const CAREERS = [
       dificultad_academica: 6,
     },
     profesion: {
-      empleabilidad: 0.8,
+      empleabilidad: 80,
       salario_inicial: 14000,
       salario_experiencia: 40000,
       sectores: [
@@ -4648,7 +4648,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.75,
+      empleabilidad: 75,
       salario_inicial: 12000,
       salario_experiencia: 35000,
       sectores: [
@@ -4717,7 +4717,7 @@ export const CAREERS = [
       dificultad_academica: 4,
     },
     profesion: {
-      empleabilidad: 0.6,
+      empleabilidad: 60,
       salario_inicial: 10000,
       salario_experiencia: 25000,
       sectores: [
@@ -4791,7 +4791,7 @@ export const CAREERS = [
       dificultad_academica: 4,
     },
     profesion: {
-      empleabilidad: 0.6,
+      empleabilidad: 60,
       salario_inicial: 10000,
       salario_experiencia: 25000,
       sectores: [
@@ -4867,7 +4867,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.78,
+      empleabilidad: 78,
       salario_inicial: 15000,
       salario_experiencia: 45000,
       sectores: [
@@ -4947,7 +4947,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.85,
+      empleabilidad: 85,
       salario_inicial: 14000,
       salario_experiencia: 45000,
       sectores: [
@@ -5026,7 +5026,7 @@ export const CAREERS = [
       dificultad_academica: 7,
     },
     profesion: {
-      empleabilidad: 0.88,
+      empleabilidad: 88,
       salario_inicial: 16000,
       salario_experiencia: 50000,
       sectores: [
@@ -5106,7 +5106,7 @@ export const CAREERS = [
       dificultad_academica: 8,
     },
     profesion: {
-      empleabilidad: 0.82,
+      empleabilidad: 82,
       salario_inicial: 15000,
       salario_experiencia: 45000,
       sectores: [
@@ -5182,7 +5182,7 @@ export const CAREERS = [
       dificultad_academica: 6,
     },
     profesion: {
-      empleabilidad: 0.8,
+      empleabilidad: 80,
       salario_inicial: 13000,
       salario_experiencia: 35000,
       sectores: [
@@ -5257,7 +5257,7 @@ export const CAREERS = [
       dificultad_academica: 5,
     },
     profesion: {
-      empleabilidad: 0.65,
+      empleabilidad: 65,
       salario_inicial: 10000,
       salario_experiencia: 28000,
       sectores: [
@@ -5333,7 +5333,7 @@ export const CAREERS = [
       dificultad_academica: 5,
     },
     profesion: {
-      empleabilidad: 0.7,
+      empleabilidad: 70,
       salario_inicial: 10000,
       salario_experiencia: 28000,
       sectores: [
