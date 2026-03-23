@@ -141,32 +141,35 @@ const calcularPerfil = (
   answers: Record<string, number>,
   questions: Question[],
 ): VocationalProfile => {
-  const get = (i: number) => norm(answers[questions[i]?.id] ?? 3);
+  const pasionQs = questions.filter((q) => q.pilar === "PASION");
+  const vocacionQs = questions.filter((q) => q.pilar === "VOCACION");
+  const misionQs = questions.filter((q) => q.pilar === "MISION");
+  const get = (qs: Question[], i: number) => norm(answers[qs[i]?.id] ?? 3);
 
-  // Intereses (Q1-Q10)
-  const q1 = get(0); // tecnología
-  const q2 = get(1); // salud
-  const q3 = get(2); // construcción
-  const q4 = get(3); // negocios
-  const q5 = get(4); // química
-  const q6 = get(5); // investigación
-  const q7 = get(6); // diseño
-  const q8 = get(7); // análisis datos
-  const q9 = get(8); // naturaleza
-  const q10 = get(9); // impacto sociedad
+  // Pasión (Q1-Q10)
+  const q1 = get(pasionQs, 0); // tecnología
+  const q2 = get(pasionQs, 1); // salud
+  const q3 = get(pasionQs, 2); // construcción
+  const q4 = get(pasionQs, 3); // negocios
+  const q5 = get(pasionQs, 4); // química
+  const q6 = get(pasionQs, 5); // investigación
+  const q7 = get(pasionQs, 6); // diseño
+  const q8 = get(pasionQs, 7); // análisis datos
+  const q9 = get(pasionQs, 8); // naturaleza
+  const q10 = get(pasionQs, 9); // impacto sociedad
 
-  // Materias (Q11-Q15)
-  const q11 = get(10); // matemáticas
-  const q12 = get(11); // física
-  const q13 = get(12); // química
-  const q14 = get(13); // biología
-  const q15 = get(14); // expresión/comunicación
+  // Vocación (Q11-Q15)
+  const q11 = get(vocacionQs, 0); // matemáticas
+  const q12 = get(vocacionQs, 1); // física
+  const q13 = get(vocacionQs, 2); // química
+  const q14 = get(vocacionQs, 3); // biología
+  const q15 = get(vocacionQs, 4); // expresión
 
   // Misión (Q31-Q40)
-  const q31 = get(30); // medio ambiente
-  const q32 = get(31); // salud pública
-  const q35 = get(34); // desigualdad social
-  const q39 = get(38); // impacto social visible
+  const q31 = get(misionQs, 0); // medio ambiente
+  const q32 = get(misionQs, 1); // salud pública
+  const q35 = get(misionQs, 4); // desigualdad social
+  const q39 = get(misionQs, 8); // impacto social visible
 
   return {
     tecnologico: Math.round(q1 * 0.35 + q11 * 0.25 + q12 * 0.25 + q8 * 0.15),
@@ -336,7 +339,9 @@ const calcularVocacionCarrera = (
   const q13 = answers[questions[12]?.id] ?? 3; // química
   const q14 = answers[questions[13]?.id] ?? 3; // biología
   const q15 = answers[questions[14]?.id] ?? 3; // expresión
-  const q17 = answers[questions[16]?.id] ?? 3; // resolución problemas
+  const q16 = answers[questions[15]?.id] ?? 3; // pensamiento critico
+  const q17 = answers[questions[16]?.id] ?? 3; // trabajo en equipo
+  const q18 = answers[questions[17]?.id] ?? 3; // resolucion de problemas
   const q19 = answers[questions[18]?.id] ?? 3; // aprendizaje
 
   // Escalar respuesta Likert (1-5) a escala de la carrera (1-10)
@@ -357,7 +362,7 @@ const calcularVocacionCarrera = (
 
   // Dificultad académica vs disposición al esfuerzo
   const dificultad = career.vocacion.dificultad_academica;
-  const esfuerzo = escalar((q17 + q19) / 2);
+  const esfuerzo = escalar((q16 + q18) / 2);
   const scoreDif = Math.max(0, 100 - Math.abs(dificultad - esfuerzo) * 10);
 
   return Math.round(
@@ -377,8 +382,9 @@ const calcularProfesionCarrera = (
 ): number => {
   const q21 = answers[questions[20]?.id] ?? 3; // preferencia salarial
   const q22 = answers[questions[21]?.id] ?? 3; // estabilidad laboral
-  const q23 = answers[questions[22]?.id] ?? 3; // sector público/privado
-  const q25 = answers[questions[24]?.id] ?? 3; // emprendimiento
+  const q23 = answers[questions[22]?.id] ?? 3; // start ups
+  const q25 = answers[questions[24]?.id] ?? 3; // gobierno sector publico
+  const q27 = answers[questions[26]?.id] ?? 3; // emprendimiento
   const q29 = answers[questions[28]?.id] ?? 3; // presión laboral aceptable
 
   // Salario normalizado (10k-80k → 0-100)
@@ -410,13 +416,19 @@ const calcularProfesionCarrera = (
   const tienePublico = career.profesion.sectores.some((s) =>
     s.includes("Gobierno"),
   );
-  const sectorScore = tienePublico
-    ? norm(q23) // le gusta sector público y la carrera lo ofrece
-    : 100 - norm(q23); // prefiere privado y la carrera es privada
+  const tieneTech = career.profesion.sectores.some(
+    (s) => s.includes("Tecnología") || s.includes("startup"),
+  );
+
+  const sectorPublicoScore = tienePublico
+    ? norm(q25)
+    : Math.max(0, 100 - norm(q25));
+  const sectorTechScore = tieneTech ? norm(q23) : Math.max(0, 100 - norm(q23));
+  const sectorScore = Math.round((sectorPublicoScore + sectorTechScore) / 2);
 
   // Emprendimiento
   const emprendNorm = career.profesion.emprendimiento * 10;
-  const emprendScore = Math.max(0, 100 - Math.abs(emprendNorm - norm(q25)));
+  const emprendScore = Math.max(0, 100 - Math.abs(emprendNorm - norm(q27)));
 
   return Math.round(
     salScore * 0.25 +
@@ -545,10 +557,10 @@ export function calcularIkigai(
 
     // Usar promedio ponderado de los 4 pilares como compatibility
     const compatibility = Math.round(
-      careerPasionScore * 0.35 +
+      careerPasionScore * 0.25 +
         careerVocacionScore * 0.3 +
-        careerProfesionScore * 0.2 +
-        careerMisionScore * 0.15,
+        careerProfesionScore * 0.25 +
+        careerMisionScore * 0.2,
     );
 
     return {
