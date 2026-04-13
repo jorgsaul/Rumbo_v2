@@ -10,6 +10,7 @@ import testsRoutes from "./routes/tests.routes";
 import ticketRoutes from "./routes/ticket.routes";
 import forumRoutes from "./routes/forum.routes";
 import notificatonRoutes from "./routes/notifications.routes";
+import helmet from "helmet";
 
 // Rate limit general — 100 requests por 15 minutos por IP
 const generalLimiter = rateLimit({
@@ -47,6 +48,24 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true,
+  }),
+);
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        connectSrc: [
+          "'self'",
+          process.env.FRONTEND_URL || "http://localhost:3000",
+        ],
+      },
+    },
   }),
 );
 
