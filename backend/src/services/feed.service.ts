@@ -1,5 +1,6 @@
 import prisma from "../lib/prisma";
 import { createNotificationService } from "./notification.service";
+import { sanitizeHtml } from "../lib/sanitize";
 
 export const getPostsService = async (
   userId: string,
@@ -139,14 +140,17 @@ export const createPostService = async (
     forumId?: string;
   },
 ) => {
+  const title = data.title ? sanitizeHtml(data.title) : null;
+  const content = sanitizeHtml(data.content);
+
   if (!data.content?.trim())
     throw new Error("El contenido no puede estar vacío");
 
   const post = await prisma.post.create({
     data: {
       authorId,
-      title: data.title?.trim() || null,
-      content: data.content.trim(),
+      title: title,
+      content: content,
       mediaUrl: data.mediaUrl ?? null,
       moderation: "APPROVED",
       forumId: data.forumId ?? null,

@@ -2,6 +2,7 @@ import prisma from "../lib/prisma";
 import { getPostsService } from "./feed.service";
 import { uploadImageService, deleteImageService } from "./upload.service";
 import { createNotificationService } from "./notification.service";
+import { sanitizeHtml } from "../lib/sanitize";
 
 export const getMeService = async (userId: string) => {
   const user = await prisma.user.findUnique({
@@ -40,9 +41,15 @@ export const updateProfileService = async (
     isPrivate?: boolean;
   },
 ) => {
+  const cleanBio = data.bio ? sanitizeHtml(data.bio) : undefined;
+  const cleanFullName = data.fullName ? sanitizeHtml(data.fullName) : undefined;
   const user = await prisma.user.update({
     where: { id: userId },
-    data,
+    data: {
+      fullName: cleanFullName,
+      bio: cleanBio,
+      isPrivate: data.isPrivate,
+    },
     select: {
       id: true,
       username: true,

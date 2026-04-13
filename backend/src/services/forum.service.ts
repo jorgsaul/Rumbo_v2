@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma";
+import { sanitizeHtml } from "../lib/sanitize";
 import { createNotificationService } from "./notification.service";
 
 export const getTopForumsService = async () => {
@@ -109,6 +110,10 @@ export const createForumRequestService = async (
   userId: string,
   data: { name: string; description?: string },
 ) => {
+  const cleanName = sanitizeHtml(data.name);
+  const cleanDescription = data.description
+    ? sanitizeHtml(data.description)
+    : undefined;
   const existing = await prisma.forumRequest.findFirst({
     where: { userId, name: data.name, status: "PENDING" },
   });
@@ -116,7 +121,7 @@ export const createForumRequestService = async (
     throw new Error("Ya tienes una solicitud pendiente con ese nombre");
 
   return prisma.forumRequest.create({
-    data: { userId, name: data.name, description: data.description },
+    data: { userId, name: cleanName, description: cleanDescription },
   });
 };
 
