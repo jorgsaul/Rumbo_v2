@@ -11,6 +11,7 @@ import ticketRoutes from "./routes/ticket.routes";
 import forumRoutes from "./routes/forum.routes";
 import notificatonRoutes from "./routes/notifications.routes";
 import helmet from "helmet";
+import { Request, Response } from "express";
 
 // Rate limit general — 100 requests por 15 minutos por IP
 const generalLimiter = rateLimit({
@@ -42,8 +43,36 @@ const createLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+const ddosLimiter = rateLimit({
+  windowMs: 60 * 1000, //1 minuto
+  max: 200,
+  message: { ok: false, message: "Acceso bloqueado temporalmente" },
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req: Request, res: Response) => {
+    console.warn(
+      `Posible ataque DDOS desde la ip: ${req.ip} - ${new Date().toISOString()}`,
+    );
+    res
+      .status(429)
+      .json({ ok: false, message: "Acceso bloquedo temporalemente" });
+  },
+});
+
+const sensitiveLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 50,
+  handler: (req: Request, res: Response) => {
+    console.warn(
+      `Ataque detectado en ${req.path} desde la IP: ${req.ip} - ${new Date().toISOString()}`,
+    );
+    res.status(429).json({ ok: false, message: "Demasiadas solicitudes" });
+  },
+});
+
 const app = express();
 const PORT = process.env.PORT || 3001;
+
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
@@ -70,6 +99,7 @@ app.use(
 );
 
 //limites de solicitudes
+app.use(ddosLimiter);
 app.use(generalLimiter);
 app.use("/auth/login", authLimiter);
 app.use("/auth/register", authLimiter);
@@ -77,6 +107,7 @@ app.use("/auth/forgot-password", authLimiter);
 app.use("/feed", createLimiter);
 app.use("/tickets", createLimiter);
 app.use("/forums/requests", createLimiter);
+/* PONER LAS RUTAS DE ENVIACION DE CODIGO Y RECUERPACION DE CONTRASEÑA COMO SENSIBLES CON sensitiveLimiter */
 
 //rutas y parseadores
 app.use(express.json());
