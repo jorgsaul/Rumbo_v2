@@ -21,7 +21,7 @@ export default function useLogin() {
         Cookies.set("auth-client", res.response.id, {
           expires: 7,
           secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+          sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
         });
         router.push("/feed");
       } else {
@@ -44,7 +44,7 @@ export default function useLogin() {
         Cookies.set("auth-client", res.response.id, {
           expires: 7,
           secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+          sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
         });
         router.push("/feed");
       }
