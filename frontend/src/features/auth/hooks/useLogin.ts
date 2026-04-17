@@ -23,7 +23,7 @@ export default function useLogin() {
           secure: process.env.NODE_ENV === "production",
           sameSite: "strict",
         });
-        //roSuter.push("/feed");
+        router.push("/feed");
       } else {
         setError(res.message);
       }
