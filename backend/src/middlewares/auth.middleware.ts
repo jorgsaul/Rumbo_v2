@@ -27,9 +27,9 @@ export const authMiddleware = async (
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
-      select: { id: true, role: true, isActive: true},
+      select: { id: true, role: true, isActive: true },
     });
-    
+
     /*
     if (!user?.isVerified && req.path !== "/verify-email") {
       res.status(403).json({
