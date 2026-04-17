@@ -107,7 +107,9 @@ app.use("/auth/forgot-password", authLimiter);
 app.use("/feed", createLimiter);
 app.use("/tickets", createLimiter);
 app.use("/forums/requests", createLimiter);
-/* PONER LAS RUTAS DE ENVIACION DE CODIGO Y RECUERPACION DE CONTRASEÑA COMO SENSIBLES CON sensitiveLimiter */
+app.use("/auth/send-code", sensitiveLimiter);
+app.use("/auth/reset-password", sensitiveLimiter);
+app.use("/auth/forgot-password", sensitiveLimiter);
 
 //rutas y parseadores
 app.use(express.json());
