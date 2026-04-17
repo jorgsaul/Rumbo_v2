@@ -9,6 +9,8 @@ export default function middleware(request: NextRequest) {
   const authClient = request.cookies.get("auth-client")?.value;
   const pathname = request.nextUrl.pathname;
 
+  console.log(authClient);
+
   const isPublicRoute = PUBLIC_ROUTES.some((route) =>
     pathname.startsWith(route),
   );
