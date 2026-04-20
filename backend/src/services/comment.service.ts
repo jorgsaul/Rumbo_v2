@@ -1,9 +1,10 @@
 import prisma from "../lib/prisma";
 import { createNotificationService } from "./notification.service";
+import { sanitizeHtml } from "../lib/sanitize";
 
 export const getCommentsService = async (postId: string) => {
   return prisma.comment.findMany({
-    where: { postId, isHidden: false, parentId: null }, // solo comentarios raíz
+    where: { postId, isHidden: false, parentId: null },
     orderBy: { createdAt: "asc" },
     include: {
       author: {
@@ -43,6 +44,8 @@ export const createCommentService = async (
 ) => {
   if (!content?.trim()) throw new Error("El comentario no puede estar vacío");
 
+  const cleanContent = sanitizeHtml(content);
+
   const postData = await prisma.post.findUnique({
     where: { id: postId },
     select: { authorId: true, forumId: true },
@@ -78,7 +81,7 @@ export const createCommentService = async (
     data: {
       authorId,
       postId,
-      content: content.trim(),
+      content: cleanContent,
       parentId: parentId ?? null,
     },
     include: {

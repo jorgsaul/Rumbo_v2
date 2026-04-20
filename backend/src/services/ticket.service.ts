@@ -1,14 +1,18 @@
 import prisma from "../lib/prisma";
+import { sanitizeHtml } from "../lib/sanitize";
 
 export const createTicketService = async (
   userId: string,
   data: { title: string; description: string; category: string },
 ) => {
+  const cleanTitle = sanitizeHtml(data.title);
+  const cleanDescription = sanitizeHtml(data.description);
+
   return prisma.ticket.create({
     data: {
       userId,
-      title: data.title,
-      description: data.description,
+      title: cleanTitle,
+      description: cleanDescription,
       category: data.category as any,
     },
   });
