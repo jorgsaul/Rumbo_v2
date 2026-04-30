@@ -57,3 +57,16 @@
     color: #ededed;
   }
 }
+
+/*Animaciones del */
+@layer utilities {
+  @keyframes chatB {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+  .animate-chat-bounce {
+    animation: chatB 1.2s ease-in-out infinite;
+  }
+  .delay-100 { animation-delay: 0.15s; }
+  .delay-200 { animation-delay: 0.3s; }
+}
