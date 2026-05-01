@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useChatFAQ } from '@/hooks/useChatFAQ';
+import Image from "next/image";
+import { useChatFAQ } from "@/hooks/useChatFAQ";
+import atlas from "../../../../public/atlas.png";
 
 export default function ChatFAQ() {
   const {
@@ -15,28 +16,27 @@ export default function ChatFAQ() {
 
   return (
     <>
-  
-      <div className={`
+      <div
+        className={`
         fixed bottom-[60px] right-4 z-50
         w-[300px] flex flex-col
         bg-white dark:bg-black-mode
         border border-primary-200 dark:border-primary-700
         shadow-xl rounded-tl-2xl rounded-bl-2xl rounded-r-none
         transition-all duration-300 ease-in-out overflow-hidden
-        ${abierto ? 'h-[380px] opacity-100' : 'h-0 opacity-0 pointer-events-none'}
-      `}>
-
-        
+        ${abierto ? "h-[380px] opacity-100" : "h-0 opacity-0 pointer-events-none"}
+      `}
+      >
         <div className="flex-1 overflow-y-auto px-3 py-4 flex flex-col gap-3 bg-primary-100/10 dark:bg-primary-700/10">
           {mensajes.map((m, i) => (
             <div key={i} className="flex flex-col gap-2">
-
-            
-              <div className={`flex items-end gap-2 ${m.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                {m.role === 'bot' && (
+              <div
+                className={`flex items-end gap-2 ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+              >
+                {m.role === "bot" && (
                   <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 bg-primary-500 mb-0.5">
                     <Image
-                      src="/atlas.png"
+                      src={atlas}
                       alt="Atlas"
                       width={28}
                       height={28}
@@ -44,21 +44,23 @@ export default function ChatFAQ() {
                     />
                   </div>
                 )}
-                <div className={`
+                <div
+                  className={`
                   px-3 py-2 text-sm leading-relaxed max-w-[75%]
-                  ${m.role === 'user'
-                    ? 'bg-primary text-white rounded-t-[18px] rounded-bl-[18px] rounded-br-sm'
-                    : 'bg-white dark:bg-primary-700/20 text-neutral dark:text-white border border-primary-100 dark:border-primary-700 rounded-t-[18px] rounded-br-[18px] rounded-bl-sm'
+                  ${
+                    m.role === "user"
+                      ? "bg-primary text-white rounded-t-[18px] rounded-bl-[18px] rounded-br-sm"
+                      : "bg-white dark:bg-primary-700/20 text-neutral dark:text-white border border-primary-100 dark:border-primary-700 rounded-t-[18px] rounded-br-[18px] rounded-bl-sm"
                   }
-                `}>
+                `}
+                >
                   {m.texto}
                 </div>
               </div>
 
-             
               {m.opciones && (
                 <div className="flex flex-col gap-1.5 ml-9">
-                  {m.opciones.map(op => (
+                  {m.opciones.map((op) => (
                     <button
                       key={op.id}
                       onClick={() => seleccionarOpcion(op)}
@@ -87,7 +89,7 @@ export default function ChatFAQ() {
             <div className="flex items-end gap-2">
               <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 bg-primary-500">
                 <Image
-                  src="/atlas.png""
+                  src="/atlas.png"
                   alt="Atlas"
                   width={28}
                   height={28}
@@ -121,7 +123,6 @@ export default function ChatFAQ() {
           transition-all duration-200
         "
       >
-       
         <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-primary-500">
           <Image
             src="/atlas.png"
@@ -132,12 +133,10 @@ export default function ChatFAQ() {
           />
         </div>
 
-        
         <span className="flex-1 text-sm font-semibold text-neutral dark:text-white">
           Atlas
         </span>
 
-        
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="18"
@@ -146,7 +145,7 @@ export default function ChatFAQ() {
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
-          className={`text-primary-400 transition-transform duration-300 ${abierto ? 'rotate-180' : ''}`}
+          className={`text-primary-400 transition-transform duration-300 ${abierto ? "rotate-180" : ""}`}
         >
           <polyline points="18 15 12 9 6 15" />
         </svg>
