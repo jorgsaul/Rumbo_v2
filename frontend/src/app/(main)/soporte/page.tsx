@@ -1,5 +1,5 @@
 "use client";
-import SupportPage from "@/features/support/components/SupportPage";
+import ChatFAQ from "@/features/support/components/ChatFAQ";
 export default function Page() {
-  return <SupportPage />;
+  return <ChatFAQ />;
 }
