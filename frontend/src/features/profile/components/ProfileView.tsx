@@ -9,6 +9,7 @@ import { ProfileTabs, TabId } from "./ProfileTabs";
 import { ProfileActivity } from "./ProfileActivity";
 import { Button } from "@/components/ui";
 import Cookies from "js-cookie";
+import ChatFAQ from "@/features/support/components/ChatFAQ";
 
 export default function ProfileView() {
   const { profile, isLoading, error, retry } = useProfile();
@@ -58,16 +59,17 @@ export default function ProfileView() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto flex flex-col gap-4">
-      <ProfileHeader
-        profile={profile}
-        onEdit={() => router.push("/profile/settings")}
-        onLogout={handleLogout}
-      />
-
-      <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
-
-      <ProfileActivity userId={profile.id} activeTab={activeTab} />
-    </div>
+    <>
+      <div className="max-w-2xl mx-auto flex flex-col gap-4">
+        <ProfileHeader
+          profile={profile}
+          onEdit={() => router.push("/profile/settings")}
+          onLogout={handleLogout}
+        />
+        <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
+        <ProfileActivity userId={profile.id} activeTab={activeTab} />
+      </div>
+      <ChatFAQ />
+    </>
   );
 }
