@@ -11,10 +11,8 @@
   --color-info: #3b82f6;
   --color-neutral: #4b4b4b;
 
-  /*DEFAULT BLACK MODE COLOR*/
   --color-black-mode: #1f1f1f;
 
-  /*PRIMARY COLORS*/
   --color-primary-100: #fadee8;
   --color-primary-200: #e997bc;
   --color-primary-300: #ee68a4;
@@ -22,28 +20,15 @@
   --color-primary-500: #91235a;
   --color-primary-700: #270415;
 
-  /* WARNING */
   --color-warning-700: #fe9b0e;
-
-  /* INFO */
   --color-info-700: #3a70e2;
-
-  /* SUCCESS */
   --color-success-700: #0c9d61;
-
-  /* DANGER */
   --color-danger-700: #ec2d30;
 
   --animate-FadeIn: fadeIn 2s;
   @keyframes fadeIn {
-    0% {
-      opacity: 0;
-      transform: translateX(-100%);
-    }
-    100% {
-      opacity: 1;
-      transform: translateX(0%);
-    }
+    0%   { opacity: 0; transform: translateX(-100%); }
+    100% { opacity: 1; transform: translateX(0%); }
   }
 }
 
@@ -58,15 +43,229 @@
   }
 }
 
-/*Animaciones del */
 @layer utilities {
   @keyframes chatB {
     0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-    30% { transform: translateY(-6px); opacity: 1; }
+    30%            { transform: translateY(-6px); opacity: 1; }
   }
-  .animate-chat-bounce {
-    animation: chatB 1.2s ease-in-out infinite;
-  }
+  .animate-chat-bounce { animation: chatB 1.2s ease-in-out infinite; }
   .delay-100 { animation-delay: 0.15s; }
   .delay-200 { animation-delay: 0.3s; }
+}
+
+
+:root {
+  --atlas-bg:              rgba(255, 248, 251, 0.60);
+  --atlas-surface:         rgba(255, 241, 247, 0.78);
+  --atlas-surface-hover:   rgba(255, 232, 242, 0.92);
+
+  --atlas-border:          rgba(90, 18, 54, 0.10);
+  --atlas-border-strong:   rgba(90, 18, 54, 0.18);
+  --atlas-divider:         rgba(90, 18, 54, 0.08);
+
+  --atlas-text-primary:    #3b0a22;
+  --atlas-text-secondary:  #7a2448;
+  --atlas-text-muted:      #b06080;
+  --atlas-text-inverse:    #ffffff;
+
+  --atlas-accent:          #91235a;
+  --atlas-accent-soft:     rgba(145, 35, 90, 0.10);
+  --atlas-accent-hover:    #5a1236;
+  --atlas-accent-glow:     rgba(145, 35, 90, 0.22);
+
+  --atlas-bubble-user-bg:       #91235a;
+  --atlas-bubble-user-text:     #ffffff;
+  --atlas-bubble-user-border:   rgba(90, 18, 54, 0.28);
+  --atlas-bubble-bot-bg:        rgba(255, 248, 251, 0.82);
+  --atlas-bubble-bot-text:      #3b0a22;
+  --atlas-bubble-bot-border:    rgba(90, 18, 54, 0.10);
+
+  --atlas-online: #47b881;
+
+  --atlas-shadow-sm:   0 2px 8px rgba(90, 18, 54, 0.07), 0 0 0 1px rgba(90, 18, 54, 0.04);
+  --atlas-shadow-md:   0 8px 32px rgba(90, 18, 54, 0.12), 0 0 0 1px rgba(90, 18, 54, 0.06);
+  --atlas-shadow-lg:   0 24px 64px rgba(90, 18, 54, 0.14);
+  --atlas-shadow-send: 0 4px 16px rgba(145, 35, 90, 0.38);
+
+  --atlas-blur:    saturate(180%) blur(24px);
+  --atlas-blur-sm: saturate(160%) blur(12px);
+
+  --atlas-radius-bubble: 22px;
+  --atlas-radius-input:  18px;
+  --atlas-radius-card:   20px;
+  --atlas-radius-avatar: 50%;
+  --atlas-radius-chip:   100px;
+
+  --atlas-chip-bg:     rgba(145, 35, 90, 0.08);
+  --atlas-chip-border: rgba(145, 35, 90, 0.20);
+  --atlas-chip-text:   #91235a;
+
+  --atlas-input-bg:     rgba(255, 248, 251, 0.70);
+  --atlas-input-border: rgba(90, 18, 54, 0.14);
+  --atlas-input-focus:  rgba(145, 35, 90, 0.36);
+}
+
+
+.dark {
+  --atlas-bg:              rgba(28, 10, 18, 0.72);
+  --atlas-surface:         rgba(42, 14, 28, 0.82);
+  --atlas-surface-hover:   rgba(60, 20, 40, 0.90);
+
+  --atlas-border:          rgba(233, 151, 188, 0.10);
+  --atlas-border-strong:   rgba(233, 151, 188, 0.18);
+  --atlas-divider:         rgba(233, 151, 188, 0.08);
+
+  --atlas-text-primary:    #fce8f1;
+  --atlas-text-secondary:  #e997bc;
+  --atlas-text-muted:      #9e5070;
+  --atlas-text-inverse:    #ffffff;
+
+  --atlas-accent:          #cb3580;
+  --atlas-accent-soft:     rgba(203, 53, 128, 0.18);
+  --atlas-accent-hover:    #ee68a4;
+  --atlas-accent-glow:     rgba(203, 53, 128, 0.32);
+
+  --atlas-bubble-user-bg:       #cb3580;
+  --atlas-bubble-user-text:     #ffffff;
+  --atlas-bubble-user-border:   rgba(203, 53, 128, 0.35);
+  --atlas-bubble-bot-bg:        rgba(52, 18, 36, 0.85);
+  --atlas-bubble-bot-text:      #fce8f1;
+  --atlas-bubble-bot-border:    rgba(233, 151, 188, 0.10);
+
+  --atlas-shadow-sm:   0 2px 8px rgba(0,0,0,0.35), 0 0 0 1px rgba(233,151,188,0.04);
+  --atlas-shadow-md:   0 8px 32px rgba(0,0,0,0.50), 0 0 0 1px rgba(233,151,188,0.06);
+  --atlas-shadow-lg:   0 24px 64px rgba(0,0,0,0.60);
+  --atlas-shadow-send: 0 4px 16px rgba(203, 53, 128, 0.50);
+
+  --atlas-chip-bg:     rgba(203, 53, 128, 0.12);
+  --atlas-chip-border: rgba(203, 53, 128, 0.28);
+  --atlas-chip-text:   #e997bc;
+
+  --atlas-input-bg:     rgba(42, 14, 28, 0.70);
+  --atlas-input-border: rgba(233, 151, 188, 0.12);
+  --atlas-input-focus:  rgba(203, 53, 128, 0.42);
+}
+
+
+:root {
+  --atlas-bg:            rgba(255, 248, 251, 0.60);
+  --atlas-surface:       rgba(255, 241, 247, 0.78);
+  --atlas-surface-hover: rgba(255, 232, 242, 0.92);
+
+  --atlas-border:        rgba(90, 18, 54, 0.10);
+  --atlas-border-strong: rgba(90, 18, 54, 0.18);
+  --atlas-divider:       rgba(90, 18, 54, 0.08);
+
+  --atlas-text-primary:   #3b0a22;
+  --atlas-text-secondary: #7a2448;
+  --atlas-text-muted:     #b06080;
+  --atlas-text-inverse:   #ffffff;
+
+  --atlas-accent:       #91235a;
+  --atlas-accent-soft:  rgba(145, 35, 90, 0.10);
+  --atlas-accent-hover: #5a1236;
+  --atlas-accent-glow:  rgba(145, 35, 90, 0.22);
+
+  --atlas-bubble-user-bg:     #91235a;
+  --atlas-bubble-user-text:   #ffffff;
+  --atlas-bubble-user-border: rgba(90, 18, 54, 0.28);
+  --atlas-bubble-bot-bg:      rgba(255, 248, 251, 0.82);
+  --atlas-bubble-bot-text:    #3b0a22;
+  --atlas-bubble-bot-border:  rgba(90, 18, 54, 0.10);
+
+  --atlas-online: #47b881;
+
+  --atlas-shadow-sm:   0 2px 8px rgba(90, 18, 54, 0.07), 0 0 0 1px rgba(90, 18, 54, 0.04);
+  --atlas-shadow-md:   0 8px 32px rgba(90, 18, 54, 0.12), 0 0 0 1px rgba(90, 18, 54, 0.06);
+  --atlas-shadow-lg:   0 24px 64px rgba(90, 18, 54, 0.14);
+  --atlas-shadow-send: 0 4px 16px rgba(145, 35, 90, 0.38);
+
+  --atlas-blur:    saturate(180%) blur(24px);
+  --atlas-blur-sm: saturate(160%) blur(12px);
+
+  --atlas-radius-bubble: 22px;
+  --atlas-radius-input:  18px;
+  --atlas-radius-card:   20px;
+  --atlas-radius-chip:   100px;
+
+  --atlas-chip-bg:     rgba(145, 35, 90, 0.08);
+  --atlas-chip-border: rgba(145, 35, 90, 0.20);
+  --atlas-chip-text:   #91235a;
+
+  --atlas-input-bg:     rgba(255, 248, 251, 0.70);
+  --atlas-input-border: rgba(90, 18, 54, 0.14);
+  --atlas-input-focus:  rgba(145, 35, 90, 0.36);
+}
+
+
+.dark {
+  --atlas-bg:            rgba(28, 10, 18, 0.72);
+  --atlas-surface:       rgba(42, 14, 28, 0.82);
+  --atlas-surface-hover: rgba(60, 20, 40, 0.90);
+
+  --atlas-border:        rgba(233, 151, 188, 0.10);
+  --atlas-border-strong: rgba(233, 151, 188, 0.18);
+  --atlas-divider:       rgba(233, 151, 188, 0.08);
+
+  --atlas-text-primary:   #fce8f1;
+  --atlas-text-secondary: #e997bc;
+  --atlas-text-muted:     #9e5070;
+  --atlas-text-inverse:   #ffffff;
+
+  --atlas-accent:       #cb3580;
+  --atlas-accent-soft:  rgba(203, 53, 128, 0.18);
+  --atlas-accent-hover: #ee68a4;
+  --atlas-accent-glow:  rgba(203, 53, 128, 0.32);
+
+  --atlas-bubble-user-bg:     #cb3580;
+  --atlas-bubble-user-text:   #ffffff;
+  --atlas-bubble-user-border: rgba(203, 53, 128, 0.35);
+  --atlas-bubble-bot-bg:      rgba(52, 18, 36, 0.85);
+  --atlas-bubble-bot-text:    #fce8f1;
+  --atlas-bubble-bot-border:  rgba(233, 151, 188, 0.10);
+
+  --atlas-shadow-sm:   0 2px 8px rgba(0,0,0,0.35), 0 0 0 1px rgba(233,151,188,0.04);
+  --atlas-shadow-md:   0 8px 32px rgba(0,0,0,0.50), 0 0 0 1px rgba(233,151,188,0.06);
+  --atlas-shadow-lg:   0 24px 64px rgba(0,0,0,0.60);
+  --atlas-shadow-send: 0 4px 16px rgba(203, 53, 128, 0.50);
+
+  --atlas-chip-bg:     rgba(203, 53, 128, 0.12);
+  --atlas-chip-border: rgba(203, 53, 128, 0.28);
+  --atlas-chip-text:   #e997bc;
+
+  --atlas-input-bg:     rgba(42, 14, 28, 0.70);
+  --atlas-input-border: rgba(233, 151, 188, 0.12);
+  --atlas-input-focus:  rgba(203, 53, 128, 0.42);
+}
+
+@keyframes atlas-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes atlas-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%           { transform: translateY(-5px); }
+}
+
+@keyframes chatBounce {
+  0%, 60%, 100% { transform: translateY(0);    opacity: 0.4; }
+  30%           { transform: translateY(-6px); opacity: 1; }
+}
+
+.animate-chat-bounce         { animation: chatBounce 1.2s ease-in-out infinite; }
+.animate-chat-bounce-delay-1 { animation: chatBounce 1.2s ease-in-out infinite 0.15s; }
+.animate-chat-bounce-delay-2 { animation: chatBounce 1.2s ease-in-out infinite 0.30s; }
+
+.animate-atlas-fade-up      { animation: atlas-fade-up 0.28s ease both; }
+.animate-atlas-fade-up-slow { animation: atlas-fade-up 0.40s ease both; }
+
+.atlas-noise::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E");
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
 }
