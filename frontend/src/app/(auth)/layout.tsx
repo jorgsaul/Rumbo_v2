@@ -1,11 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import logo from "../../../public/Logo-blanco.png";
+import { useToast } from "@/context/ToastContext";
+import AvisoToast from "@/components/shared/AvisoToast";
 
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { toast, removeToast } = useToast();
   return (
     <main className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 bg-primary relative flex-col items-center justify-center p-12 overflow-hidden">
@@ -27,6 +32,16 @@ export default function AuthLayout({
       <div className="flex-1 flex items-center justify-center bg-neutral-50 dark:bg-neutral-900 p-6">
         {children}
       </div>
+      {toast && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <AvisoToast
+            title={toast.title}
+            description={toast.description}
+            category={toast.category}
+            onClose={() => removeToast(toast.id)}
+          />
+        </div>
+      )}
     </main>
   );
 }

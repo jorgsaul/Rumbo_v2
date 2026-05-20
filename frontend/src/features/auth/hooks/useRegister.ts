@@ -30,6 +30,7 @@ export default function useRegister() {
   };
 
   const sendCode = async (email: string) => {
+    console.log("send code llamdo con : ", email);
     setIsLoading(true);
     setError(null);
     try {

@@ -13,7 +13,7 @@ const step3Schema = z.object({
 type Step3Data = z.infer<typeof step3Schema>;
 
 export default function RegisterStep3() {
-  const { data, nextStep, previousStep } = useRegister();
+  const { data, nextStep, previousStep, verifyCode } = useRegister();
 
   const {
     control,
@@ -24,9 +24,8 @@ export default function RegisterStep3() {
     defaultValues: { code: "" },
   });
 
-  const onSubmit = (_data: Step3Data) => {
-    // El código se valida aquí
-    nextStep();
+  const onSubmit = async (data: Step3Data) => {
+    await verifyCode(data.code);
   };
 
   return (
