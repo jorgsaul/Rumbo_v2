@@ -28,13 +28,7 @@ export default function RegisterStep3() {
     await verifyCode(data.code);
   };
 
-  const handleError = (): string | undefined => {
-    if (error) return error.toString();
-
-    if (errors.code) return errors.code.message;
-
-    return undefined;
-  };
+  const errorMessage = error?.toString() ?? errors.code?.message;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
@@ -55,7 +49,7 @@ export default function RegisterStep3() {
           <OTPInput
             value={field.value}
             onChange={field.onChange}
-            error={handleError()}
+            error={errorMessage}
           />
         )}
       />

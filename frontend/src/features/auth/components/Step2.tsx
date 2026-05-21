@@ -35,10 +35,11 @@ export default function RegisterStep2() {
   });
 
   const onSubmit = async (formData: Step2Data) => {
-    await sendCode(formData.email);
-    console.log("error en on submit: ", error);
-    if (!error) nextStep();
+    const ok = await sendCode(formData.email);
+    if (ok) nextStep();
   };
+
+  const errorMessage = error?.toString() ?? errors.email?.message;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -58,7 +59,7 @@ export default function RegisterStep2() {
         icon={Mail}
         iconPosition="left"
         inputSize="md"
-        error={errors.email?.message}
+        error={errorMessage}
       />
 
       <div className="flex items-center justify-between mt-2">
@@ -72,7 +73,6 @@ export default function RegisterStep2() {
             ← Regresar
           </Button>
         )}
-        {error && <p className="text-sm text-danger">{error}</p>}
         <Button type="submit" size="sm" className="ml-auto" loading={isLoading}>
           Continuar →
         </Button>
