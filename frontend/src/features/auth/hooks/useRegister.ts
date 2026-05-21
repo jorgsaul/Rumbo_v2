@@ -36,9 +36,12 @@ export default function useRegister() {
     try {
       await authService.sendVerificationCode(email);
       setData({ email });
-      nextStep();
-    } catch {
-      setError("Error al enviar el código");
+    } catch (error) {
+      if (error instanceof Error)
+        console.log("Error al enviar el codigo: ", error.message);
+      setError(
+        error instanceof Error ? error.message : "Error al enviar el código",
+      );
     } finally {
       setIsLoading(false);
     }

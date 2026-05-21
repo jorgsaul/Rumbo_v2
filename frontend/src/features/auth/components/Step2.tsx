@@ -36,6 +36,8 @@ export default function RegisterStep2() {
 
   const onSubmit = async (formData: Step2Data) => {
     await sendCode(formData.email);
+    console.log("error en on submit: ", error);
+    if (!error) nextStep();
   };
 
   return (

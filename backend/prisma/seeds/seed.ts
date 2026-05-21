@@ -18,7 +18,7 @@ async function main() {
       fullName: "Carlos Mendoza",
       email: "carlos@rumbo.com",
       password: "$2b$10$yz1w9vpkOZgtvfu1dYYWoeRC8xPGGA9ebxo5AhN7h2AvL0CZXMTwq",
-      role: "AUTHOR",
+      role: "ADMIN",
     },
   });
 

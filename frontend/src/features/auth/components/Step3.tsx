@@ -13,7 +13,7 @@ const step3Schema = z.object({
 type Step3Data = z.infer<typeof step3Schema>;
 
 export default function RegisterStep3() {
-  const { data, nextStep, previousStep, verifyCode } = useRegister();
+  const { data, previousStep, verifyCode, error, sendCode } = useRegister();
 
   const {
     control,
@@ -26,6 +26,14 @@ export default function RegisterStep3() {
 
   const onSubmit = async (data: Step3Data) => {
     await verifyCode(data.code);
+  };
+
+  const handleError = (): string | undefined => {
+    if (error) return error.toString();
+
+    if (errors.code) return errors.code.message;
+
+    return undefined;
   };
 
   return (
@@ -47,14 +55,18 @@ export default function RegisterStep3() {
           <OTPInput
             value={field.value}
             onChange={field.onChange}
-            error={errors.code?.message}
+            error={handleError()}
           />
         )}
       />
 
       <p className="text-xs text-neutral-400 text-center">
         ¿No llegó el código?{" "}
-        <button type="button" className="text-primary hover:underline">
+        <button
+          type="button"
+          className="text-primary hover:underline cursor-pointer"
+          onClick={() => sendCode(data.email)}
+        >
           Reenviar
         </button>
       </p>

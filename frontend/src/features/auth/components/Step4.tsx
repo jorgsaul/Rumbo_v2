@@ -42,7 +42,7 @@ export default function RegisterStep4() {
     addToast({
       title: "Registro exitoso",
       description:
-        "El registro se a completado, inicie sesion para ingresar al programa",
+        "El registro se ha completado, inicie sesión para ingresar al programa.",
       category: "success",
     });
     router.push("/");
