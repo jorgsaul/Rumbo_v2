@@ -92,21 +92,19 @@ export default function QuestionScreen({
         <Card padding="sm" rounded="xl" border="light" shadow="none">
           <div className="flex flex-wrap gap-1.5 justify-center">
             {Array.from({ length: totalQuestions }).map((_, index) => {
-              const questionId = question.id;
               const isAnswered = answers && Object.keys(answers).length > index;
               const isCurrent = index === currentIndex;
 
               return (
                 <button
                   key={index}
-                  onClick={() => onGoToQuestion(index)}
                   className={cn(
                     "w-7 h-7 rounded-lg text-xs font-semibold transition-all duration-200",
                     isCurrent && "bg-primary text-white scale-110",
                     !isCurrent && isAnswered && "bg-success/20 text-success",
                     !isCurrent &&
                       !isAnswered &&
-                      "bg-neutral-100 dark:bg-neutral-800 text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700",
+                      "bg-neutral-100 dark:bg-neutral-800 text-neutral-400",
                   )}
                 >
                   {index + 1}
