@@ -143,6 +143,11 @@ export const getUserResultsService = async (
     prisma.knowledgeTestResult.findMany({
       where: { userId },
       orderBy: { createdAt: "desc" },
+      include: {
+        test: {
+          select: { title: true },
+        },
+      },
     }),
   ]);
 
@@ -150,6 +155,7 @@ export const getUserResultsService = async (
     ...vocalResults.map((r) => ({ ...r, resultType: "vocational" as const })),
     ...knowledgeResults.map((r) => ({
       ...r,
+      testTitle: r.test.title,
       resultType: "knowledge" as const,
     })),
   ].sort(

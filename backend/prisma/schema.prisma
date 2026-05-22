@@ -8,41 +8,43 @@ datasource db {
 }
 
 model User {
-  id               String                @id @default(cuid())
-  username         String                @unique
-  fullName         String
-  email            String                @unique
-  password         String?
-  role             Role                  @default(STUDENT)
-  educationLevel   EducationLevel?
-  bio              String?
-  avatarUrl        String?
-  bannerUrl        String?
-  isPrivate        Boolean               @default(false)
-  createdAt        DateTime              @default(now())
-  updatedAt        DateTime              @updatedAt
-  avatarPublicId   String?
-  bannerPublicId   String?
-  googleId         String?
-  provider         String                @default("local")
-  isActive         Boolean               @default(true)
-  resetToken       String?
-  resetTokenExpiry DateTime?
-  comments         Comment[]
-  favorites        Favorite[]
-  following        Follow[]              @relation("follower")
-  followers        Follow[]              @relation("following")
-  forums            Forum[]
-  forumRequests     ForumRequest[]
-  knowledgeResults KnowledgeTestResult[]
-  likes            Like[]
-  posts            Post[]
-  reports          Report[]
-  tickets          Ticket[]
-  vocalTestResults VocalTestResult[]
-  notifications    Notification[]
-  deactivationReason String?
-  forumMemberships ForumMember[]
+  id                   String                 @id @default(cuid())
+  username             String                 @unique
+  fullName             String
+  email                String                 @unique
+  password             String?
+  role                 Role                   @default(STUDENT)
+  educationLevel       EducationLevel?
+  bio                  String?
+  avatarUrl            String?
+  bannerUrl            String?
+  isPrivate            Boolean                @default(false)
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  avatarPublicId       String?
+  bannerPublicId       String?
+  googleId             String?
+  provider             String                 @default("local")
+  isActive             Boolean                @default(true)
+  resetToken           String?
+  resetTokenExpiry     DateTime?
+  deactivationReason   String?
+  notificationSettings Json?                  @default("{\"push_nuevo_post\": true, \"email_nuevo_post\": true, \"push_nuevo_seguidor\": true, \"email_nuevo_seguidor\": true, \"push_nuevo_comentario\": true, \"email_nuevo_comentario\": true}")
+  comments             Comment[]
+  favorites            Favorite[]
+  following            Follow[]               @relation("follower")
+  followers            Follow[]               @relation("following")
+  forums               Forum[]
+  forumMemberships     ForumMember[]
+  forumRequests        ForumRequest[]
+  knowledgeResults     KnowledgeTestResult[]
+  likes                Like[]
+  notifications        Notification[]
+  posts                Post[]
+  reports              Report[]
+  tickets              Ticket[]
+  vocalTestResults     VocalTestResult[]
+  conversation_history conversation_history[]
 }
 
 model ForumMember {
@@ -50,8 +52,8 @@ model ForumMember {
   userId    String
   forumId   String
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   forum     Forum    @relation(fields: [forumId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, forumId])
 }
@@ -84,18 +86,18 @@ model Post {
 }
 
 model Comment {
-  id            String    @id @default(cuid())
-  postId        String
-  authorId      String
-  content       String
-  isHidden      Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  parentId      String?
-  updatedAt     DateTime  @updatedAt
-  author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  parent  Comment?  @relation("replies", fields: [parentId], references: [id])
-  replies Comment[] @relation("replies")
-  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  id        String    @id @default(cuid())
+  postId    String
+  authorId  String
+  content   String
+  isHidden  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  parentId  String?
+  updatedAt DateTime  @updatedAt
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent    Comment?  @relation("replies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("replies")
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model Like {
@@ -249,20 +251,20 @@ model Ticket {
 }
 
 model Forum {
-  id           String         @id @default(cuid())
-  name         String         @unique
-  description  String?
-  isActive     Boolean        @default(true)
-  createdAt    DateTime       @default(now())
-  createdById  String
-  createdBy    User           @relation(fields: [createdById], references: [id])
-  requests     ForumRequest[]
-  posts        Post[]
-  imageUrl     String?
-  bannerUrl String?
+  id             String         @id @default(cuid())
+  name           String         @unique
+  description    String?
+  isActive       Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+  createdById    String
   bannerPublicId String?
-  imagePublicId String?
-  members ForumMember[]
+  bannerUrl      String?
+  imagePublicId  String?
+  imageUrl       String?
+  createdBy      User           @relation(fields: [createdById], references: [id])
+  members        ForumMember[]
+  requests       ForumRequest[]
+  posts          Post[]
 }
 
 model ForumRequest {
@@ -289,6 +291,19 @@ model Notification {
   user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model conversation_history {
+  id         String    @id @default(dbgenerated("concat('ch_', (gen_random_uuid())::text)"))
+  user_id    String
+  agent      String
+  role       String
+  content    String
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  User       User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, agent, created_at(sort: Desc)])
+}
+
 enum NotificationType {
   NEW_POST_FOLLOWED
   POST_COMMENT
@@ -296,6 +311,7 @@ enum NotificationType {
   FORUM_REQUEST
   POST_HIDDEN
   ACCOUNT_DEACTIVATED
+  NEW_FOLLOWER
 }
 
 enum Role {

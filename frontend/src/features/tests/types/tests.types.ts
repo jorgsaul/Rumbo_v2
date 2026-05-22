@@ -93,6 +93,7 @@ export interface KnowledgeTestResult {
   id: string;
   userId: string;
   testId: string;
+  testTitle: string;
   score: number;
   correctAnswers: number;
   totalQuestions: number;
