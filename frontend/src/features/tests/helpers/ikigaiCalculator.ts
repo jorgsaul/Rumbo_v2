@@ -511,26 +511,6 @@ export function calcularIkigai(
   questions: Question[],
   includeAllCareers: boolean = false,
 ): IkigaiCalculatorResult {
-  console.log("Total questions:", questions.length);
-  console.log("Answers:", answers);
-  console.log(
-    "Q11 id:",
-    questions[10]?.id,
-    "answer:",
-    answers[questions[10]?.id],
-  );
-  console.log(
-    "Q14 bio id:",
-    questions[13]?.id,
-    "answer:",
-    answers[questions[13]?.id],
-  );
-  console.log(
-    "Q15 exp id:",
-    questions[14]?.id,
-    "answer:",
-    answers[questions[14]?.id],
-  );
   const pasion = scorePilar("PASION", answers, questions);
   const vocacion = scorePilar("VOCACION", answers, questions);
   const profesion = scorePilar("PROFESION", answers, questions);

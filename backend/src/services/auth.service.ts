@@ -158,11 +158,8 @@ export const resetPasswordService = async (
 };
 
 export const sendVerificationCodeService = async (email: string) => {
-  console.log("Guardando código para: ", email);
-
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) throw new Error("Este correo ya está registrado");
-  console.log("Antes del upsert");
   const code = Math.floor(100000 + Math.random() * 900000).toString();
   const expiry = new Date(Date.now() + 15 * 60 * 1000);
 
@@ -172,14 +169,11 @@ export const sendVerificationCodeService = async (email: string) => {
       update: { code, expiry },
       create: { email, code, expiry },
     });
-    console.log("Después del upsert:", result);
   } catch (e) {
     console.error("Error en upsert:", e);
   }
 
-  console.log("Antes del email");
   await sendVerificationEmail(email, code);
-  console.log("Email enviado");
 };
 
 export const verifyCodeService = async (email: string, code: string) => {
@@ -187,12 +181,9 @@ export const verifyCodeService = async (email: string, code: string) => {
     where: { email },
   });
 
-  const all = await prisma.pendingVerification.findMany();
-  console.log("Todos los registros:", all);
+  await prisma.pendingVerification.findMany();
 
-  console.log("EN db: ", pending?.code, "| recibido: ", code);
   if (!pending) throw new Error("Código no encontrado");
   if (pending.code !== code) throw new Error("Código incorrecto");
   if (pending.expiry < new Date()) throw new Error("Código expirado");
-  // No borramos aún — se borra al completar el registro
 };

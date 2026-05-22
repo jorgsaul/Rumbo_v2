@@ -30,7 +30,6 @@ export default function useRegister() {
   };
 
   const sendCode = async (email: string) => {
-    console.log("send code llamdo con : ", email);
     setIsLoading(true);
     setError(null);
     try {
@@ -64,15 +63,12 @@ export default function useRegister() {
   const sendData = async (extraData?: Partial<typeof data>) => {
     setIsLoading(true);
     const finalData = { ...data, ...extraData };
-    console.log(finalData);
     try {
       if (!finalData.username)
         return new Error("No se puede registar sin usuario");
       await authService.signup(finalData);
-      console.log("termando");
       reset();
     } catch (error) {
-      console.log(error);
       setError("Error al registrarse");
     } finally {
       setIsLoading(false);

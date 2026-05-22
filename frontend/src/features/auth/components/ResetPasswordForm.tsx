@@ -12,7 +12,14 @@ import { authService } from "../services/authServices";
 
 const schema = z
   .object({
-    password: z.string().min(6, "Mínimo 6 caracteres"),
+    password: z
+      .string()
+      .min(8, "Mínimo 8 caracteres")
+      .max(32, "Máximo 32 caracteres")
+      .regex(
+        /^[A-Za-z0-9!@#$%^&*._-]+$/,
+        "Solo letras, números y ! @ # $ % ^ & * . _ -",
+      ),
     confirm: z.string(),
   })
   .refine((d) => d.password === d.confirm, {

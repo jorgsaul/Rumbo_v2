@@ -78,7 +78,6 @@ export const resetPassword = async (req: Request, res: Response) => {
 };
 
 export const sendVerificationCode = async (req: Request, res: Response) => {
-  console.log("🔥 send-code ejecutado, body:", req.body);
   try {
     await sendVerificationCodeService(req.body.email);
     res.json({ ok: true, message: "Código enviado" });

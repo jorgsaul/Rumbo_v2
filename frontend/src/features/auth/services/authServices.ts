@@ -17,7 +17,6 @@ export const authService = {
       });
       return data;
     } catch (error: any) {
-      console.log("Error raw:", error.response?.data); // ← agrega esto
       throw new Error(
         error.response?.data?.message ?? "Error al enviar el código",
       );

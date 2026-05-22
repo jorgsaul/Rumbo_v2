@@ -11,8 +11,19 @@ import { useToast } from "@/context/ToastContext";
 
 const step4Schema = z
   .object({
-    username: z.string().min(3, "Mínimo 3 caracteres"),
-    password: z.string().min(8, "Mínimo 8 caracteres"),
+    username: z
+      .string()
+      .min(3, "Mínimo 3 caracteres")
+      .max(20, "Máximo 20 caracteres")
+      .regex(/^[a-zA-Z0-9_]+$/, "Solo letras, números y guion bajo"),
+    password: z
+      .string()
+      .min(8, "Mínimo 8 caracteres")
+      .max(32, "Máximo 32 caracteres")
+      .regex(
+        /^[A-Za-z0-9!@#$%^&*._-]+$/,
+        "Solo letras, números y ! @ # $ % ^ & * . _ -",
+      ),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
