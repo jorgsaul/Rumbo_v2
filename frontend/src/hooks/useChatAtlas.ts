@@ -2,10 +2,27 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { enviarMensajeAtlas } from "../features/atlas/services/chat.services";
 import type { MensajeAtlas } from "../features/atlas/types/chat.types";
 
+const PALABRAS_BLOQUEADAS = [
+  'puta', 'puto', 'mierda', 'cabron', 'cabrón', 'pendejo', 'pendeja',
+  'chinga', 'chingo', 'verga', 'culero', 'culera', 'idiota', 'imbecil',
+  'imbécil', 'estupido', 'estúpido', 'joder', 'coño', 'pinche',
+  'mamadas', 'hdp', 'fuck', 'shit', 'bitch', 'asshole', 'wtf'
+];
+
+const validarMensaje = (texto: string): string | null => {
+  if (!texto.trim()) return null;
+  if (texto.length > 500) return 'El mensaje es demasiado largo (máx. 500 caracteres).';
+  const lower = texto.toLowerCase();
+  const tieneGroseria = PALABRAS_BLOQUEADAS.some(p => lower.includes(p));
+  if (tieneGroseria) return 'Por favor usa un lenguaje respetuoso 😊';
+  return null;
+};
+
 export function useChatAtlas(userId: string) {
   const [mensajes, setMensajes] = useState<MensajeAtlas[]>([]);
   const [cargando, setCargando] = useState(false);
   const [input, setInput] = useState("");
+  const [errorInput, setErrorInput] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -22,12 +39,18 @@ export function useChatAtlas(userId: string) {
 
   const enviar = useCallback(
     async (textoDirecto?: string) => {
-      // Ignorar si llega un SyntheticEvent (click del botón) en lugar de un string
       const textoBase = typeof textoDirecto === "string" ? textoDirecto : input;
       const texto = textoBase.trim();
 
       if (!texto || cargando) return;
 
+      const error = validarMensaje(texto);
+      if (error) {
+        setErrorInput(error);
+        return;
+      }
+
+      setErrorInput(null);
       if (typeof textoDirecto !== "string") setInput("");
 
       const mensajeUsuario: MensajeAtlas = {
@@ -72,6 +95,7 @@ export function useChatAtlas(userId: string) {
     cargando,
     input,
     setInput,
+    errorInput,
     bottomRef,
     textareaRef,
     enviar,

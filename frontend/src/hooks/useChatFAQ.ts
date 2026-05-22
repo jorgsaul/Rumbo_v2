@@ -58,12 +58,10 @@ export function useChatFAQ() {
     }
   }, [abierto, mensajes.length]);
 
-  // Al seleccionar un botón de opción
   const seleccionarOpcion = useCallback(
     async (opcion: OpcionFAQ) => {
       if (cargando) return;
 
-      // Mostrar la selección del usuario como mensaje
       setMensajes((prev) => [
         ...prev,
         {
@@ -77,7 +75,6 @@ export function useChatFAQ() {
 
       try {
         const data = await enviarOpcionFAQ(opcion.id);
-        // La API devuelve { message: string, opciones?: OpcionFAQ[], mostrar_menu?: boolean }
         const texto = data.message ?? data.mensaje ?? "";
 
         setMensajes((prev) => [

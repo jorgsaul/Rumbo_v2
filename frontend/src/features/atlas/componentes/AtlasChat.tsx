@@ -10,7 +10,7 @@ interface AtlasChatProps {
 }
 
 export default function AtlasChat({ userId }: AtlasChatProps) {
-  const { mensajes, input, setInput, enviar, cargando } = useChatAtlas(userId);
+  const { mensajes, input, setInput, enviar, cargando, errorInput } = useChatAtlas(userId);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -109,7 +109,6 @@ export default function AtlasChat({ userId }: AtlasChatProps) {
       >
         {mensajes.length === 0 && !cargando && (
           <div className="flex flex-col items-center justify-center flex-1 text-center px-6 py-10 gap-5 animate-atlas-fade-up-slow">
-
             <div
               className="
                 w-24 h-24 rounded-full
@@ -147,7 +146,7 @@ export default function AtlasChat({ userId }: AtlasChatProps) {
                 <button
                   key={s}
                   disabled={cargando}
-                  onClick={() => enviar(s)}  
+                  onClick={() => enviar(s)}
                   className="
                     px-4 py-2 whitespace-nowrap cursor-pointer
                     rounded-[var(--atlas-radius-chip)]
@@ -225,7 +224,7 @@ export default function AtlasChat({ userId }: AtlasChatProps) {
                 {msg.texto}
               </p>
               <span className="block text-[10px] mt-1 opacity-55 text-right tracking-[0.02em]">
-                {new Date().toLocaleTimeString("es", {
+                {new Date(msg.timestamp).toLocaleTimeString("es", {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
@@ -281,6 +280,12 @@ export default function AtlasChat({ userId }: AtlasChatProps) {
           [backdrop-filter:var(--atlas-blur-sm)]
         "
       >
+        {errorInput && (
+          <p className="text-[11px] text-red-400 mb-2 px-1">
+            {errorInput}
+          </p>
+        )}
+
         <div
           className="
             flex items-end gap-2.5

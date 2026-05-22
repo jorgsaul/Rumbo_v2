@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import handleFAQ from "@/features/support/components/FAQLocal";
 
-const N8N_WEBHOOK = "https://n00buk.app.n8n.cloud/webhook/faq-bot";
+const N8N_WEBHOOK = process.env.N8N_WEBHOOK_URL ?? "https://n00buk.app.n8n.cloud/webhook/faq-bot";
 const TIMEOUT_MS = 25_000;
 
 export async function POST(req: NextRequest) {
@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
     }
 
     const text = await res.text();
+    console.log("[/api/chat] Respuesta cruda de n8n:", text); // 👈 LOG
 
     if (!text?.trim()) {
       throw new Error("n8n devolvió respuesta vacía");
