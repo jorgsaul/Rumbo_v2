@@ -4,13 +4,15 @@ import Image from "next/image";
 import { useChatAtlas } from "@/hooks/useChatAtlas";
 import type { MensajeAtlas } from "../types/chat.types";
 import { useEffect, useRef } from "react";
+import atlasImg from "../../../../public/atlas.png";
 
 interface AtlasChatProps {
   userId: string;
 }
 
 export default function AtlasChat({ userId }: AtlasChatProps) {
-  const { mensajes, input, setInput, enviar, cargando, errorInput } = useChatAtlas(userId);
+  const { mensajes, input, setInput, enviar, cargando, errorInput } =
+    useChatAtlas(userId);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -65,7 +67,7 @@ export default function AtlasChat({ userId }: AtlasChatProps) {
               "
             >
               <Image
-                src="/atlas.png"
+                src={atlasImg}
                 alt="Atlas"
                 width={36}
                 height={36}
@@ -119,7 +121,7 @@ export default function AtlasChat({ userId }: AtlasChatProps) {
               "
             >
               <Image
-                src="/atlas.png"
+                src={atlasImg}
                 alt="Atlas"
                 width={72}
                 height={72}
@@ -129,11 +131,11 @@ export default function AtlasChat({ userId }: AtlasChatProps) {
 
             <div className="flex flex-col gap-2">
               <p className="text-3xl font-bold tracking-[-0.03em] text-[var(--atlas-text-primary)]">
-                Hola, soy Atlas ✦
+                Hola, soy Atlas 👋
               </p>
               <p className="text-base leading-relaxed max-w-[300px] text-[var(--atlas-text-secondary)]">
-                Tu guía personal de carrera. Cuéntame cómo te sientes hoy
-                o pregúntame lo que necesites.
+                Tu guía personal de carrera. Cuéntame cómo te sientes hoy o
+                pregúntame lo que necesites.
               </p>
             </div>
 
@@ -186,7 +188,7 @@ export default function AtlasChat({ userId }: AtlasChatProps) {
                 "
               >
                 <Image
-                  src="/atlas.png"
+                  src={atlasImg}
                   alt="Atlas"
                   width={28}
                   height={28}
@@ -244,7 +246,7 @@ export default function AtlasChat({ userId }: AtlasChatProps) {
               "
             >
               <Image
-                src="/atlas.png"
+                src={atlasImg}
                 alt="Atlas"
                 width={28}
                 height={28}
@@ -281,9 +283,7 @@ export default function AtlasChat({ userId }: AtlasChatProps) {
         "
       >
         {errorInput && (
-          <p className="text-[11px] text-red-400 mb-2 px-1">
-            {errorInput}
-          </p>
+          <p className="text-[11px] text-red-400 mb-2 px-1">{errorInput}</p>
         )}
 
         <div
