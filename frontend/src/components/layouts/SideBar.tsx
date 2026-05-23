@@ -14,6 +14,7 @@ import {
   LifeBuoy,
   ExternalLink,
   Compass,
+  Bot,          // ← ícono de Atlas
 } from "lucide-react";
 
 interface NavItem {
@@ -36,8 +37,13 @@ const baseItems: NavItem[] = [
   },
   {
     label: "Tests",
-    icon: FlaskConical,
     href: "/tests",
+    icon: FlaskConical,
+  },
+  {
+    label: "Atlas",        // ← NUEVO
+    href: "/atlas",        // ← NUEVO
+    icon: Bot,             // ← NUEVO
   },
   {
     label: "Perfil",
