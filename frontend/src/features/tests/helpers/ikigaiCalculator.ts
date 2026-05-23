@@ -189,19 +189,39 @@ const calcularPasionCarrera = (
   const kw = career.pasion.palabras_clave.map((k) => k.toLowerCase());
   const acts = career.pasion.actividades.map((a) => a.toLowerCase());
 
-  const q1 = norm(answers[questions[0]?.id] ?? 3); // tecnología
-  const q2 = norm(answers[questions[1]?.id] ?? 3); // salud
-  const q3 = norm(answers[questions[2]?.id] ?? 3); // construcción
-  const q4 = norm(answers[questions[3]?.id] ?? 3); // negocios
-  const q5 = norm(answers[questions[4]?.id] ?? 3); // química
-  const q6 = norm(answers[questions[5]?.id] ?? 3); // investigación
-  const q7 = norm(answers[questions[6]?.id] ?? 3); // diseño/creatividad
-  const q8 = norm(answers[questions[7]?.id] ?? 3); // análisis datos
-  const q9 = norm(answers[questions[8]?.id] ?? 3); // naturaleza
-  const q10 = norm(answers[questions[9]?.id] ?? 3); // impacto sociedad
-  const q11 = norm(answers[questions[10]?.id] ?? 3);
+  const pasionQs = questions.filter((q) => q.pilar === "PASION");
+  const vocacionQs = questions.filter((q) => q.pilar === "VOCACION");
+
+  const q1 = norm(answers[pasionQs[0]?.id] ?? 3); // tecnología
+  const q2 = norm(answers[pasionQs[1]?.id] ?? 3); // salud
+  const q3 = norm(answers[pasionQs[2]?.id] ?? 3); // construcción
+  const q4 = norm(answers[pasionQs[3]?.id] ?? 3); // negocios
+  const q5 = norm(answers[pasionQs[4]?.id] ?? 3); // química
+  const q6 = norm(answers[pasionQs[5]?.id] ?? 3); // investigación
+  const q7 = norm(answers[pasionQs[6]?.id] ?? 3); // diseño
+  const q8 = norm(answers[pasionQs[7]?.id] ?? 3); // análisis datos
+  const q9 = norm(answers[pasionQs[8]?.id] ?? 3); // naturaleza
+  const q10 = norm(answers[pasionQs[9]?.id] ?? 3); // impacto sociedad
+  const q11 = norm(answers[vocacionQs[0]?.id] ?? 3);
 
   const mapa: Record<string, number> = {
+    automatización: (q1 + q8) / 2,
+    robótica: q1,
+    "sistemas embebidos": q1,
+    manufactura: q3,
+    "diseño industrial": q7,
+    topografía: q3,
+    fotogrametría: q3,
+    geotecnia: q9,
+    "recursos naturales": q9,
+    transporte: q3,
+    petróleo: q9,
+    "control de calidad": (q4 + q8) / 2,
+    "procesos industriales": q3,
+    textiles: q7,
+    urbanismo: q7,
+    nanotecnología: (q1 + q6) / 2,
+    "ciencia básica": q6,
     programación: q1,
     software: q1,
     algoritmos: q1,
@@ -334,15 +354,16 @@ const calcularVocacionCarrera = (
 ): number => {
   const m = career.vocacion.materias;
 
-  const q11 = answers[questions[10]?.id] ?? 3; // matemáticas (1-5)
-  const q12 = answers[questions[11]?.id] ?? 3; // física
-  const q13 = answers[questions[12]?.id] ?? 3; // química
-  const q14 = answers[questions[13]?.id] ?? 3; // biología
-  const q15 = answers[questions[14]?.id] ?? 3; // expresión
-  const q16 = answers[questions[15]?.id] ?? 3; // pensamiento critico
-  const q17 = answers[questions[16]?.id] ?? 3; // trabajo en equipo
-  const q18 = answers[questions[17]?.id] ?? 3; // resolucion de problemas
-  const q19 = answers[questions[18]?.id] ?? 3; // aprendizaje
+  const vocacionQs = questions.filter((q) => q.pilar === "VOCACION");
+  const q11 = answers[vocacionQs[0]?.id] ?? 3; // matemáticas
+  const q12 = answers[vocacionQs[1]?.id] ?? 3; // física
+  const q13 = answers[vocacionQs[2]?.id] ?? 3; // química
+  const q14 = answers[vocacionQs[3]?.id] ?? 3; // biología
+  const q15 = answers[vocacionQs[4]?.id] ?? 3; // expresión
+  const q16 = answers[vocacionQs[5]?.id] ?? 3; // pensamiento crítico
+  const q17 = answers[vocacionQs[6]?.id] ?? 3; // trabajo en equipo
+  const q18 = answers[vocacionQs[7]?.id] ?? 3; // resolución problemas
+  const q19 = answers[vocacionQs[8]?.id] ?? 3; // aprendizaje
 
   // Escalar respuesta Likert (1-5) a escala de la carrera (1-10)
   const escalar = (likert: number) => (likert / 5) * 10;
@@ -380,12 +401,13 @@ const calcularProfesionCarrera = (
   answers: Record<string, number>,
   questions: Question[],
 ): number => {
-  const q21 = answers[questions[20]?.id] ?? 3; // preferencia salarial
-  const q22 = answers[questions[21]?.id] ?? 3; // estabilidad laboral
-  const q23 = answers[questions[22]?.id] ?? 3; // start ups
-  const q25 = answers[questions[24]?.id] ?? 3; // gobierno sector publico
-  const q27 = answers[questions[26]?.id] ?? 3; // emprendimiento
-  const q29 = answers[questions[28]?.id] ?? 3; // presión laboral aceptable
+  const profesionQs = questions.filter((q) => q.pilar === "PROFESION");
+  const q21 = answers[profesionQs[0]?.id] ?? 3;
+  const q22 = answers[profesionQs[1]?.id] ?? 3;
+  const q23 = answers[profesionQs[2]?.id] ?? 3;
+  const q25 = answers[profesionQs[4]?.id] ?? 3;
+  const q27 = answers[profesionQs[6]?.id] ?? 3;
+  const q29 = answers[profesionQs[8]?.id] ?? 3;
 
   // Salario normalizado (10k-80k → 0-100)
   const salPromedio =
@@ -444,16 +466,17 @@ const calcularMisionCarrera = (
   answers: Record<string, number>,
   questions: Question[],
 ): number => {
-  const q31 = norm(answers[questions[30]?.id] ?? 3); // medio ambiente
-  const q32 = norm(answers[questions[31]?.id] ?? 3); // salud pública
-  const q33 = norm(answers[questions[32]?.id] ?? 3); // desarrollo tecnológico
-  const q34 = norm(answers[questions[33]?.id] ?? 3); // infraestructura comunidades
-  const q35 = norm(answers[questions[34]?.id] ?? 3); // desigualdad social
-  const q36 = norm(answers[questions[35]?.id] ?? 3); // investigación científica
-  const q37 = norm(answers[questions[36]?.id] ?? 3); // cambio climático
-  const q38 = norm(answers[questions[37]?.id] ?? 3); // innovación industrial
-  const q39 = norm(answers[questions[38]?.id] ?? 3); // impacto social visible
-  const q40 = norm(answers[questions[39]?.id] ?? 3); // desarrollo económico
+  const misionQs = questions.filter((q) => q.pilar === "MISION");
+  const q31 = norm(answers[misionQs[0]?.id] ?? 3);
+  const q32 = norm(answers[misionQs[1]?.id] ?? 3); // salud pública
+  const q33 = norm(answers[misionQs[2]?.id] ?? 3); // desarrollo tecnológico
+  const q34 = norm(answers[misionQs[3]?.id] ?? 3); // infraestructura comunidades
+  const q35 = norm(answers[misionQs[4]?.id] ?? 3); // desigualdad social
+  const q36 = norm(answers[misionQs[5]?.id] ?? 3); // investigación científica
+  const q37 = norm(answers[misionQs[6]?.id] ?? 3); // cambio climático
+  const q38 = norm(answers[misionQs[7]?.id] ?? 3); // innovación industrial
+  const q39 = norm(answers[misionQs[8]?.id] ?? 3); // impacto social visible
+  const q40 = norm(answers[misionQs[9]?.id] ?? 3); // desarrollo económico
 
   const problemas = career.mision.problemas.map((p) => p.toLowerCase());
 
@@ -511,26 +534,6 @@ export function calcularIkigai(
   questions: Question[],
   includeAllCareers: boolean = false,
 ): IkigaiCalculatorResult {
-  console.log("Total questions:", questions.length);
-  console.log("Answers:", answers);
-  console.log(
-    "Q11 id:",
-    questions[10]?.id,
-    "answer:",
-    answers[questions[10]?.id],
-  );
-  console.log(
-    "Q14 bio id:",
-    questions[13]?.id,
-    "answer:",
-    answers[questions[13]?.id],
-  );
-  console.log(
-    "Q15 exp id:",
-    questions[14]?.id,
-    "answer:",
-    answers[questions[14]?.id],
-  );
   const pasion = scorePilar("PASION", answers, questions);
   const vocacion = scorePilar("VOCACION", answers, questions);
   const profesion = scorePilar("PROFESION", answers, questions);
@@ -558,10 +561,19 @@ export function calcularIkigai(
     // Usar promedio ponderado de los 4 pilares como compatibility
     const compatibility = Math.round(
       careerPasionScore * 0.25 +
-        careerVocacionScore * 0.3 +
+        careerVocacionScore * 0.25 +
         careerProfesionScore * 0.25 +
-        careerMisionScore * 0.2,
+        careerMisionScore * 0.25,
     );
+
+    console.log("Scores:", {
+      pasion,
+      vocacion,
+      profesion,
+      mision,
+      scoreGlobal,
+      zonaIkigai,
+    });
 
     return {
       id: career.id.toString(),

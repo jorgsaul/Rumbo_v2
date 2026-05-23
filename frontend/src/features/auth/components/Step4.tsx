@@ -7,11 +7,23 @@ import { User, Lock } from "lucide-react";
 import { Button, Input } from "@/components/ui";
 import useRegister from "../hooks/useRegister";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/context/ToastContext";
 
 const step4Schema = z
   .object({
-    username: z.string().min(3, "Mínimo 3 caracteres"),
-    password: z.string().min(8, "Mínimo 8 caracteres"),
+    username: z
+      .string()
+      .min(3, "Mínimo 3 caracteres")
+      .max(20, "Máximo 20 caracteres")
+      .regex(/^[a-zA-Z0-9_]+$/, "Solo letras, números y guion bajo"),
+    password: z
+      .string()
+      .min(8, "Mínimo 8 caracteres")
+      .max(32, "Máximo 32 caracteres")
+      .regex(
+        /^[A-Za-z0-9!@#$%^&*._-]+$/,
+        "Solo letras, números y ! @ # $ % ^ & * . _ -",
+      ),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -24,6 +36,7 @@ type Step4Data = z.infer<typeof step4Schema>;
 export default function RegisterStep4() {
   const { sendData, previousStep, isLoading, error } = useRegister();
   const router = useRouter();
+  const { addToast } = useToast();
   const {
     register,
     handleSubmit,
@@ -36,6 +49,12 @@ export default function RegisterStep4() {
     await sendData({
       username: formData.username,
       password: formData.password,
+    });
+    addToast({
+      title: "Registro exitoso",
+      description:
+        "El registro se ha completado, inicie sesión para ingresar al programa.",
+      category: "success",
     });
     router.push("/");
   };

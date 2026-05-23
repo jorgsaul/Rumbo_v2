@@ -1,7 +1,7 @@
-import nodemailer from "nodemailer";
+import nodemailer, { TransportOptions } from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASS,
@@ -9,15 +9,24 @@ const transporter = nodemailer.createTransport({
   connectionTimeout: 5000,
   greetingTimeout: 5000,
   socketTimeout: 5000,
-});
+  secure: false,
+  family: 4,
+  port: 587,
+  tls: {
+    rejectUnauthorized: false,
+  },
+} as TransportOptions);
 
 export const sendVerificationEmail = async (email: string, code: string) => {
-  try {
-    await transporter.sendMail({
-      from: `"Rumbo" <${process.env.GMAIL_USER}>`,
-      to: email,
-      subject: "Verifica tu cuenta en Rumbo",
-      html: `
+  await transporter.verify((error, success) => {
+    if (error) console.error("❌ Auth error:", error.message);
+    else console.log("✅ Conectado a Gmail, listo para enviar");
+  });
+  await transporter.sendMail({
+    from: `"Rumbo" <${process.env.GMAIL_USER}>`,
+    to: email,
+    subject: "Verifica tu cuenta en Rumbo",
+    html: `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
         <h2 style="color: #5a1236;">Bienvenido a Rumbo 🎓</h2>
         <p>Tu código de verificación es:</p>
@@ -27,11 +36,8 @@ export const sendVerificationEmail = async (email: string, code: string) => {
         <p style="color: #888; font-size: 13px;">Expira en 15 minutos.</p>
       </div>
     `,
-    });
-    console.log("Email enviado");
-  } catch (error) {
-    console.log("Error enviando email, ", error);
-  }
+  });
+  console.log("Email enviado");
 };
 
 export const sendResetEmail = async (email: string, token: string) => {

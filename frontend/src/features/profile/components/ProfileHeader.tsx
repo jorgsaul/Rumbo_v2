@@ -4,6 +4,7 @@ import Image from "next/image";
 import { LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui";
 import { ProfileData } from "../services/profileServices";
+import { useConfirmation } from "@/context/ConfirmationContext";
 
 const ROLE_LABELS: Record<string, string> = {
   STUDENT: "Estudiante",
@@ -28,6 +29,21 @@ export function ProfileHeader({
   onEdit,
   onLogout,
 }: ProfileHeaderProps) {
+  const { confirm } = useConfirmation();
+
+  const handleLogOut = async () => {
+    const ok = await confirm({
+      title: "Cerrar sesión",
+      category: "info",
+      description:
+        "Estás a punto de salir de tu cuenta. Puedes volver a iniciar sesión cuando quieras.",
+    });
+
+    if (!ok) return;
+
+    onLogout();
+  };
+
   return (
     <div className="rounded-xl border border-neutral-200 dark:border-neutral-800">
       <div className="relative w-full h-32 bg-primary/10 rounded-t-xl overflow-hidden">
@@ -79,7 +95,7 @@ export function ProfileHeader({
                 variant="ghost"
                 size="sm"
                 leftIcon={<LogOut size={15} />}
-                onClick={onLogout}
+                onClick={handleLogOut}
               >
                 Salir
               </Button>

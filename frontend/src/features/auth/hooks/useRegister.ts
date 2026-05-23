@@ -35,9 +35,13 @@ export default function useRegister() {
     try {
       await authService.sendVerificationCode(email);
       setData({ email });
-      nextStep();
-    } catch {
-      setError("Error al enviar el código");
+      return true;
+    } catch (error) {
+      if (error instanceof Error)
+        setError(
+          error instanceof Error ? error.message : "Error al enviar el código",
+        );
+      return false;
     } finally {
       setIsLoading(false);
     }
@@ -59,15 +63,12 @@ export default function useRegister() {
   const sendData = async (extraData?: Partial<typeof data>) => {
     setIsLoading(true);
     const finalData = { ...data, ...extraData };
-    console.log(finalData);
     try {
       if (!finalData.username)
         return new Error("No se puede registar sin usuario");
       await authService.signup(finalData);
-      console.log("termando");
       reset();
     } catch (error) {
-      console.log(error);
       setError("Error al registrarse");
     } finally {
       setIsLoading(false);

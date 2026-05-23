@@ -144,7 +144,7 @@ function KnowledgeResultCard({ result }: { result: KnowledgeTestResult }) {
           </div>
           <div>
             <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
-              Test de Conocimientos
+              Test de Conocimientos - {result.testTitle}
             </p>
             <p className="text-xs text-neutral-400 flex items-center gap-1">
               <Clock size={11} />

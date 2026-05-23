@@ -51,11 +51,6 @@ const baseItems: NavItem[] = [
     icon: User,
   },
   {
-    label: "Soporte",
-    href: "/soporte",
-    icon: LifeBuoy,
-  },
-  {
     label: "Recursos Externos",
     icon: ExternalLink,
     children: [

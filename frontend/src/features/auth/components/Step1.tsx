@@ -16,7 +16,7 @@ const ROLE_OPTIONS: RadioOption[] = [
   {
     value: "AUTHOR",
     label: "Autor de publicacones",
-    description: "Quiero orientar a mis estudiantes",
+    description: "Deseo compartir mi experiencia y conocimientos con otros",
     icon: <BookOpen size={18} />,
   },
 ];

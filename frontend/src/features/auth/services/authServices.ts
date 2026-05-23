@@ -11,10 +11,16 @@ export const authService = {
   googleLogin: async (idToken: string) =>
     post<ApiResponse<User>>("/auth/google", { idToken }),
   sendVerificationCode: async (email: string) => {
-    const { data } = await api.post<ApiResponse<null>>("/auth/send-code", {
-      email,
-    });
-    return data;
+    try {
+      const { data } = await api.post<ApiResponse<null>>("/auth/send-code", {
+        email,
+      });
+      return data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ?? "Error al enviar el código",
+      );
+    }
   },
   verifyCode: async (email: string, code: string) => {
     const { data } = await api.post<ApiResponse<null>>("/auth/verify-code", {

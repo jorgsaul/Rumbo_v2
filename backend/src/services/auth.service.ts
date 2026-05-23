@@ -158,20 +158,20 @@ export const resetPasswordService = async (
 };
 
 export const sendVerificationCodeService = async (email: string) => {
-  // Verificar si ya existe cuenta con ese email
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) throw new Error("Este correo ya está registrado");
-
   const code = Math.floor(100000 + Math.random() * 900000).toString();
   const expiry = new Date(Date.now() + 15 * 60 * 1000);
 
-  // Guardar en tabla temporal o en cache — como no hay usuario aún,
-  // guárdalo en una tabla PendingVerification
-  await prisma.pendingVerification.upsert({
-    where: { email },
-    update: { code, expiry },
-    create: { email, code, expiry },
-  });
+  try {
+    const result = await prisma.pendingVerification.upsert({
+      where: { email },
+      update: { code, expiry },
+      create: { email, code, expiry },
+    });
+  } catch (e) {
+    console.error("Error en upsert:", e);
+  }
 
   await sendVerificationEmail(email, code);
 };
@@ -180,8 +180,10 @@ export const verifyCodeService = async (email: string, code: string) => {
   const pending = await prisma.pendingVerification.findUnique({
     where: { email },
   });
+
+  await prisma.pendingVerification.findMany();
+
   if (!pending) throw new Error("Código no encontrado");
   if (pending.code !== code) throw new Error("Código incorrecto");
   if (pending.expiry < new Date()) throw new Error("Código expirado");
-  // No borramos aún — se borra al completar el registro
 };

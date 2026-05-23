@@ -79,7 +79,7 @@ export function FeedList() {
               <select
                 value={activeTag ?? ""}
                 onChange={(e) => filterByTag(e.target.value || undefined)}
-                className="w-full px-3 py-2 text-sm rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
+                className="w-full px-3 pr-6 py-2 text-sm rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
               >
                 <option value="">Todas las etiquetas</option>
                 {tags.map((tag) => (
