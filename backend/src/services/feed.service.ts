@@ -102,6 +102,7 @@ export const getPostByIdService = async (postId: string, userId: string) => {
       likes: { where: { userId }, select: { userId: true } },
       favorites: { where: { userId }, select: { userId: true } },
       reports: { where: { reporterId: userId }, select: { reporterId: true } },
+      forum: { select: { name: true, id: true } },
     },
   });
 
@@ -113,7 +114,8 @@ export const getPostByIdService = async (postId: string, userId: string) => {
     title: post.title,
     content: post.content,
     mediaUrl: post.mediaUrl,
-    forumId: post.forumId,
+    forumId: post.forum?.id,
+    forumName: post.forum?.name,
     tags: post.tags.map((pt) => ({
       name: pt.tag.name,
       color: pt.tag.category?.color ?? "#6b7280",

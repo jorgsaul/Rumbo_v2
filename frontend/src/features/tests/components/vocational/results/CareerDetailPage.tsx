@@ -251,57 +251,6 @@ export default function CareerDetailPage({ careerId }: { careerId: string }) {
         className="space-y-3"
       >
         <div className="flex items-center gap-2">
-          <Briefcase size={15} className="text-warning shrink-0" />
-          <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-            Mercado laboral
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-900 space-y-0.5">
-            <p className="text-xs text-neutral-400">Salario inicial</p>
-            <p className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
-              ${career.profesion.salario_inicial.toLocaleString("es-MX")}
-            </p>
-          </div>
-          <div className="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-900 space-y-0.5">
-            <p className="text-xs text-neutral-400">Con experiencia</p>
-            <p className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
-              ${career.profesion.salario_experiencia.toLocaleString("es-MX")}
-            </p>
-          </div>
-          <div className="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-900 space-y-0.5">
-            <p className="text-xs text-neutral-400">Empleabilidad</p>
-            <p className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
-              {career.profesion.empleabilidad}%
-            </p>
-          </div>
-          <div className="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-900 space-y-0.5">
-            <p className="text-xs text-neutral-400">Demanda</p>
-            <p className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
-              {career.profesion.demanda}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-2 pt-1">
-          {career.profesion.sectores.map((s) => (
-            <span
-              key={s}
-              className="text-xs px-2.5 py-1 rounded-lg bg-warning/10 text-warning-700 dark:text-warning"
-            >
-              {s}
-            </span>
-          ))}
-        </div>
-      </Card>
-
-      <Card
-        padding="md"
-        rounded="xl"
-        border="light"
-        shadow="sm"
-        className="space-y-3"
-      >
-        <div className="flex items-center gap-2">
           <Heart size={15} className="text-danger shrink-0" />
           <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
             Impacto y propósito

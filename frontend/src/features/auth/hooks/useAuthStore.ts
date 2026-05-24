@@ -17,7 +17,6 @@ export const useAuthStore = create<AuthStore>()(
     }),
     {
       name: "auth-storage",
-      skipHydration: true,
     },
   ),
 );

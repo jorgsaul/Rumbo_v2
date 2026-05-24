@@ -5,7 +5,9 @@ import { formatDate } from "@/utils/FormatDate";
 import { feedService } from "../services/feedService";
 import { PostComment } from "../types/feed.types";
 import { Button } from "@/components/ui";
-import { Send } from "lucide-react";
+import { Send, Trash2 } from "lucide-react";
+import { IconButton } from "@/components/ui";
+import { useAuthStore } from "@/features/auth/hooks/useAuthStore";
 
 interface CommentSectionProps {
   postId: string;
@@ -42,6 +44,17 @@ export function CommentSection({ postId }: CommentSectionProps) {
       setIsLoading(false);
     }
   };
+
+  const handleDeleteComment = async (id: string) => {
+    try {
+      const res = await feedService.deleteComment(postId, id);
+      if (res.ok) {
+        setComments((prev) => prev.filter((c) => c.id !== id));
+      }
+    } catch (error) {}
+  };
+
+  const { user } = useAuthStore();
 
   return (
     <div className="flex flex-col gap-3 pt-3 border-t border-neutral-100 dark:border-neutral-800">

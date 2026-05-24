@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CommentItem from "./CommentItem";
+import { IconButton } from "@/components/ui";
 
 interface PostDetailPageProps {
   postId: string;
@@ -43,6 +44,7 @@ export default function PostDetailPage({
         setIsLoading(false);
       }
     };
+
     load();
   }, [postId]);
 
@@ -106,13 +108,22 @@ export default function PostDetailPage({
   return (
     <div className="max-w-2xl mx-auto space-y-4 pb-12">
       <div className="flex items-center gap-3 pt-2">
-        <button
+        <IconButton
+          icon={ArrowLeft}
+          iconSize={18}
           onClick={() => router.back()}
-          className="p-2 rounded-xl text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-        >
-          <ArrowLeft size={18} />
-        </button>
-        <p className="text-sm text-neutral-400">Publicación</p>
+        />
+        Origen de la publicación :
+        {post.forumName ? (
+          <Link
+            href={`/foros/${post.forumId}`}
+            className="text-md text-neutral-900 dark:text-white hover:text-primary transition-colors"
+          >
+            {post.forumName}
+          </Link>
+        ) : (
+          " Feed general"
+        )}
       </div>
 
       <Card
@@ -141,7 +152,7 @@ export default function PostDetailPage({
           <div>
             <Link
               href={`/profile/${post.author.username}`}
-              className="text-sm font-semibold text-neutral-900 dark:text-white hover:text-primary transition-colors"
+              className="text-sm font-semibold text-neutral-900 dark:text-white hover:text-primary transition-color"
             >
               @{post.author.username}
             </Link>

@@ -5,10 +5,12 @@ import { feedService } from "@/features/feed/services/feedService";
 import type { PostComment } from "@/features/feed/types/feed.types";
 import { cn } from "@/lib";
 import { formatDate } from "@/utils/FormatDate";
-import { Loader2, Reply, Send } from "lucide-react";
+import { Loader2, Reply, Send, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { IconButton } from "@/components/ui";
+import { useConfirmation } from "@/context/ConfirmationContext";
 
 export default function CommentItem({
   comment,
@@ -24,7 +26,9 @@ export default function CommentItem({
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deleted, setDeleted] = useState(false);
   const { user } = useAuthStore();
+  const { confirm } = useConfirmation();
 
   const handleReply = async () => {
     if (!replyContent.trim()) return;
@@ -45,10 +49,31 @@ export default function CommentItem({
     }
   };
 
+  const handleDeleteComment = async (id: string) => {
+    try {
+      const ok = await confirm({
+        title: "Eliminar comentario",
+        category: "warning",
+        description:
+          "Estas a punto de eliminar un comentario, la acción NO es reversible. ¿Estas seguro de querer elimnarlo?",
+      });
+      if (!ok) return;
+      const res = await feedService.deleteComment(postId, id);
+      if (res.ok) {
+        setDeleted(true);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    console.log("user id:", user?.id, "author id:", comment.author.id);
+  }, []);
+
+  if (deleted) return null;
   return (
     <div
       className={cn(
-        "flex gap-3",
+        "flex gap-3 group",
         depth > 0 &&
           "ml-8 pl-3 border-l-2 border-neutral-100 dark:border-neutral-800",
       )}
@@ -80,12 +105,19 @@ export default function CommentItem({
           <span className="text-xs text-neutral-400">
             {formatDate(comment.createdAt)}
           </span>
+          {user?.id === comment.author.id && (
+            <IconButton
+              icon={Trash2}
+              label="Eliminar"
+              onClick={() => handleDeleteComment(comment.id)}
+              className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
+            />
+          )}
         </div>
 
         <p className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
           {comment.content}
         </p>
-
         {depth === 0 && (
           <button
             onClick={() => setShowReplyForm(!showReplyForm)}
