@@ -15,6 +15,7 @@ export interface Post {
   commentsCount: number;
   createdAt: string;
   forumId: string | null;
+  forumName: string | null;
   moderation?: ModerationStatus;
   forum: { id: string; name: string } | null;
 }

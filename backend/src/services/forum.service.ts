@@ -228,6 +228,7 @@ export const adminResolveForumRequestService = async (
         name: request.name,
         description: request.description,
         createdById: adminId,
+        isActive: true,
       },
     });
   }

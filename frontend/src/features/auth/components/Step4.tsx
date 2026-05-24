@@ -14,7 +14,7 @@ const step4Schema = z
     username: z
       .string()
       .min(3, "Mínimo 3 caracteres")
-      .max(20, "Máximo 20 caracteres")
+      .max(20, "Máximo 40 caracteres")
       .regex(/^[a-zA-Z0-9_]+$/, "Solo letras, números y guion bajo"),
     password: z
       .string()

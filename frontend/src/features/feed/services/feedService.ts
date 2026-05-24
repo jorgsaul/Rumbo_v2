@@ -69,7 +69,7 @@ export const feedService = {
     postId: string,
     commentId: string,
   ): Promise<ApiResponse<null>> =>
-    post<ApiResponse<null>>(`/feed/${postId}/comments/${commentId}`, {}),
+    deletePop<ApiResponse<null>>(`/feed/${postId}/comments/${commentId}`),
 
   getTags: (): Promise<ApiResponse<TagWithCategory[]>> =>
     get<ApiResponse<TagWithCategory[]>>("/feed/tags"),

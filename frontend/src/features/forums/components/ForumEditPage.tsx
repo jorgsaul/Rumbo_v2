@@ -134,7 +134,7 @@ export default function ForumEditPage({ forumId }: { forumId: string }) {
           />
         </label>
 
-        <div className="absolute -bottom-5 left-4 w-14 h-14 rounded-2xl border-4 border-white dark:border-neutral-950 bg-primary/10 overflow-hidden">
+        <div className="absolute bottom-2 left-4 w-14 h-14 rounded-2xl border-4 border-white dark:border-neutral-950 bg-primary/10 overflow-hidden">
           {forum.imageUrl ? (
             <Image src={forum.imageUrl} alt="" fill className="object-cover" />
           ) : (

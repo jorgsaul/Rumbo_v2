@@ -122,8 +122,8 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
       </div>
 
       <div className="flex items-end justify-between gap-3 px-1">
-        <div className="flex items-start gap-3">
-          <div className="w-14 h-14 rounded-2xl border-4 border-white dark:border-neutral-950 bg-primary/10 overflow-hidden shrink-0 -mt-6">
+        <div className="flex gap-3 items-center">
+          <div className="w-14 h-14 rounded-2xl border-4 border-white dark:border-neutral-950 bg-primary/10 overflow-hidden shrink-0">
             {forum.imageUrl ? (
               <Image
                 src={forum.imageUrl}
