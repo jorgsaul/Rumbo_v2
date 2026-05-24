@@ -1,30 +1,10 @@
-import nodemailer, { TransportOptions } from "nodemailer";
-import dns from "dns";
+import { Resend } from "resend";
 
-dns.setDefaultResultOrder("ipv4first");
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS,
-  },
-  connectionTimeout: 15000,
-  greetingTimeout: 15000,
-  socketTimeout: 15000,
-  secure: false,
-  connectionOptions: {
-    family: 4,
-  },
-  port: 587,
-  tls: {
-    rejectUnauthorized: false,
-  },
-} as TransportOptions);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendVerificationEmail = async (email: string, code: string) => {
   try {
-    await transporter.sendMail({
+    await resend.emails.send({
       from: `"Rumbo" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: "Verifica tu cuenta en Rumbo",
@@ -50,7 +30,7 @@ export const sendVerificationEmail = async (email: string, code: string) => {
 export const sendResetEmail = async (email: string, token: string) => {
   try {
     const url = `${process.env.FRONTEND_URL}/recovery?token=${token}`;
-    await transporter.sendMail({
+    await resend.emails.send({
       from: `"Rumbo" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: "Recupera tu contraseña en Rumbo",
