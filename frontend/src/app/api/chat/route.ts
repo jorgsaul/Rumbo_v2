@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import handleFAQ from "@/features/support/components/FAQLocal";
 
-const N8N_WEBHOOK = process.env.N8N_WEBHOOK_URL ?? "https://n00buk.app.n8n.cloud/webhook/faq-bot";
+const N8N_WEBHOOK =
+  process.env.N8N_WEBHOOK_URL ?? "https://n00buk.app.n8n.cloud/webhook/faq-bot";
 const TIMEOUT_MS = 25_000;
 
 export async function POST(req: NextRequest) {
@@ -13,21 +14,18 @@ export async function POST(req: NextRequest) {
     console.error("[/api/chat] req.json() falló:", e);
     return NextResponse.json(
       { error: "Cuerpo de la petición inválido" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (!body || typeof body !== "object" || Object.keys(body).length === 0) {
-    return NextResponse.json(
-      { error: "Body vacío" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Body vacío" }, { status: 400 });
   }
 
   if (body.agente === "asistente" && !body.mensaje) {
     return NextResponse.json(
       { mensaje: "No se recibió ningún mensaje." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -51,7 +49,6 @@ export async function POST(req: NextRequest) {
     }
 
     const text = await res.text();
-    console.log("[/api/chat] Respuesta cruda de n8n:", text); // 👈 LOG
 
     if (!text?.trim()) {
       throw new Error("n8n devolvió respuesta vacía");
@@ -69,17 +66,12 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(data, { status: 200 });
-
   } catch (error: unknown) {
     clearTimeout(timeoutId);
 
-    const isTimeout =
-      error instanceof Error && error.name === "AbortError";
+    const isTimeout = error instanceof Error && error.name === "AbortError";
 
-    console.error(
-      `[/api/chat] ${isTimeout ? "TIMEOUT" : "Error"}:`,
-      error
-    );
+    console.error(`[/api/chat] ${isTimeout ? "TIMEOUT" : "Error"}:`, error);
 
     if (body?.agente === "asistente") {
       const msg = isTimeout
