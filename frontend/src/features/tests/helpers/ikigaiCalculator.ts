@@ -566,15 +566,6 @@ export function calcularIkigai(
         careerMisionScore * 0.25,
     );
 
-    console.log("Scores:", {
-      pasion,
-      vocacion,
-      profesion,
-      mision,
-      scoreGlobal,
-      zonaIkigai,
-    });
-
     return {
       id: career.id.toString(),
       name: career.nombre,

@@ -65,10 +65,6 @@ export default function CommentItem({
     } catch (error) {}
   };
 
-  useEffect(() => {
-    console.log("user id:", user?.id, "author id:", comment.author.id);
-  }, []);
-
   if (deleted) return null;
   return (
     <div
