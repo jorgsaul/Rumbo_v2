@@ -7,7 +7,7 @@ import { sendVerificationEmail, sendResetEmail } from "../lib/mailer";
 import crypto from "node:crypto";
 
 export const registerService = async (data: RegisterData) => {
-  const { username, email, password, role, educationLevel } = data;
+  const { username, email, password, role, profileType } = data;
   const exists = await prisma.user.findFirst({
     where: { OR: [{ email }, { username }] },
   });
@@ -21,14 +21,14 @@ export const registerService = async (data: RegisterData) => {
       password: await bcrypt.hash(password, 10),
       fullName: username,
       role,
-      educationLevel,
+      profileType,
     },
     select: {
       id: true,
       username: true,
       email: true,
       role: true,
-      educationLevel: true,
+      profileType: true,
     },
   });
 

@@ -14,7 +14,7 @@ model User {
   email                String                 @unique
   password             String?
   role                 Role                   @default(STUDENT)
-  educationLevel       EducationLevel?
+  profileType          ProfileType?           @default(estudiante)
   bio                  String?
   avatarUrl            String?
   bannerUrl            String?
@@ -320,12 +320,6 @@ enum Role {
   ADMIN
 }
 
-enum EducationLevel {
-  MIDDLE_SCHOOL
-  HIGH_SCHOOL
-  UNIVERSITY
-}
-
 enum ModerationStatus {
   PENDING
   APPROVED
@@ -379,4 +373,10 @@ enum ForumRequestStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum ProfileType {
+  explorando
+  estudiante
+  egresado
 }
