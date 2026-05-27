@@ -36,6 +36,7 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
         ]);
         setForum(forumData);
         setPosts(postsData);
+        console.log(forumData);
       } catch {
         setError("Error cargando el foro");
       } finally {
@@ -107,6 +108,14 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
     return (
       <p className="text-sm text-danger text-center py-8">
         {error ?? "Foro no encontrado"}
+      </p>
+    );
+  }
+
+  if (!forum.isActive) {
+    return (
+      <p className="text-sm text-danger text-center py-8">
+        {error ?? "El foro no se encuentra disponible"}
       </p>
     );
   }

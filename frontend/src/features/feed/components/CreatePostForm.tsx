@@ -8,6 +8,7 @@ import Card from "@/components/ui/Card";
 import { ChevronDown, X, ImagePlus, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib";
+import z from "zod";
 
 interface AvailableTag {
   id: string;
@@ -21,6 +22,18 @@ interface CreatePostFormProps {
 }
 
 const MAX_TAGS = 3;
+
+const postCreationSchema = z.object({
+  titulo: z
+    .string()
+    .min(5, "Mínimo 5 caracteres")
+    .max(100, "Máximo 100 caracteres")
+    .optional(),
+  contenido: z
+    .string()
+    .min(10, "Mínimo 10 caracteres")
+    .max(2000, "Máximo 2000 caracteres"),
+});
 
 export function CreatePostForm({
   onPostCreated,
@@ -96,6 +109,16 @@ export function CreatePostForm({
 
   const handleSubmit = async () => {
     if (!content.trim()) return;
+
+    const validation = postCreationSchema.safeParse({
+      titulo: title.trim() || undefined,
+      contenido: content,
+    });
+
+    if (!validation.success) {
+      setError(validation.error.issues[0].message);
+      return;
+    }
     setIsLoading(true);
     setError(null);
     try {

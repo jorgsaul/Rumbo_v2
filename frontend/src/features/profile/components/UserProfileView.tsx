@@ -14,10 +14,10 @@ const ROLE_LABELS: Record<string, string> = {
   ADMIN: "Administrador",
 };
 
-const EDUCATION_LABELS: Record<string, string> = {
-  MIDDLE_SCHOOL: "Secundaria",
-  HIGH_SCHOOL: "Preparatoria",
-  UNIVERSITY: "Universidad",
+const PROFILE_TYPE: Record<string, string> = {
+  estudiante: "Estudiante",
+  egresado: "Egresado",
+  explorando: "Explorando",
 };
 
 interface UserProfile {
@@ -171,7 +171,7 @@ export default function UserProfileView({ username }: UserProfileViewProps) {
               </span>
               {profile.educationLevel && (
                 <span className="text-xs px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-500">
-                  {EDUCATION_LABELS[profile.educationLevel] ??
+                  {PROFILE_TYPE[profile.educationLevel] ??
                     profile.educationLevel}
                 </span>
               )}

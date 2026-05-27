@@ -32,6 +32,8 @@ export default function ForumCard({ forum: initialForum }: { forum: Forum }) {
     }
   };
 
+  if (!forum.isActive) return;
+
   return (
     <Card
       rounded="xl"

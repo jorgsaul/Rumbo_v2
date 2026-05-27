@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CommentItem from "./CommentItem";
 import { IconButton } from "@/components/ui";
+import z from "zod";
 
 interface PostDetailPageProps {
   postId: string;
@@ -28,6 +29,7 @@ export default function PostDetailPage({
   const [isLoading, setIsLoading] = useState(true);
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { user } = useAuthStore();
 
@@ -48,8 +50,20 @@ export default function PostDetailPage({
     load();
   }, [postId]);
 
+  const createCommentSchema = z.object({
+    contenido: z.string().min(1).max(500, "Máximo 500 caracteres"),
+  });
+
   const handleComment = async () => {
     if (!content.trim()) return;
+
+    const validation = createCommentSchema.safeParse({
+      contenido: content,
+    });
+    if (!validation.success) {
+      setError(validation.error.issues[0].message);
+      return;
+    }
     setIsSubmitting(true);
     try {
       const res = await feedService.createComment(postId, content);
@@ -59,6 +73,7 @@ export default function PostDetailPage({
       }
     } finally {
       setIsSubmitting(false);
+      setError(null);
     }
   };
 
@@ -219,12 +234,23 @@ export default function PostDetailPage({
             </span>
           </div>
           <div className="flex-1 flex gap-2">
-            <input
+            <textarea
               value={content}
-              onChange={(e) => setContent(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleComment()}
+              onChange={(e) => {
+                setContent(e.target.value);
+
+                e.target.style.height = "auto";
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleComment();
+                }
+              }}
+              rows={1}
               placeholder="Escribe un comentario..."
-              className="flex-1 h-9 px-3 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 outline-none focus:border-primary transition-colors"
+              className={`${content.length < 305 ? "overflow-hidden" : "overflow-y-auto"} flex-1 min-h-9 max-h-40 resize-none px-3 py-2 text-sm rounded-lg border-2 border-gray-300 dark:border-neutral-700 dark:bg-neutral-900 focus:outline-none focus:border-primary transition-colors`}
             />
             <button
               onClick={handleComment}
@@ -239,6 +265,7 @@ export default function PostDetailPage({
             </button>
           </div>
         </div>
+        {error && <p className="mt-2 text-danger mt-1">{error}</p>}
       </Card>
 
       <div className="space-y-4">

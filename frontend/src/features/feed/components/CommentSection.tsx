@@ -6,8 +6,7 @@ import { feedService } from "../services/feedService";
 import { PostComment } from "../types/feed.types";
 import { Button } from "@/components/ui";
 import { Send, Trash2 } from "lucide-react";
-import { IconButton } from "@/components/ui";
-import { useAuthStore } from "@/features/auth/hooks/useAuthStore";
+import z from "zod";
 
 interface CommentSectionProps {
   postId: string;
@@ -18,6 +17,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -33,7 +33,17 @@ export function CommentSection({ postId }: CommentSectionProps) {
 
   const handleSubmit = async () => {
     if (!content.trim()) return;
+
+    const validation = createCommentSchema.safeParse({
+      contenido: content,
+    });
+
+    if (!validation.success) {
+      setError(validation.error.issues[0].message);
+      return;
+    }
     setIsLoading(true);
+    setError(null);
     try {
       const res = await feedService.createComment(postId, content);
       if (res.ok) {
@@ -45,27 +55,13 @@ export function CommentSection({ postId }: CommentSectionProps) {
     }
   };
 
-  const handleDeleteComment = async (id: string) => {
-    try {
-      const res = await feedService.deleteComment(postId, id);
-      if (res.ok) {
-        setComments((prev) => prev.filter((c) => c.id !== id));
-      }
-    } catch (error) {}
-  };
-
-  const { user } = useAuthStore();
+  const createCommentSchema = z.object({
+    contenido: z.string().min(1).max(500, "Máximo 500 caracteres"),
+  });
 
   return (
     <div className="flex flex-col gap-3 pt-3 border-t border-neutral-100 dark:border-neutral-800">
       <div className="flex gap-2 items-center">
-        <input
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-          placeholder="Escribe un comentario..."
-          className="flex-1 h-9 px-3 text-sm rounded-lg border-2 border-gray-300 dark:border-neutral-700 dark:bg-neutral-900 focus:outline-none focus:border-primary transition-colors"
-        />
         <Button
           size="sm"
           onClick={handleSubmit}
@@ -75,6 +71,8 @@ export function CommentSection({ postId }: CommentSectionProps) {
           Enviar
         </Button>
       </div>
+
+      {error && <p>{error}</p>}
 
       {isFetching ? (
         <p className="text-xs text-neutral-400">Cargando comentarios...</p>
