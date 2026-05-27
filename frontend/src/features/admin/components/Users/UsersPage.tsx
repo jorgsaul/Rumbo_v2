@@ -65,40 +65,39 @@ function UserRow({
             {formatDate(user.createdAt)}
           </p>
         </div>
+        {user.role !== "ADMIN" && (
+          <div className="flex items-center gap-2 shrink-0">
+            <select
+              value={user.role}
+              onChange={(e) => onRoleChange(user.id, e.target.value)}
+              disabled={isUpdating}
+              className="text-xs px-2 py-1 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 outline-none focus:border-primary cursor-pointer"
+            >
+              <option value="STUDENT">Alumno</option>
+              <option value="AUTHOR">Autor</option>
+            </select>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <select
-            value={user.role}
-            onChange={(e) => onRoleChange(user.id, e.target.value)}
-            disabled={isUpdating}
-            className="text-xs px-2 py-1 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 outline-none focus:border-primary cursor-pointer"
-          >
-            <option value="STUDENT">Alumno</option>
-            <option value="AUTHOR">Autor</option>
-            <option value="ADMIN">Admin</option>
-          </select>
-
-          {/* Toggle activo */}
-          <button
-            onClick={() => onToggleActive(user.id, !user.isActive)}
-            disabled={isUpdating}
-            className={cn(
-              "p-1.5 rounded-lg transition-colors",
-              user.isActive
-                ? "text-success hover:bg-success/10"
-                : "text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800",
-            )}
-            title={user.isActive ? "Desactivar usuario" : "Activar usuario"}
-          >
-            {isUpdating ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : user.isActive ? (
-              <ToggleRight size={16} />
-            ) : (
-              <ToggleLeft size={16} />
-            )}
-          </button>
-        </div>
+            <button
+              onClick={() => onToggleActive(user.id, !user.isActive)}
+              disabled={isUpdating}
+              className={cn(
+                "p-1.5 rounded-lg transition-colors",
+                user.isActive
+                  ? "text-success hover:bg-success/10"
+                  : "text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800",
+              )}
+              title={user.isActive ? "Desactivar usuario" : "Activar usuario"}
+            >
+              {isUpdating ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : user.isActive ? (
+                <ToggleRight size={16} />
+              ) : (
+                <ToggleLeft size={16} />
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </Card>
   );
@@ -174,7 +173,6 @@ export default function UsersPage() {
         </p>
       </div>
 
-      {/* Search */}
       <div className="relative">
         <Search
           size={15}

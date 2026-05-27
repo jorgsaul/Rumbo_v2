@@ -12,10 +12,10 @@ const ROLE_LABELS: Record<string, string> = {
   ADMIN: "Administrador",
 };
 
-const EDUCATION_LABELS: Record<string, string> = {
-  MIDDLE_SCHOOL: "Secundaria",
-  HIGH_SCHOOL: "Preparatoria",
-  UNIVERSITY: "Universidad",
+const PROFILE_TYPE: Record<string, string> = {
+  estudiante: "Estudiante",
+  egresado: "Egresado",
+  explorando: "Explorando",
 };
 
 interface ProfileHeaderProps {
@@ -78,7 +78,7 @@ export function ProfileHeader({
 
         <div className="pt-8">
           <div className="flex items-end justify-between mb-3">
-            <h1 className="text-lg font-semibold text-neutral-900 dark:text-white leading-tight">
+            <h1 className="break-all text-lg font-semibold text-neutral-900 dark:text-white leading-tight">
               {profile.fullName}
             </h1>
 
@@ -101,7 +101,6 @@ export function ProfileHeader({
               </Button>
             </div>
           </div>
-          {/* Resto del contenido igual */}
           <div className="flex items-center gap-2 flex-wrap mb-3">
             <span className="text-sm text-neutral-400">
               @{profile.username}
@@ -111,13 +110,12 @@ export function ProfileHeader({
             </span>
             {profile.educationLevel && (
               <span className="text-xs px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-500">
-                {EDUCATION_LABELS[profile.educationLevel] ??
-                  profile.educationLevel}
+                {PROFILE_TYPE[profile.educationLevel] ?? profile.educationLevel}
               </span>
             )}
           </div>
           {profile.bio && (
-            <p className="text-sm text-neutral-600 dark:text-neutral-300 mb-3">
+            <p className="texwrap-break-word t-sm text-neutral-600 dark:text-neutral-300 mb-3">
               {profile.bio}
             </p>
           )}

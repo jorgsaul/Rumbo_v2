@@ -26,7 +26,7 @@ export const getTopForums = async (req: AuthRequest, res: Response) => {
 
 export const getForums = async (req: AuthRequest, res: Response) => {
   try {
-    const forums = await getForumsService(req.userId!);
+    const forums = await getForumsService(req.userId!, true);
     res.json({ ok: true, response: forums });
   } catch (error: any) {
     res.status(500).json({ ok: false, message: error.message });

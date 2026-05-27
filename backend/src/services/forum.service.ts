@@ -15,9 +15,12 @@ export const getTopForumsService = async () => {
   });
 };
 
-export const getForumsService = async (userId: string) => {
+export const getForumsService = async (
+  userId: string,
+  includeInactive = false,
+) => {
   const forums = await prisma.forum.findMany({
-    where: { isActive: true },
+    where: includeInactive ? undefined : { isActive: true },
     orderBy: { createdAt: "desc" },
     include: {
       _count: { select: { posts: true, members: true } },

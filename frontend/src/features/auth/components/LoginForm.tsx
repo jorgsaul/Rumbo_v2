@@ -98,18 +98,20 @@ export default function LoginForm() {
             <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-700" />
           </div>
 
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              if (credentialResponse.credential) {
-                googleLogin(credentialResponse.credential);
-              }
-            }}
-            onError={() => console.error(error)}
-            width="342px"
-            text="signin_with"
-            shape="rectangular"
-            theme="outline"
-          />
+          <div className="min-h-[40px]">
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                if (credentialResponse.credential) {
+                  googleLogin(credentialResponse.credential);
+                }
+              }}
+              onError={() => console.error(error)}
+              width="342px"
+              text="signin_with"
+              shape="rectangular"
+              theme="outline"
+            />
+          </div>
 
           <Button
             type="submit"

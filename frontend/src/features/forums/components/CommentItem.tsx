@@ -111,7 +111,7 @@ export default function CommentItem({
           )}
         </div>
 
-        <p className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+        <p className="break-all text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
           {comment.content}
         </p>
         {depth === 0 && (

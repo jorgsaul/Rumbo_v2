@@ -7,6 +7,7 @@ import { forumService } from "../services/forumService";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { useToast } from "@/context/ToastContext";
+import z from "zod";
 
 export default function ForumRequestPage() {
   const [name, setName] = useState("");
@@ -16,11 +17,38 @@ export default function ForumRequestPage() {
   const router = useRouter();
   const { addToast } = useToast();
 
+  const forumSchema = z.object({
+    nombre: z
+      .string()
+      .min(3, "Mínimo 3 caracteres")
+      .max(50, "Máximo 30 caracteres")
+      .regex(
+        /^[a-zA-ZÀ-ÿ0-9 _-]+$/,
+        "Solo letras, números, espacios, guion y guion bajo",
+      ),
+    descripcion: z
+      .string()
+      .min(10, "Mínimo 10 caracteres")
+      .max(300, "Máximo 300 caracteres")
+      .optional(),
+  });
+
   const handleSubmit = async () => {
     if (!name.trim()) {
       setError("El nombre es obligatorio");
       return;
     }
+
+    const validation = forumSchema.safeParse({
+      nombre: name,
+      description: description.trim(),
+    });
+
+    if (!validation.success) {
+      setError(validation.error.issues[0].message);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     try {

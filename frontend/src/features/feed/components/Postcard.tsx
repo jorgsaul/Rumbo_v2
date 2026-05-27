@@ -75,12 +75,12 @@ export function PostCard({
       </div>
 
       {post.title && (
-        <h3 className="text-base font-semibold text-neutral-900 dark:text-white leading-snug">
+        <h3 className="wrap-break-word text-base font-semibold text-neutral-900 dark:text-white leading-snug">
           {post.title}
         </h3>
       )}
 
-      <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
+      <p className="wrap-break-word text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
         {post.content}
       </p>
 

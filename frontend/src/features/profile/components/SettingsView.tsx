@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { useProfile } from "../hooks/useProfile";
 import { profileService } from "../services/profileServices";
@@ -70,6 +71,16 @@ export default function SettingsView() {
   }, [profile]);
 
   const handleSave = async () => {
+    const validation = profileSchema.safeParse({
+      fullName: fullName.trim(),
+      bio: bio || undefined,
+    });
+
+    if (!validation.success) {
+      setSaveError(validation.error.issues[0].message);
+      return;
+    }
+
     setIsSaving(true);
     setSaveError(null);
     setSaved(false);
@@ -83,6 +94,14 @@ export default function SettingsView() {
       setIsSaving(false);
     }
   };
+
+  const profileSchema = z.object({
+    fullName: z
+      .string()
+      .min(2, "Mínimo 2 caracteres")
+      .max(50, "Máximo 50 caracteres"),
+    bio: z.string().max(160, "Máximo 160 caracteres").optional(),
+  });
 
   if (isLoading) {
     return (
