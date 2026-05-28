@@ -9,7 +9,8 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = Cookies.get("auth-client");
+  const token =
+    Cookies.get("auth-client") || localStorage.getItem("auth-token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -20,10 +21,9 @@ api.interceptors.response.use(
       response.config?.url?.includes("/auth/login") ||
       response.config?.url?.includes("/auth/google");
     if (isLoginRoute && response.data?.ok && response.data?.response?.token) {
-      Cookies.set("auth-client", response.data.response.token, {
-        expires: 7,
-        sameSite: "lax",
-      });
+      const token = response.data.response.token;
+      Cookies.set("auth-client", token, { expires: 7, sameSite: "lax" });
+      localStorage.setItem("auth-token", token);
     }
     return response;
   },

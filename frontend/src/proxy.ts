@@ -19,9 +19,9 @@ export default function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(DEFAULT_GUEST, request.url));
   }
 
-  if (isAuthenticated && isPublicRoute) {
+  /*if (isAuthenticated && isPublicRoute) {
     return NextResponse.redirect(new URL(DEFAULT_LOGGED, request.url));
-  }
+  }*/
 
   return NextResponse.next();
 }
