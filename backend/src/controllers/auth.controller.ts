@@ -54,7 +54,11 @@ export const googleAuth = async (req: Request, res: Response) => {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.json({ ok: true, message: "Login con Google exitoso", response: user });
+    res.json({
+      ok: true,
+      message: "Login con Google exitoso",
+      response: { ...user, token },
+    });
   } catch (error: any) {
     res.status(401).json({ ok: false, message: error.message });
   }
