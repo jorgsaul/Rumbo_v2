@@ -50,7 +50,10 @@ export function PostHeader({ post }: PostHeaderProps) {
                 href={`/profile/${post.author.username}`}
                 onClick={(e) => e.stopPropagation()}
               >
-                @{post.author.username}
+                @
+                {post.author.username.length > 17
+                  ? post.author.username.substring(0, 17) + "..."
+                  : post.author.username}
               </Link>
             </span>
           </div>

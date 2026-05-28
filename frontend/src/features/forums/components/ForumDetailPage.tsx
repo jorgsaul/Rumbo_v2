@@ -130,7 +130,7 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
         )}
       </div>
 
-      <div className="flex items-end justify-between gap-3 px-1">
+      <div className="flex flex-col gap-4 px-1 min-[615px]:flex-row min-[615px]:items-end min-[615px]:justify-between min-[615px]:gap-3">
         <div className="flex gap-3 items-center">
           <div className="w-14 h-14 rounded-2xl border-4 border-white dark:border-neutral-950 bg-primary/10 overflow-hidden shrink-0">
             {forum.imageUrl ? (
@@ -157,7 +157,7 @@ export default function ForumDetailPage({ forumId }: ForumDetailPageProps) {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 ">
           {!isCreator && (
             <Button
               variant={forum.isMember ? "ghost" : "primary"}
