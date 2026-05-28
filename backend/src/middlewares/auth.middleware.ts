@@ -12,7 +12,8 @@ export const authMiddleware = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const token = req.cookies.token;
+  const token =
+    req.cookies.token || req.headers.authorization?.replace("Bearer ", "");
 
   if (!token) {
     res.status(401).json({ ok: false, message: "No autorizado" });
