@@ -8,3 +8,7 @@ export interface User {
   avatarUrl?: string | null;
   fullName?: string;
 }
+
+export interface LoginResponse extends User {
+  token: string;
+}

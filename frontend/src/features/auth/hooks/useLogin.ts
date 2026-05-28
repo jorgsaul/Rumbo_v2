@@ -18,11 +18,12 @@ export default function useLogin() {
       const res = await authService.login(credentials);
       if (res.ok) {
         setUser(res.response);
-        Cookies.set("auth-client", res.response.id, {
+        Cookies.set("auth-client", res.response.token, {
           expires: 7,
           secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+          sameSite: "lax",
         });
+        localStorage.setItem("auth-token", res.response.token);
         router.push("/feed");
       } else {
         setError(res.message);
@@ -41,11 +42,12 @@ export default function useLogin() {
       const res = await authService.googleLogin(idToken);
       if (res.ok) {
         setUser(res.response);
-        Cookies.set("auth-client", res.response.id, {
+        Cookies.set("auth-client", res.response.token, {
           expires: 7,
           secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+          sameSite: "lax",
         });
+        localStorage.setItem("auth-token", res.response.token);
         router.push("/feed");
       }
     } catch {
