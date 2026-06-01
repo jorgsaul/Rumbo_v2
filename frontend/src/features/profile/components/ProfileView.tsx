@@ -1,21 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useProfile } from "../hooks/useProfile";
 import { useAuthStore } from "@/features/auth/hooks/useAuthStore";
 import { ProfileHeader } from "./ProfileHeader";
-import { ProfileTabs, TabId } from "./ProfileTabs";
+import { ProfileTabs, TabId, TABS } from "./ProfileTabs";
 import { ProfileActivity } from "./ProfileActivity";
 import { Button } from "@/components/ui";
 import Cookies from "js-cookie";
 import ChatFAQ from "@/features/support/components/ChatFAQ";
+import MyTickets from "@/features/support/components/MyTickets";
+import { ticketService } from "@/features/support/services/ticketService";
 
 export default function ProfileView() {
   const { profile, isLoading, error, retry } = useProfile();
   const { logout } = useAuthStore();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>("posts");
+  const [hasTickets, setHasTickets] = useState(false);
+
+  useEffect(() => {
+    ticketService.getMyTickets().then((tickets) => {
+      setHasTickets(tickets.length > 0);
+    }).catch(() => {});
+  }, []);
+
+  const visibleTabs = TABS.filter(
+    (t) => t.id !== "tickets" || hasTickets
+  );
 
   const handleLogout = async () => {
     try {
@@ -66,8 +79,16 @@ export default function ProfileView() {
           onEdit={() => router.push("/profile/settings")}
           onLogout={handleLogout}
         />
-        <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
-        <ProfileActivity userId={profile.id} activeTab={activeTab} />
+        <ProfileTabs
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          tabs={visibleTabs}
+        />
+        {activeTab === "tickets" ? (
+          <MyTickets />
+        ) : (
+          <ProfileActivity userId={profile.id} activeTab={activeTab} />
+        )}
       </div>
       <ChatFAQ />
     </>

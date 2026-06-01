@@ -6,6 +6,7 @@ import {
   Bookmark,
   MessageCircle,
   FlaskConical,
+  TicketCheck,
 } from "lucide-react";
 
 export const TABS = [
@@ -14,26 +15,30 @@ export const TABS = [
   { id: "likes", label: "Likes", icon: Heart },
   { id: "saved", label: "Guardados", icon: Bookmark },
   { id: "results", label: "Resultados", icon: FlaskConical },
+  { id: "tickets", label: "Tickets", icon: TicketCheck },
 ] as const;
 
 export type TabId = (typeof TABS)[number]["id"];
 
+type Tab = (typeof TABS)[number];
+
 interface ProfileTabsProps {
   activeTab: TabId;
   onChange: (tab: TabId) => void;
+  tabs?: readonly Tab[];
 }
 
-export function ProfileTabs({ activeTab, onChange }: ProfileTabsProps) {
+export function ProfileTabs({ activeTab, onChange, tabs = TABS }: ProfileTabsProps) {
   return (
-    <div className="flex gap-1 border-b border-neutral-200 dark:border-neutral-800 overflow-x-auto">
-      {TABS.map(({ id, label, icon: Icon }) => (
+    <div className="flex gap-0 bg-neutral-100 dark:bg-neutral-900 rounded-xl p-1 w-fit max-w-full overflow-x-auto [&::-webkit-scrollbar]:hidden">
+      {tabs.map(({ id, label, icon: Icon }) => (
         <button
           key={id}
           onClick={() => onChange(id)}
-          className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 text-[13px] font-medium rounded-lg transition-all whitespace-nowrap ${
             activeTab === id
-              ? "border-primary text-primary"
-              : "border-transparent text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+              ? "bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white border border-neutral-200 dark:border-neutral-700 shadow-sm"
+              : "text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
           }`}
         >
           <Icon size={14} />
