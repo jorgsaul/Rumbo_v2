@@ -3,9 +3,9 @@ import { PostCard } from "./Postcard";
 import { useFeed } from "../hooks/useFeed";
 import { CreatePostForm } from "./CreatePostForm";
 import { cn } from "@/lib";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { feedService } from "../services/feedService";
-import { Filter } from "lucide-react";
+import { Tag, ChevronDown } from "lucide-react";
 
 interface AvailableTag {
   id: string;
@@ -30,12 +30,28 @@ export function FeedList() {
   } = useFeed();
 
   const [tags, setTags] = useState<AvailableTag[]>([]);
+  const [ddOpen, setDdOpen] = useState(false);
+  const ddRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     feedService.getTags().then((res) => {
       if (res.ok) setTags(res.response);
     });
   }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ddRef.current && !ddRef.current.contains(e.target as Node)) {
+        setDdOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectedLabel = activeTag
+    ? tags.find((t) => t.name === activeTag)?.name
+    : null;
 
   return (
     <div className="space-y-4">
@@ -62,38 +78,91 @@ export function FeedList() {
       </div>
 
       {tags.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => filterByTag(undefined)}
             className={cn(
-              "text-xs px-3 py-1.5 rounded-full border shrink-0 transition-colors",
+              "flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-full border shrink-0 transition-all font-medium",
               !activeTag
                 ? "bg-primary text-white border-primary"
-                : "border-neutral-200 dark:border-neutral-700 text-neutral-500 hover:border-primary",
+                : "border-neutral-200 dark:border-neutral-700 text-neutral-500 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary",
             )}
           >
             Todos
           </button>
-          {tags.length > 0 && (
-            <div className="relative">
-              <select
-                value={activeTag ?? ""}
-                onChange={(e) => filterByTag(e.target.value || undefined)}
-                className="w-full px-3 pr-6 py-2 text-sm rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
-              >
-                <option value="">Todas las etiquetas</option>
-                {tags.map((tag) => (
-                  <option key={tag.id} value={tag.name}>
-                    {tag.name}
-                  </option>
-                ))}
-              </select>
-              <Filter
-                size={14}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none"
+
+          <div className="relative" ref={ddRef}>
+            <button
+              onClick={() => setDdOpen((v) => !v)}
+              className={cn(
+                "flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-full border transition-all font-medium",
+                activeTag
+                  ? "bg-primary/10 border-primary text-primary"
+                  : "border-neutral-200 dark:border-neutral-700 text-neutral-500 hover:border-neutral-400 dark:hover:border-neutral-500",
+              )}
+            >
+              <Tag size={12} />
+              <span>{selectedLabel ?? "Todas las etiquetas"}</span>
+              <ChevronDown
+                size={12}
+                className={cn(
+                  "transition-transform duration-200",
+                  ddOpen && "rotate-180",
+                )}
               />
-            </div>
-          )}
+            </button>
+
+            {ddOpen && (
+              <div className="absolute top-[calc(100%+6px)] left-0 z-50 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl py-1 min-w-[200px] max-h-64 overflow-y-auto shadow-sm">
+                <button
+                  onClick={() => {
+                    filterByTag(undefined);
+                    setDdOpen(false);
+                  }}
+                  className={cn(
+                    "flex items-center gap-2 w-full px-3 py-2 text-xs text-left transition-colors",
+                    !activeTag
+                      ? "text-primary font-medium bg-primary/5"
+                      : "text-neutral-500 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "w-1.5 h-1.5 rounded-full shrink-0",
+                      !activeTag ? "bg-primary" : "bg-neutral-300 dark:bg-neutral-600",
+                    )}
+                  />
+                  Todas las etiquetas
+                </button>
+
+                {tags.map((tag) => (
+                  <button
+                    key={tag.id}
+                    onClick={() => {
+                      filterByTag(tag.name);
+                      setDdOpen(false);
+                    }}
+                    className={cn(
+                      "flex items-center gap-2 w-full px-3 py-2 text-xs text-left transition-colors",
+                      activeTag === tag.name
+                        ? "text-primary font-medium bg-primary/5"
+                        : "text-neutral-500 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "w-1.5 h-1.5 rounded-full shrink-0",
+                        activeTag === tag.name
+                          ? "bg-primary"
+                          : "bg-neutral-300 dark:bg-neutral-600",
+                      )}
+                    />
+                    {tag.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

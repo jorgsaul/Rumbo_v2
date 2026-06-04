@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import handleFAQ from "@/features/support/components/FAQLocal";
 
 const N8N_WEBHOOK =
-  process.env.N8N_WEBHOOK_URL ?? "https://n00buk.app.n8n.cloud/webhook/faq-bot";
+  process.env.N8N_WEBHOOK_URL ?? "https://mythicc.app.n8n.cloud/webhook/faq-bot";
 const TIMEOUT_MS = 25_000;
 
 export async function POST(req: NextRequest) {

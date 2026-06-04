@@ -4,7 +4,18 @@ export interface Opcion {
 }
 
 export interface MensajeFAQ {
-  role: 'bot' | 'user';
+  role: "bot" | "user";
   texto: string;
   opciones?: Opcion[];
+  sinRespuesta?: boolean;
+}
+
+export interface Ticket {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: string;
+  adminReply?: string;
+  createdAt: string;
 }

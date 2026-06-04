@@ -12,6 +12,7 @@ export interface MensajeFAQ {
   role: "user" | "bot";
   texto: string;
   opciones?: OpcionFAQ[];
+  sinRespuesta?: boolean; 
   timestamp: Date;
 }
 
@@ -76,13 +77,19 @@ export function useChatFAQ() {
       try {
         const data = await enviarOpcionFAQ(opcion.id);
         const texto = data.message ?? data.mensaje ?? "";
+        const opciones: OpcionFAQ[] = data.opciones ?? [];
+
+        const sinRespuesta =
+          !opciones.length &&
+          (!texto || texto === "No tengo información sobre eso.");
 
         setMensajes((prev) => [
           ...prev,
           {
             role: "bot",
             texto: texto || "No tengo información sobre eso.",
-            opciones: data.opciones ?? [],
+            opciones: opciones.length ? opciones : undefined,
+            sinRespuesta, 
             timestamp: new Date(),
           },
         ]);
@@ -92,6 +99,7 @@ export function useChatFAQ() {
           {
             role: "bot",
             texto: "Ocurrió un error. Intenta de nuevo.",
+            sinRespuesta: true, 
             timestamp: new Date(),
           },
         ]);
