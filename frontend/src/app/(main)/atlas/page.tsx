@@ -25,8 +25,10 @@ export default function AtlasPage() {
   if (!hydrated || !user) return null;
 
   return (
-    <div className="h-[calc(100vh-64px)]">
-      <AtlasChat userId={user.id} />
+    <div className="flex justify-center h-[calc(100vh-4rem)] md:h-[calc(100vh-4rem)]">
+      <div className="w-full flex flex-col">
+        <AtlasChat userId={user.id} />
+      </div>
     </div>
   );
 }
