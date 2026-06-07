@@ -125,16 +125,17 @@ export default function QuestionScreen({
               </h2>
             </div>
 
-            <div className="grid grid-cols-5 gap-2">
+            <div className="flex flex-wrap justify-center gap-2 lg:grid lg:grid-cols-5">
               {LIKERT_OPTIONS.map(({ value, label }) => {
                 const isSelected = currentAnswer === value;
+
                 return (
                   <button
                     key={value}
                     onClick={() => onSelectAnswer(value)}
                     className={cn(
+                      "w-[calc(33.333%-0.5rem)] lg:w-auto",
                       "flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all duration-200",
-                      "hover:-translate-y-0.5 hover:shadow-md",
                       isSelected
                         ? "border-primary bg-primary/5 dark:bg-primary/10"
                         : "border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 hover:border-primary/40",

@@ -111,18 +111,6 @@ const scorePilar = (
 type IkigaiPilar = "PASION" | "VOCACION" | "PROFESION" | "MISION";
 
 // ─── Compatibilidad con carrera ───────────────────────────────────────────────
-
-/**
- * Calcula qué tan compatible es el usuario con una carrera.
- * Usa las respuestas del test mapeadas a los 4 pilares Ikigai.
- *
- * PASIÓN   → preguntas 1-10 (intereses, actividades, creatividad, ambiente)
- * VOCACIÓN → preguntas 11-20 (materias y competencias)
- * PROFESIÓN→ preguntas 21-30 (sector, salario, estabilidad, emprendimiento)
- * MISIÓN   → preguntas 31-40 (impacto social, problemas que quiere resolver)
- */
-// ─── Compatibilidad con carrera ───────────────────────────────────────────────
-
 /**
  * Calcula qué tan compatible es el usuario con una carrera.
  * Usa las respuestas del test mapeadas a los 4 pilares Ikigai.
@@ -156,7 +144,7 @@ const calcularPerfil = (
   const q7 = get(pasionQs, 6); // diseño
   const q8 = get(pasionQs, 7); // análisis datos
   const q9 = get(pasionQs, 8); // naturaleza
-  const q10 = get(pasionQs, 9); // impacto sociedad
+  const q10 = get(pasionQs, 9); // creatividad
 
   // Vocación (Q11-Q15)
   const q11 = get(vocacionQs, 0); // matemáticas
@@ -178,7 +166,7 @@ const calcularPerfil = (
     ),
     salud: Math.round(q2 * 0.4 + q14 * 0.35 + q32 * 0.25),
     administrativo: Math.round(q4 * 0.45 + q15 * 0.25 + q8 * 0.15 + q10 * 0.15),
-    social: Math.round(q10 * 0.3 + q35 * 0.25 + q39 * 0.25 + q15 * 0.2),
+    social: Math.round(q39 * 0.55 + q35 * 0.25 + q15 * 0.2),
   };
 };
 const calcularPasionCarrera = (
@@ -191,6 +179,7 @@ const calcularPasionCarrera = (
 
   const pasionQs = questions.filter((q) => q.pilar === "PASION");
   const vocacionQs = questions.filter((q) => q.pilar === "VOCACION");
+  const misionQs = questions.filter((q) => q.pilar === "MISION");
 
   const q1 = norm(answers[pasionQs[0]?.id] ?? 3); // tecnología
   const q2 = norm(answers[pasionQs[1]?.id] ?? 3); // salud
@@ -203,8 +192,43 @@ const calcularPasionCarrera = (
   const q9 = norm(answers[pasionQs[8]?.id] ?? 3); // naturaleza
   const q10 = norm(answers[pasionQs[9]?.id] ?? 3); // impacto sociedad
   const q11 = norm(answers[vocacionQs[0]?.id] ?? 3);
+  const q39 = norm(answers[misionQs[8]?.id] ?? 3);
 
   const mapa: Record<string, number> = {
+    // Mecánica / Aeronáutica / Estructuras
+    mecánica: q3,
+    aeronáutica: (q1 + q3) / 2,
+    estructuras: q3,
+    "cad/cam": (q3 + q7) / 2,
+    // Energía
+    energía: (q3 + q9) / 2,
+
+    // Telecomunicaciones
+    telecomunicaciones: q1,
+    informática: q1,
+
+    // Alimentos
+    alimentos: (q2 + q5) / 2,
+    alimentación: (q2 + q5) / 2,
+    metabolismo: q2,
+
+    // Biomédica / Salud adicionales
+    biomedicina: q2,
+    bienestar: q2,
+    prevención: q2,
+    "atención clínica": q2,
+    terapéutica: q2,
+    obstetricia: q2,
+    "cuidado materno": q2,
+
+    // Simulación
+    simulación: (q1 + q8) / 2,
+
+    // Comunicación / diseño
+    "comunicación visual": (q7 + q10) / 2,
+    multimedia: (q7 + q1) / 2,
+    docencia: q10,
+
     automatización: (q1 + q8) / 2,
     robótica: q1,
     "sistemas embebidos": q1,
@@ -265,8 +289,8 @@ const calcularPasionCarrera = (
     "medio ambiente": q9,
     sustentabilidad: q9,
     forestal: q9,
-    social: q10,
-    educación: q10,
+    social: q39,
+    educación: q39,
     // Administrativo/económico
     mercados: q4,
     "política económica": q4,
@@ -386,13 +410,22 @@ const calcularVocacionCarrera = (
   const esfuerzo = escalar((q16 + q18) / 2);
   const scoreDif = Math.max(0, 100 - Math.abs(dificultad - esfuerzo) * 10);
 
+  const liderazgoRelevante = m.expresion >= 8;
+  const scoreLiderazgo = liderazgoRelevante
+    ? Math.max(
+        0,
+        100 - Math.abs(escalar(m.expresion) - escalar((q19 + q17) / 2)) * 10,
+      )
+    : scoreDif;
+
   return Math.round(
     scoreMat * 0.25 +
       scoreFis * 0.2 +
       scoreQui * 0.15 +
       scoreBio * 0.15 +
       scoreExp * 0.1 +
-      scoreDif * 0.15,
+      scoreDif * 0.1 +
+      scoreLiderazgo * 0.05,
   );
 };
 
@@ -417,10 +450,7 @@ const calcularProfesionCarrera = (
   const salScore = Math.max(0, 100 - Math.abs(salNorm - norm(q21)));
 
   // Empleabilidad vs preferencia estabilidad
-  const empNorm =
-    career.profesion.empleabilidad <= 1
-      ? career.profesion.empleabilidad * 100
-      : career.profesion.empleabilidad;
+  const empNorm = career.profesion.empleabilidad;
 
   const estScore = Math.max(0, 100 - Math.abs(empNorm - norm(q22)));
 
@@ -441,12 +471,16 @@ const calcularProfesionCarrera = (
   const tieneTech = career.profesion.sectores.some(
     (s) => s.includes("Tecnología") || s.includes("startup"),
   );
+  const tieneEnergia = career.profesion.sectores.some((s) =>
+    s.includes("Energía"),
+  );
 
-  const sectorPublicoScore = tienePublico
-    ? norm(q25)
-    : Math.max(0, 100 - norm(q25));
-  const sectorTechScore = tieneTech ? norm(q23) : Math.max(0, 100 - norm(q23));
-  const sectorScore = Math.round((sectorPublicoScore + sectorTechScore) / 2);
+  const sectorPublicoScore = tienePublico ? norm(q25) : 50; // neutro si no aplica
+  const sectorTechScore = tieneTech ? norm(q23) : 50;
+  const sectorEnergiaScore = tieneEnergia ? norm(q29) : 50;
+  const sectorScore = Math.round(
+    (sectorPublicoScore + sectorTechScore + sectorEnergiaScore) / 3,
+  );
 
   // Emprendimiento
   const emprendNorm = career.profesion.emprendimiento * 10;
@@ -481,6 +515,19 @@ const calcularMisionCarrera = (
   const problemas = career.mision.problemas.map((p) => p.toLowerCase());
 
   const mapaProblemas: Record<string, number> = {
+    "producción de alimentos": (q32 + q38) / 2,
+    "desarrollo de nuevos materiales": q38,
+    "seguridad informática y protección de datos": q33,
+    "seguridad informática": q33,
+    "problemas de comunicación y conectividad": q33,
+    "seguridad estructural": q34,
+    "acceso a servicios básicos": q35,
+    "docencia y formación académica": q36,
+    "educación y capacitación": q36,
+    "urbanismo sustentable": q34,
+    "producción de textiles": q38,
+    "problemas de salud materna": q32,
+    "optimización de procesos": q38,
     "contaminación ambiental": q31,
     "impacto ambiental de industrias": q31,
     "cambio climático": q37,

@@ -22,7 +22,7 @@ export default function ForumsPage() {
   }, []);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6 px-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">
@@ -62,7 +62,7 @@ export default function ForumsPage() {
           </p>
         </div>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {forums.map((forum) => (
             <ForumCard key={forum.id} forum={forum} />
           ))}
