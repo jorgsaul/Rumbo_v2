@@ -9,6 +9,9 @@ import {
   Loader2,
   ChevronDown,
   ChevronUp,
+  ArrowUp,
+  Minus,
+  ArrowDown,
 } from "lucide-react";
 import { adminService } from "../../services/adminService";
 import { Ticket } from "@/features/support/types/support.types";
@@ -19,20 +22,29 @@ import { formatDate } from "@/utils/FormatDate";
 import { Status } from "@/components/ui";
 
 const STATUS_CONFIG = {
-  OPEN: {
-    label: "Abierto",
-    color: "bg-warning",
-    icon: AlertCircle,
+  OPEN: { label: "Abierto", color: "bg-warning", icon: AlertCircle },
+  IN_REVIEW: { label: "En revisión", color: "bg-info", icon: Clock },
+  RESOLVED: { label: "Resuelto", color: "bg-success", icon: CheckCircle },
+};
+
+const PRIORITY_CONFIG = {
+  HIGH: {
+    label: "Alta",
+    icon: ArrowUp,
+    class: "text-red-500 bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800",
+    dot: "bg-red-500",
   },
-  IN_REVIEW: {
-    label: "En revisión",
-    color: "bg-info",
-    icon: Clock,
+  MEDIUM: {
+    label: "Media",
+    icon: Minus,
+    class: "text-amber-500 bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800",
+    dot: "bg-amber-500",
   },
-  RESOLVED: {
-    label: "Resuelto",
-    color: "bg-success",
-    icon: CheckCircle,
+  LOW: {
+    label: "Baja",
+    icon: ArrowDown,
+    class: "text-green-500 bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800",
+    dot: "bg-green-500",
   },
 };
 
@@ -43,31 +55,34 @@ const CATEGORY_LABELS: Record<string, string> = {
   OTHER: "Otro",
 };
 
+function PriorityBadge({ priority }: { priority?: string | null }) {
+  if (!priority) return null;
+  const config = PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG];
+  if (!config) return null;
+  const Icon = config.icon;
+  return (
+    <span className={cn("inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full border", config.class)}>
+      <Icon size={10} />
+      {config.label}
+    </span>
+  );
+}
+
 function TicketAdminCard({
   ticket,
   onUpdate,
   isUpdating,
 }: {
   ticket: Ticket;
-  onUpdate: (
-    ticketId: string,
-    data: { status?: string; adminReply?: string },
-  ) => void;
+  onUpdate: (ticketId: string, data: { status?: string; adminReply?: string; priority?: string }) => void;
   isUpdating: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [reply, setReply] = useState(ticket.adminReply ?? "");
   const status = STATUS_CONFIG[ticket.status];
-  const Icon = status.icon;
 
   return (
-    <Card
-      padding="md"
-      rounded="xl"
-      border="light"
-      shadow="sm"
-      className="space-y-3"
-    >
+    <Card padding="md" rounded="xl" border="light" shadow="sm" className="space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2 min-w-0">
           {ticket.user?.avatarUrl ? (
@@ -86,9 +101,12 @@ function TicketAdminCard({
             </div>
           )}
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-neutral-900 dark:text-white truncate">
-              {ticket.title}
-            </p>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <p className="text-sm font-semibold text-neutral-900 dark:text-white truncate">
+                {ticket.title}
+              </p>
+              <PriorityBadge priority={ticket.priority} />
+            </div>
             <p className="text-xs text-neutral-400">
               @{ticket.user?.username} · {CATEGORY_LABELS[ticket.category]} ·{" "}
               {formatDate(ticket.createdAt)}
@@ -112,18 +130,37 @@ function TicketAdminCard({
             {ticket.description}
           </p>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-neutral-400">Estado:</span>
-            <select
-              value={ticket.status}
-              onChange={(e) => onUpdate(ticket.id, { status: e.target.value })}
-              disabled={isUpdating}
-              className="text-xs px-2 py-1 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 outline-none focus:border-primary"
-            >
-              <option value="OPEN">Abierto</option>
-              <option value="IN_REVIEW">En revisión</option>
-              <option value="RESOLVED">Resuelto</option>
-            </select>
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-neutral-400">Estado:</span>
+              <select
+                aria-label="Estado del ticket"
+                value={ticket.status}
+                onChange={(e) => onUpdate(ticket.id, { status: e.target.value })}
+                disabled={isUpdating}
+                className="text-xs px-2 py-1 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 outline-none focus:border-primary"
+              >
+                <option value="OPEN">Abierto</option>
+                <option value="IN_REVIEW">En revisión</option>
+                <option value="RESOLVED">Resuelto</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-neutral-400">Prioridad:</span>
+              <select
+                aria-label="Prioridad del ticket"
+                value={ticket.priority ?? ""}
+                onChange={(e) => onUpdate(ticket.id, { priority: e.target.value || undefined })}
+                disabled={isUpdating}
+                className="text-xs px-2 py-1 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 outline-none focus:border-primary"
+              >
+                <option value="">Sin prioridad</option>
+                <option value="HIGH">Alta</option>
+                <option value="MEDIUM">Media</option>
+                <option value="LOW">Baja</option>
+              </select>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -152,19 +189,20 @@ function TicketAdminCard({
 
 export default function AdminSupportPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [filter, setFilter] = useState<string | undefined>(undefined);
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
+  const [priorityFilter, setPriorityFilter] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const fetchTickets = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await adminService.getTickets(filter);
+      const data = await adminService.getTickets(statusFilter);
       setTickets(data);
     } finally {
       setIsLoading(false);
     }
-  }, [filter]);
+  }, [statusFilter]);
 
   useEffect(() => {
     fetchTickets();
@@ -172,53 +210,71 @@ export default function AdminSupportPage() {
 
   const handleUpdate = async (
     ticketId: string,
-    data: { status?: string; adminReply?: string },
+    data: { status?: string; adminReply?: string; priority?: string },
   ) => {
     setUpdatingId(ticketId);
     try {
       await adminService.updateTicket(ticketId, data);
       setTickets((prev) =>
-        prev.map((t) =>
-          t.id === ticketId ? ({ ...t, ...data } as Ticket) : t,
-        ),
+        prev.map((t) => (t.id === ticketId ? ({ ...t, ...data } as Ticket) : t)),
       );
     } finally {
       setUpdatingId(null);
     }
   };
 
+  const filtered = priorityFilter
+    ? tickets.filter((t) => t.priority === priorityFilter)
+    : tickets;
+
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">
-          Soporte
-        </h1>
-        <p className="text-sm text-neutral-400 mt-0.5">
-          Gestiona los tickets de usuarios
-        </p>
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Soporte</h1>
+        <p className="text-sm text-neutral-400 mt-0.5">Gestiona los tickets de usuarios</p>
       </div>
 
-      <div className="flex gap-2">
-        {[undefined, "OPEN", "IN_REVIEW", "RESOLVED"].map((s) => (
-          <button
-            key={s ?? "all"}
-            onClick={() => setFilter(s)}
-            className={cn(
-              "text-xs px-3 py-1.5 rounded-full border transition-colors",
-              filter === s
-                ? "bg-primary text-white border-primary"
-                : "border-neutral-200 dark:border-neutral-700 text-neutral-500 hover:border-primary",
-            )}
-          >
-            {s === undefined
-              ? "Todos"
-              : s === "OPEN"
-                ? "Abiertos"
-                : s === "IN_REVIEW"
-                  ? "En revisión"
-                  : "Resueltos"}
-          </button>
-        ))}
+      <div className="flex flex-col gap-3">
+        {/* Filtro por estado */}
+        <div className="flex gap-2 flex-wrap">
+          {[undefined, "OPEN", "IN_REVIEW", "RESOLVED"].map((s) => (
+            <button
+              key={s ?? "all"}
+              onClick={() => setStatusFilter(s)}
+              className={cn(
+                "text-xs px-3 py-1.5 rounded-full border transition-colors",
+                statusFilter === s
+                  ? "bg-primary text-white border-primary"
+                  : "border-neutral-200 dark:border-neutral-700 text-neutral-500 hover:border-primary",
+              )}
+            >
+              {s === undefined ? "Todos" : s === "OPEN" ? "Abiertos" : s === "IN_REVIEW" ? "En revisión" : "Resueltos"}
+            </button>
+          ))}
+        </div>
+
+        {/* Filtro por prioridad */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-xs text-neutral-400">Prioridad:</span>
+          {[undefined, "HIGH", "MEDIUM", "LOW"].map((p) => {
+            const config = p ? PRIORITY_CONFIG[p as keyof typeof PRIORITY_CONFIG] : null;
+            return (
+              <button
+                key={p ?? "all"}
+                onClick={() => setPriorityFilter(p)}
+                className={cn(
+                  "text-xs px-3 py-1.5 rounded-full border transition-colors flex items-center gap-1",
+                  priorityFilter === p
+                    ? "bg-primary text-white border-primary"
+                    : "border-neutral-200 dark:border-neutral-700 text-neutral-500 hover:border-primary",
+                )}
+              >
+                {config && <span className={cn("w-1.5 h-1.5 rounded-full", priorityFilter === p ? "bg-white" : config.dot)} />}
+                {p === undefined ? "Todas" : config?.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {isLoading ? (
@@ -228,8 +284,8 @@ export default function AdminSupportPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="text-xs text-neutral-400">{tickets.length} tickets</p>
-          {tickets.map((t) => (
+          <p className="text-xs text-neutral-400">{filtered.length} tickets</p>
+          {filtered.map((t) => (
             <TicketAdminCard
               key={t.id}
               ticket={t}

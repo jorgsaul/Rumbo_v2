@@ -4,6 +4,7 @@ export interface Ticket {
   description: string;
   category: "BUG" | "QUESTION" | "SUGGESTION" | "OTHER";
   status: "OPEN" | "IN_REVIEW" | "RESOLVED";
+  priority?: "HIGH" | "MEDIUM" | "LOW" | null;
   adminReply?: string | null;
   createdAt: string;
   updatedAt: string;
