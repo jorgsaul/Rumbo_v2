@@ -7,6 +7,7 @@ export interface User {
   role: UserRole;
   avatarUrl?: string | null;
   fullName?: string;
+  isActive: boolean; 
 }
 
 export interface LoginResponse extends User {
