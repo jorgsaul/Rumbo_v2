@@ -35,13 +35,14 @@ export const adminGetTicketsService = async (status?: string) => {
 
 export const adminUpdateTicketService = async (
   ticketId: string,
-  data: { status?: string; adminReply?: string },
+  data: { status?: string; adminReply?: string; priority?: string },
 ) => {
   return prisma.ticket.update({
     where: { id: ticketId },
     data: {
-      status: data.status as any,
-      adminReply: data.adminReply,
+      ...(data.status !== undefined && { status: data.status as any }),
+      ...(data.adminReply !== undefined && { adminReply: data.adminReply }),
+      ...(data.priority !== undefined && { priority: data.priority as any }),
     },
   });
 };

@@ -114,7 +114,7 @@ export const adminService = {
   },
   updateTicket: async (
     ticketId: string,
-    data: { status?: string; adminReply?: string },
+    data: { status?: string; adminReply?: string; priority?: string },
   ): Promise<void> => {
     await api.patch(`/tickets/admin/${ticketId}`, data);
   },
